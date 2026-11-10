@@ -1,0 +1,191 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─── AGMA TEC Brand Tokens (extracted from logo) ─────────────────────── */
+@theme {
+  /* Brand blues — sampled from the AGMA TEC logo beads */
+  --color-brand-50: #eef6ff;
+  --color-brand-100: #d9eafa;
+  --color-brand-200: #bfd7f2;
+  --color-brand-300: #8fbaef;
+  --color-brand-400: #5fa9f2;
+  --color-brand-500: #3b8be8;
+  --color-brand-600: #2e7bd6;
+  --color-brand-700: #225299;
+  --color-brand-800: #14417c;
+  --color-brand-900: #16335b;
+  --color-brand-950: #0b1e3d;
+
+  /* Deep navy surfaces — darkened brand navy for the dark theme */
+  --color-ink-950: #050b16;
+  --color-ink-900: #081222;
+  --color-ink-850: #0a1526;
+  --color-ink-800: #0d1b30;
+  --color-ink-700: #12233e;
+  --color-ink-600: #1a3054;
+
+  --radius: 1rem;
+
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-float-y: float-y 7s ease-in-out infinite;
+  --animate-float-y-slow: float-y 10s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 3.2s ease-in-out infinite;
+  --animate-spin-slow: spin 14s linear infinite;
+  --animate-dash: dash 2.6s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 1; }
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: -32; }
+  }
+}
+
+@theme inline {
+  /* Fonts must be inline: they reference next/font variables that only exist
+     under <body>, so they can never be resolved at :root. */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 1rem;
+  --background: #050b16;
+  --foreground: #e9f0fa;
+  --card: #0a1526;
+  --card-foreground: #e9f0fa;
+  --popover: #0d1b30;
+  --popover-foreground: #e9f0fa;
+  --primary: #2e7bd6;
+  --primary-foreground: #f2f8ff;
+  --secondary: #10203a;
+  --secondary-foreground: #d7e4f6;
+  --muted: #0e1b30;
+  --muted-foreground: #94a9c8;
+  --accent: #12233e;
+  --accent-foreground: #cfe2f8;
+  --destructive: #e5484d;
+  --border: rgba(122, 164, 224, 0.13);
+  --input: rgba(122, 164, 224, 0.16);
+  --ring: #3b8be8;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: rgba(59, 139, 232, 0.35);
+    color: #f2f8ff;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #070f1d;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1a3054;
+    border-radius: 8px;
+    border: 2px solid #070f1d;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2e7bd6;
+  }
+}
+
+@layer utilities {
+  /* Blueprint grid backdrop with radial fade */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(122, 164, 224, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(122, 164, 224, 0.055) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .bg-grid-fade {
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 35%, transparent 78%);
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 35%, transparent 78%);
+  }
+  .bg-dots {
+    background-image: radial-gradient(rgba(122, 164, 224, 0.16) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .text-gradient {
+    background: linear-gradient(96deg, #8fbaef 0%, #3b8be8 48%, #5fa9f2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glass {
+    background: rgba(10, 21, 38, 0.72);
+    backdrop-filter: blur(18px) saturate(1.35);
+    -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  }
+  .card-lift {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.45s, box-shadow 0.45s;
+  }
+  .card-lift:hover {
+    transform: translateY(-6px);
+    border-color: rgba(95, 169, 242, 0.38);
+    box-shadow: 0 22px 60px -18px rgba(46, 123, 214, 0.35), 0 0 0 1px rgba(95, 169, 242, 0.12) inset;
+  }
+  .glow-soft {
+    box-shadow: 0 0 90px -22px rgba(46, 123, 214, 0.55);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+  }
+  .pause-on-hover:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+}
