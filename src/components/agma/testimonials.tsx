@@ -31,6 +31,37 @@ const QUOTES = [
   },
 ];
 
+/** Reusable card grid — homepage and /clients page. */
+export function TestimonialsGrid() {
+  return (
+    <div className="grid gap-6 lg:grid-cols-3">
+      {QUOTES.map((q, i) => (
+        <RevealScale key={q.name + i} delay={i * 0.1} className="h-full">
+          <figure className="card-lift relative flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-8">
+            <Quote className="size-7 text-brand-500/60" />
+            <blockquote className="mt-5 flex-1 text-[15px] leading-relaxed text-foreground/85">
+              “{q.quote}”
+            </blockquote>
+            <figcaption className="mt-7 flex items-center gap-4 border-t border-border/60 pt-6">
+              <span className="flex size-11 items-center justify-center rounded-full border border-brand-500/30 bg-brand-500/12 font-display text-[13px] font-bold text-brand-300">
+                {q.initials}
+              </span>
+              <span>
+                <span className="block text-sm font-semibold text-foreground">
+                  {q.name}
+                </span>
+                <span className="block text-[12.5px] text-muted-foreground">
+                  {q.org}
+                </span>
+              </span>
+            </figcaption>
+          </figure>
+        </RevealScale>
+      ))}
+    </div>
+  );
+}
+
 export function Testimonials() {
   return (
     <section
@@ -51,30 +82,8 @@ export function Testimonials() {
           description="Real experiences. Meaningful partnerships. Measurable business value."
         />
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {QUOTES.map((q, i) => (
-            <RevealScale key={q.name + i} delay={i * 0.1} className="h-full">
-              <figure className="card-lift relative flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-8">
-                <Quote className="size-7 text-brand-500/60" />
-                <blockquote className="mt-5 flex-1 text-[15px] leading-relaxed text-foreground/85">
-                  “{q.quote}”
-                </blockquote>
-                <figcaption className="mt-7 flex items-center gap-4 border-t border-border/60 pt-6">
-                  <span className="flex size-11 items-center justify-center rounded-full border border-brand-500/30 bg-brand-500/12 font-display text-[13px] font-bold text-brand-300">
-                    {q.initials}
-                  </span>
-                  <span>
-                    <span className="block text-sm font-semibold text-foreground">
-                      {q.name}
-                    </span>
-                    <span className="block text-[12.5px] text-muted-foreground">
-                      {q.org}
-                    </span>
-                  </span>
-                </figcaption>
-              </figure>
-            </RevealScale>
-          ))}
+        <div className="mt-14">
+          <TestimonialsGrid />
         </div>
       </div>
     </section>
