@@ -1,13 +1,20 @@
-import { BadgeCheck, Eye, Goal, Users } from "lucide-react";
+import {
+  Eye,
+  Goal,
+  Users,
+  BadgeCheck,
+  Layers,
+  LineChart,
+} from "lucide-react";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 import { AgmaMark } from "./logo";
 
 /**
- * The four About content elements required on the homepage.
- * Concise corporate copy — no excessive paragraphs.
+ * The four About content elements (shared by the homepage teaser and
+ * the /about page). Concise corporate copy — no excessive paragraphs.
  */
-const PILLARS = [
+export const PILLARS = [
   {
     icon: Users,
     title: "Who We Are",
@@ -27,6 +34,25 @@ const PILLARS = [
     icon: BadgeCheck,
     title: "Why AGMA TEC",
     text: "Because we own what we build. Proven products, expert implementation and continuous support come from one accountable team — not a chain of vendors.",
+  },
+];
+
+/** Enduring working principles — established AGMA TEC positioning. */
+export const VALUES = [
+  {
+    icon: Layers,
+    title: "Engineering depth",
+    text: "Senior architects and engineers on every engagement — no bait-and-switch staffing.",
+  },
+  {
+    icon: LineChart,
+    title: "Outcome obsession",
+    text: "We measure success in KPIs moved, not tickets closed. Every sprint maps to business value.",
+  },
+  {
+    icon: Users,
+    title: "True partnership",
+    text: "Your team works side-by-side with ours. Knowledge transfer is built into every delivery.",
   },
 ];
 

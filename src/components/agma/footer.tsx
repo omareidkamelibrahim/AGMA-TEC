@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 import {
   ArrowRight,
   Facebook,
@@ -17,19 +18,19 @@ const COLUMNS = [
   {
     title: "Company",
     links: [
-      { label: "About us", href: "#about" },
-      { label: "Our Products", href: "#products" },
-      { label: "Clients & Partners", href: "#clients" },
-      { label: "Contact", href: "#contact" },
+      { label: "About us", href: "/about" },
+      { label: "Our Products", href: "/products" },
+      { label: "Clients & Partners", href: "/clients" },
+      { label: "Contact", href: "/contact" },
     ],
   },
   {
     title: "Products",
     links: [
-      { label: "AGMA ERP", href: "#products" },
-      { label: "AGMA CAFM", href: "#products" },
-      { label: "AGMA CATERING", href: "#products" },
-      { label: "Request a Demo", href: "#contact" },
+      { label: "AGMA ERP", href: "/products/agma-erp" },
+      { label: "AGMA CAFM", href: "/products/agma-cafm" },
+      { label: "AGMA CATERING", href: "/products/agma-catering" },
+      { label: "Request a Demo", href: "/contact" },
     ],
   },
 ];
@@ -110,13 +111,13 @@ export function Footer() {
               <ul className="mt-6 space-y-3.5">
                 {col.links.map((l) => (
                   <li key={l.label}>
-                    <a
+                    <Link
                       href={l.href}
                       className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-brand-300"
                     >
                       <span className="h-px w-0 bg-brand-400 transition-all duration-300 group-hover:w-3" />
                       {l.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -174,12 +175,12 @@ export function Footer() {
             Solutions. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
-            <a href="#home" className="transition-colors hover:text-brand-300">
+            <Link href="/" className="transition-colors hover:text-brand-300">
               Privacy Policy
-            </a>
-            <a href="#home" className="transition-colors hover:text-brand-300">
+            </Link>
+            <Link href="/" className="transition-colors hover:text-brand-300">
               Terms of Service
-            </a>
+            </Link>
           </div>
         </div>
       </div>

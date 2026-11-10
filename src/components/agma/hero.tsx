@@ -1,46 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
   Blocks,
-  Boxes,
-  Building2,
   Sparkles,
-  UtensilsCrossed,
   Wrench,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AgmaMark } from "./logo";
 import { Reveal } from "./reveal";
+import { PRODUCTS } from "@/lib/products";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-/**
- * The three AGMA products — the company's own software line.
- * Real products only: no invented dashboards, KPIs or fake UI.
- */
-const SUITE = [
-  {
-    icon: Boxes,
-    name: "AGMA ERP",
-    full: "Enterprise Resource Planning",
-    scope: "Finance · HR · Inventory · Procurement",
-  },
-  {
-    icon: Building2,
-    name: "AGMA CAFM",
-    full: "Computer-Aided Facility Management",
-    scope: "Assets · Maintenance · Work Orders",
-  },
-  {
-    icon: UtensilsCrossed,
-    name: "AGMA CATERING",
-    full: "Catering Management System",
-    scope: "Meals · Kitchen · Orders",
-  },
-];
 
 function ProductSuite() {
   return (
@@ -70,33 +44,36 @@ function ProductSuite() {
 
         {/* products */}
         <div className="space-y-3 px-5 pt-5 pb-16 sm:px-6">
-          {SUITE.map((p, i) => (
+          {PRODUCTS.map((p, i) => (
             <motion.div
-              key={p.name}
+              key={p.slug}
               initial={{ opacity: 0, x: -16 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 + i * 0.16, duration: 0.6, ease: EASE }}
-              className="group flex items-center gap-4 rounded-xl border border-border/60 bg-ink-800/50 px-4 py-3.5 transition-colors duration-300 hover:border-brand-500/35 hover:bg-ink-700/60"
             >
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-brand-500/25 bg-brand-500/12 text-brand-300 transition-colors duration-300 group-hover:border-brand-400/50 group-hover:bg-brand-500/20">
-                <p.icon className="size-5.5" />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block font-display text-[15px] font-bold tracking-wide text-foreground">
-                  {p.name}
+              <Link
+                href={`/products/${p.slug}`}
+                className="group flex items-center gap-4 rounded-xl border border-border/60 bg-ink-800/50 px-4 py-3.5 transition-colors duration-300 hover:border-brand-500/35 hover:bg-ink-700/60"
+              >
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-brand-500/25 bg-brand-500/12 text-brand-300 transition-colors duration-300 group-hover:border-brand-400/50 group-hover:bg-brand-500/20">
+                  <p.icon className="size-5.5" />
                 </span>
-                <span className="block truncate text-[12px] text-muted-foreground">
-                  {p.full}
+                <span className="min-w-0 flex-1">
+                  <span className="block font-display text-[15px] font-bold tracking-wide text-foreground">
+                    {p.name}
+                  </span>
+                  <span className="block truncate text-[12px] text-muted-foreground">
+                    {p.full}
+                  </span>
+                  <span className="mt-0.5 block text-[11px] font-medium text-brand-300/80">
+                    {p.scope}
+                  </span>
                 </span>
-                <span className="mt-0.5 block text-[11px] font-medium text-brand-300/80">
-                  {p.scope}
-                </span>
-              </span>
-              <ArrowUpRight className="size-4 shrink-0 text-brand-400/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-300" />
+                <ArrowUpRight className="size-4 shrink-0 text-brand-400/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-300" />
+              </Link>
             </motion.div>
           ))}
         </div>
-
       </motion.div>
 
       {/* floating chips */}
@@ -185,10 +162,10 @@ export function Hero() {
                 size="lg"
                 className="group h-13 rounded-full bg-brand-600 px-7 text-[15px] font-semibold text-white shadow-[0_14px_44px_-10px_rgba(46,123,214,0.75)] transition-all hover:bg-brand-500 hover:shadow-[0_18px_54px_-10px_rgba(59,139,232,0.85)]"
               >
-                <a href="#products">
+                <Link href="/products">
                   Explore Our Solutions
                   <ArrowRight className="size-4.5 transition-transform duration-300 group-hover:translate-x-1" />
-                </a>
+                </Link>
               </Button>
               <Button
                 asChild
@@ -196,17 +173,22 @@ export function Hero() {
                 variant="outline"
                 className="h-13 rounded-full border-border bg-ink-800/40 px-7 text-[15px] font-medium text-foreground/90 hover:border-brand-500/40 hover:bg-ink-700/60 hover:text-foreground"
               >
-                <a href="#contact">Contact Us</a>
+                <Link href="/contact">Contact Us</Link>
               </Button>
             </div>
           </Reveal>
 
           <Reveal delay={0.42}>
             <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-[13px] text-muted-foreground">
-              {SUITE.map((p) => (
-                <li key={p.name} className="flex items-center gap-2">
+              {PRODUCTS.map((p) => (
+                <li key={p.slug} className="flex items-center gap-2">
                   <span className="size-1.5 rounded-full bg-brand-400" />
-                  <span className="font-medium text-foreground/80">{p.name}</span>
+                  <Link
+                    href={`/products/${p.slug}`}
+                    className="font-medium text-foreground/80 transition-colors hover:text-brand-300"
+                  >
+                    {p.name}
+                  </Link>
                 </li>
               ))}
             </ul>

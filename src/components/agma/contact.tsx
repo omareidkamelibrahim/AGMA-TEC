@@ -74,7 +74,7 @@ const INITIAL: FormState = {
   message: "",
 };
 
-export function Contact() {
+export function Contact({ heading = true }: { heading?: boolean }) {
   const [form, setForm] = useState<FormState>(INITIAL);
   const [submitting, setSubmitting] = useState(false);
 
@@ -120,22 +120,26 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative scroll-mt-24 border-t border-border/60 bg-ink-900/40 py-24 sm:py-32"
+      className={`relative scroll-mt-24 bg-ink-900/40 py-24 sm:py-32 ${
+        heading ? "border-t border-border/60" : ""
+      }`}
     >
       <div className="absolute inset-0 -z-10 bg-dots opacity-25" />
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
-        <SectionHeading
-          eyebrow="Get In Touch"
-          title={
-            <>
-              Tell us about your{" "}
-              <span className="text-gradient">next move.</span>
-            </>
-          }
-          description="A short conversation is enough to map the opportunity. No obligation, no jargon — just an expert assessment of your idea or challenge."
-        />
+        {heading && (
+          <SectionHeading
+            eyebrow="Get In Touch"
+            title={
+              <>
+                Tell us about your{" "}
+                <span className="text-gradient">next move.</span>
+              </>
+            }
+            description="A short conversation is enough to map the opportunity. No obligation, no jargon — just an expert assessment of your idea or challenge."
+          />
+        )}
 
-        <div className="mt-14 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
+        <div className={`grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14 ${heading ? "mt-14" : ""}`}>
           {/* Form */}
           <RevealScale>
             <form

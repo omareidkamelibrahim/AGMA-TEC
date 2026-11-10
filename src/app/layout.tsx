@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import { Navbar } from "@/components/agma/navbar";
+import { Footer } from "@/components/agma/footer";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -15,7 +17,10 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AGMA TEC — Enterprise Technology Solutions & Business Software",
+  title: {
+    default: "AGMA TEC — Enterprise Technology Solutions & Business Software",
+    template: "%s — AGMA TEC",
+  },
   description:
     "AGMA TEC delivers integrated enterprise technology solutions and its own software products — AGMA ERP, AGMA CAFM and AGMA CATERING — helping organizations streamline operations, improve efficiency and accelerate digital transformation.",
   keywords: [
@@ -58,7 +63,11 @@ export default function RootLayout({
       <body
         className={`${display.variable} ${sans.variable} antialiased bg-background text-foreground font-sans`}
       >
-        {children}
+        <div className="flex min-h-screen flex-col bg-ink-950">
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
         <Toaster
           theme="dark"
           position="bottom-right"
