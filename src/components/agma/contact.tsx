@@ -25,12 +25,11 @@ import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 
 const SERVICE_OPTIONS = [
+  "AGMA ERP",
+  "AGMA CAFM",
+  "AGMA CATERING",
   "Custom Software Development",
-  "Mobile Applications",
-  "Cloud & DevOps",
-  "Data & AI Solutions",
-  "UI/UX & Product Design",
-  "Digital Consulting",
+  "System Integration",
   "Not sure yet — advise me",
 ];
 

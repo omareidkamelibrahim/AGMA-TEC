@@ -18,19 +18,18 @@ const COLUMNS = [
     title: "Company",
     links: [
       { label: "About us", href: "#about" },
-      { label: "Our process", href: "#process" },
-      { label: "Selected work", href: "#work" },
+      { label: "Our Products", href: "#products" },
+      { label: "Clients & Partners", href: "#clients" },
       { label: "Contact", href: "#contact" },
     ],
   },
   {
-    title: "Services",
+    title: "Products",
     links: [
-      { label: "Custom Software", href: "#services" },
-      { label: "Mobile Applications", href: "#services" },
-      { label: "Cloud & DevOps", href: "#services" },
-      { label: "Data & AI Solutions", href: "#services" },
-      { label: "Digital Consulting", href: "#services" },
+      { label: "AGMA ERP", href: "#products" },
+      { label: "AGMA CAFM", href: "#products" },
+      { label: "AGMA CATERING", href: "#products" },
+      { label: "Request a Demo", href: "#contact" },
     ],
   },
 ];
@@ -80,9 +79,10 @@ export function Footer() {
           <div>
             <AgmaLogo showTagline />
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              AGMA TEC is a digital transformation company. We design, build
-              and scale the software, cloud and AI products that connect every
-              part of your business.
+              AGMA TEC is an enterprise technology solutions provider. We
+              develop our own integrated software products — AGMA ERP, AGMA
+              CAFM and AGMA CATERING — that help organizations streamline
+              operations and accelerate digital transformation.
             </p>
             <div className="mt-7 flex gap-3">
               {SOCIALS.map((s) => (
@@ -170,8 +170,8 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-border/60 pt-8 sm:flex-row">
           <p className="text-[13px] text-muted-foreground">
-            © {new Date().getFullYear()} AGMA TEC — Digital Transformation. All
-            rights reserved.
+            © {new Date().getFullYear()} AGMA TEC — Enterprise Technology
+            Solutions. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
             <a href="#home" className="transition-colors hover:text-brand-300">

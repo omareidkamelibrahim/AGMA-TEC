@@ -9,11 +9,10 @@ import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#services", label: "Services" },
-  { href: "#process", label: "Process" },
-  { href: "#work", label: "Work" },
-  { href: "#contact", label: "Contact" },
+  { href: "#about", label: "About Us" },
+  { href: "#products", label: "Our Products" },
+  { href: "#clients", label: "Clients & Partners" },
+  { href: "#contact", label: "Contact Us" },
 ];
 
 export function Navbar() {

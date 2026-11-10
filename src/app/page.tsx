@@ -1,11 +1,8 @@
 import { Navbar } from "@/components/agma/navbar";
 import { Hero } from "@/components/agma/hero";
-import { StatsBar } from "@/components/agma/stats-bar";
-import { TechMarquee } from "@/components/agma/tech-marquee";
 import { About } from "@/components/agma/about";
-import { Services } from "@/components/agma/services";
-import { Process } from "@/components/agma/process";
-import { Work } from "@/components/agma/work";
+import { Products } from "@/components/agma/products";
+import { Clients } from "@/components/agma/clients";
 import { Testimonials } from "@/components/agma/testimonials";
 import { CtaBand } from "@/components/agma/cta-band";
 import { Contact } from "@/components/agma/contact";
@@ -17,12 +14,9 @@ export default function Home() {
       <Navbar />
       <main className="flex-1">
         <Hero />
-        <StatsBar />
-        <TechMarquee />
         <About />
-        <Services />
-        <Process />
-        <Work />
+        <Products />
+        <Clients />
         <Testimonials />
         <CtaBand />
         <Contact />

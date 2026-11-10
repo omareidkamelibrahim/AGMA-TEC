@@ -15,25 +15,28 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AGMA TEC — Digital Transformation",
+  title: "AGMA TEC — Enterprise Technology Solutions & Business Software",
   description:
-    "AGMA TEC is a digital transformation company. We design, build and scale enterprise software, cloud platforms and data & AI products that connect every part of your business.",
+    "AGMA TEC delivers integrated enterprise technology solutions and its own software products — AGMA ERP, AGMA CAFM and AGMA CATERING — helping organizations streamline operations, improve efficiency and accelerate digital transformation.",
   keywords: [
     "AGMA TEC",
+    "Enterprise Technology Solutions",
+    "AGMA ERP",
+    "AGMA CAFM",
+    "AGMA CATERING",
+    "Enterprise Resource Planning",
+    "Facility Management Software",
+    "Catering Management System",
     "Digital Transformation",
-    "Software Development",
-    "Cloud",
-    "Data & AI",
-    "Enterprise Software",
   ],
   authors: [{ name: "AGMA TEC" }],
   icons: {
     icon: "/logo.svg",
   },
   openGraph: {
-    title: "AGMA TEC — Digital Transformation",
+    title: "AGMA TEC — Enterprise Technology Solutions",
     description:
-      "We build the software that transforms ambitious businesses.",
+      "Integrated enterprise solutions — AGMA ERP, AGMA CAFM and AGMA CATERING — developed, implemented and supported by AGMA TEC.",
     siteName: "AGMA TEC",
     type: "website",
   },

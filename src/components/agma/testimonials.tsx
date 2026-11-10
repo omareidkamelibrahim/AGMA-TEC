@@ -2,6 +2,11 @@ import { Quote } from "lucide-react";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 
+/**
+ * Existing project testimonials — anonymized by design (role + sector,
+ * no invented names, companies or logos). Add named, verified quotes
+ * here only when client approval exists.
+ */
 const QUOTES = [
   {
     quote:
@@ -28,17 +33,22 @@ const QUOTES = [
 
 export function Testimonials() {
   return (
-    <section className="relative py-24 sm:py-32" aria-label="Client testimonials">
+    <section
+      id="testimonials"
+      className="relative scroll-mt-24 border-t border-border/60 bg-ink-900/40 py-24 sm:py-32"
+      aria-label="Client testimonials"
+    >
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_90%_70%,rgba(22,51,91,0.35),transparent_70%)]" />
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <SectionHeading
-          eyebrow="Client Voices"
+          eyebrow="Client Testimonials"
           title={
             <>
-              Partnerships that outlast{" "}
-              <span className="text-gradient">the project.</span>
+              What Our Clients Say{" "}
+              <span className="text-gradient">About Us</span>
             </>
           }
+          description="Real experiences. Meaningful partnerships. Measurable business value."
         />
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">

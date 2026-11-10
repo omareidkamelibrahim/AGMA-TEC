@@ -19,13 +19,12 @@ export function CtaBand() {
               Ready when you are
             </p>
             <h2 className="mx-auto mt-5 max-w-2xl font-display text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-[2.6rem]">
-              Let&apos;s connect the next piece of your{" "}
-              <span className="text-gradient">digital future.</span>
+              Let&apos;s Build Something{" "}
+              <span className="text-gradient">Intelligent Together.</span>
             </h2>
             <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">
-              Tell us where your business is stuck — or where you want it to
-              go. We&apos;ll come back within one business day with an honest,
-              expert take.
+              Discover how AGMA TEC can help your organization improve
+              operations and achieve its digital transformation goals.
             </p>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
               <Button
@@ -34,7 +33,7 @@ export function CtaBand() {
                 className="group h-13 rounded-full bg-brand-600 px-8 text-[15px] font-semibold text-white shadow-[0_14px_44px_-10px_rgba(46,123,214,0.8)] hover:bg-brand-500"
               >
                 <a href="#contact">
-                  Get a Free Consultation
+                  Contact Our Team
                   <ArrowRight className="size-4.5 transition-transform duration-300 group-hover:translate-x-1" />
                 </a>
               </Button>
@@ -44,7 +43,7 @@ export function CtaBand() {
                 variant="outline"
                 className="h-13 rounded-full border-border bg-ink-900/50 px-8 text-[15px] font-medium text-foreground/90 hover:border-brand-500/40 hover:bg-ink-800/70"
               >
-                <a href="#services">See What We Do</a>
+                <a href="#products">Explore Our Solutions</a>
               </Button>
             </div>
           </div>

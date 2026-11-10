@@ -1,41 +1,32 @@
-import { Eye, Goal, Handshake, Layers, LineChart, Users } from "lucide-react";
-import { SectionHeading, BeadDots } from "./section-heading";
+import { BadgeCheck, Eye, Goal, Users } from "lucide-react";
+import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 import { AgmaMark } from "./logo";
 
+/**
+ * The four About content elements required on the homepage.
+ * Concise corporate copy — no excessive paragraphs.
+ */
 const PILLARS = [
+  {
+    icon: Users,
+    title: "Who We Are",
+    text: "AGMA TEC is an enterprise technology company specializing in integrated business management solutions. We develop our own line of software products and combine them with hands-on implementation expertise.",
+  },
   {
     icon: Goal,
     title: "Our Mission",
-    text: "To make enterprise-grade technology accessible to every ambitious organization — designing digital products that remove friction, unlock data and create measurable growth.",
+    text: "To simplify how organizations operate. We turn fragmented, manual processes into streamlined digital workflows that save time, reduce cost and give leadership full visibility over the business.",
   },
   {
     icon: Eye,
     title: "Our Vision",
-    text: "A world where every business, regardless of size, operates on connected, intelligent systems — where technology feels less like a tool and more like a competitive instinct.",
+    text: "To be the long-term technology partner organizations rely on — where every business runs on intelligent, connected systems and technology becomes a driver of continuous growth.",
   },
   {
-    icon: Handshake,
-    title: "Our Promise",
-    text: "We act as your long-term transformation partner, not a vendor. Transparent roadmaps, measurable outcomes and a team that treats your product like our own.",
-  },
-];
-
-const VALUES = [
-  {
-    icon: Layers,
-    title: "Engineering depth",
-    text: "Senior architects and engineers on every engagement — no bait-and-switch staffing.",
-  },
-  {
-    icon: LineChart,
-    title: "Outcome obsession",
-    text: "We measure success in KPIs moved, not tickets closed. Every sprint maps to business value.",
-  },
-  {
-    icon: Users,
-    title: "True partnership",
-    text: "Your team works side-by-side with ours. Knowledge transfer is built into every delivery.",
+    icon: BadgeCheck,
+    title: "Why AGMA TEC",
+    text: "Because we own what we build. Proven products, expert implementation and continuous support come from one accountable team — not a chain of vendors.",
   },
 ];
 
@@ -50,22 +41,21 @@ export function About() {
           <div className="lg:sticky lg:top-32">
             <SectionHeading
               align="left"
-              eyebrow="Who We Are"
+              eyebrow="About AGMA TEC"
               title={
                 <>
-                  A transformation partner{" "}
-                  <span className="text-gradient">built on connection.</span>
+                  Technology That{" "}
+                  <span className="text-gradient">Moves Businesses Forward.</span>
                 </>
               }
             />
             <Reveal delay={0.2}>
               <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
                 Like the six beads of our logo — separate nodes fused into one
-                stronger shape — AGMA TEC exists to connect the disconnected
-                parts of a business: people, processes, data and technology.
-                Founded by engineers and enterprise consultants, we deliver the
-                full transformation journey: strategy, design, engineering and
-                always-on operations.
+                stronger shape — AGMA TEC connects the disconnected parts of an
+                organization: people, processes, data and technology. Our
+                integrated solutions support the full operational core of a
+                business, from finance and HR to facilities and food services.
               </p>
             </Reveal>
             <Reveal delay={0.28}>
@@ -88,46 +78,23 @@ export function About() {
             </Reveal>
           </div>
 
-          {/* Right — pillars + values */}
-          <div className="space-y-5">
+          {/* Right — the four content elements */}
+          <div className="grid gap-5 sm:grid-cols-2">
             {PILLARS.map((p, i) => (
-              <RevealScale key={p.title} delay={i * 0.08}>
-                <article className="card-lift rounded-2xl border border-border bg-ink-850/85 p-7 sm:p-8">
-                  <div className="flex items-start gap-5">
-                    <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
-                      <p.icon className="size-6" />
-                    </span>
-                    <div>
-                      <h3 className="font-display text-xl font-semibold text-foreground">
-                        {p.title}
-                      </h3>
-                      <p className="mt-2.5 leading-relaxed text-muted-foreground">
-                        {p.text}
-                      </p>
-                    </div>
-                  </div>
+              <RevealScale key={p.title} delay={i * 0.08} className="h-full">
+                <article className="card-lift flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-7 sm:p-8">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+                    <p.icon className="size-6" />
+                  </span>
+                  <h3 className="mt-5 font-display text-xl font-semibold text-foreground">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
+                    {p.text}
+                  </p>
                 </article>
               </RevealScale>
             ))}
-
-            <Reveal delay={0.1}>
-              <div className="grid gap-5 pt-4 sm:grid-cols-3">
-                {VALUES.map((v) => (
-                  <div
-                    key={v.title}
-                    className="rounded-2xl border border-border/80 bg-ink-900/70 p-5"
-                  >
-                    <BeadDots className="mb-3" />
-                    <h4 className="font-display text-[15px] font-semibold text-foreground">
-                      {v.title}
-                    </h4>
-                    <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
-                      {v.text}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
           </div>
         </div>
       </div>
