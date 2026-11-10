@@ -10,17 +10,34 @@ import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 
 /**
- * Real team profiles. AGMA TEC does not publish invented people —
- * add named members only when approved names/photos exist.
- *
- * To publish a member:
- *   1. Drop the photo into /public/team/ (optional — an initials
- *      avatar is rendered automatically when no photo is given)
- *   2. Add an entry: { name: "Full Name", role: "Job title", photo: "/team/<file>.jpg" }
- * Member cards render automatically between the heading and the
- * discipline grid once an entry exists.
+ * Team profiles. The current photos in /public/team/ are AI-generated
+ * mock placeholders (requested for launch) — replace the files with real
+ * photos whenever ready, keeping the same file names and no code change
+ * is needed. An initials avatar is rendered automatically when a member
+ * has no photo.
  */
-const TEAM_MEMBERS: { name: string; role: string; photo?: string }[] = [];
+const TEAM_MEMBERS: { name: string; role: string; photo?: string }[] = [
+  {
+    name: "Eng. Adel Gamal",
+    role: "CEO",
+    photo: "/team/adel-gamal.jpg",
+  },
+  {
+    name: "Eng. Hassan Nafed",
+    role: "Software Engineer",
+    photo: "/team/hassan-nafed.jpg",
+  },
+  {
+    name: "Mr. Abdullah Saeed",
+    role: "Implementor",
+    photo: "/team/abdullah-saeed.jpg",
+  },
+  {
+    name: "Eng. Omar Eid",
+    role: "Software Engineer",
+    photo: "/team/omar-eid.jpg",
+  },
+];
 
 /** The disciplines every AGMA TEC engagement runs through — one team, end to end. */
 const DISCIPLINES = [
@@ -55,32 +72,36 @@ function initialsOf(name: string) {
     .join("");
 }
 
-/** Reusable member grid — renders only when real profiles exist. */
+/** Reusable member grid — renders only when profiles exist. */
 export function TeamGrid() {
   if (TEAM_MEMBERS.length === 0) return null;
   return (
     <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       {TEAM_MEMBERS.map((m, i) => (
         <RevealScale key={m.name} delay={i * 0.08} className="h-full">
-          <figure className="card-lift flex h-full flex-col items-center rounded-2xl border border-border bg-ink-850/85 p-7 text-center">
-            {m.photo ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={m.photo}
-                alt={m.name}
-                loading="lazy"
-                className="size-20 rounded-full border border-brand-500/30 object-cover"
-              />
-            ) : (
-              <span className="flex size-20 items-center justify-center rounded-full border border-brand-500/30 bg-brand-500/12 font-display text-xl font-bold text-brand-300">
-                {initialsOf(m.name)}
-              </span>
-            )}
-            <figcaption className="mt-5">
-              <span className="block font-display text-[15px] font-semibold text-foreground">
+          <figure className="card-lift group h-full overflow-hidden rounded-2xl border border-border bg-ink-850/85">
+            <div className="relative aspect-[4/5] overflow-hidden border-b border-border/60">
+              {m.photo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={m.photo}
+                  alt={`${m.name} — ${m.role} at AGMA TEC`}
+                  loading="lazy"
+                  className="size-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+                />
+              ) : (
+                <span className="flex size-full items-center justify-center bg-brand-500/10 font-display text-5xl font-bold text-brand-300">
+                  {initialsOf(m.name)}
+                </span>
+              )}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900/60 via-transparent to-transparent" />
+            </div>
+            <figcaption className="p-6 text-center">
+              <span className="block font-display text-[16px] font-semibold text-foreground">
                 {m.name}
               </span>
-              <span className="mt-1 block text-[13px] text-muted-foreground">
+              <span className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] text-brand-300">
+                <span className="size-1.5 rounded-full bg-brand-500" aria-hidden />
                 {m.role}
               </span>
             </figcaption>

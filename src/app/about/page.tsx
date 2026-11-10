@@ -5,6 +5,7 @@ import { PageHero } from "@/components/agma/page-hero";
 import { PILLARS, VALUES } from "@/components/agma/about";
 import { Reveal, RevealScale } from "@/components/agma/reveal";
 import { AgmaMark } from "@/components/agma/logo";
+import { Team } from "@/components/agma/team";
 import { CtaBand } from "@/components/agma/cta-band";
 import { PRODUCTS } from "@/lib/products";
 
@@ -132,6 +133,9 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Our team ──────────────────────────────────────────────── */}
+      <Team />
 
       {/* ── Products strip ────────────────────────────────────────── */}
       <section className="relative border-t border-border/60 bg-ink-900/40 py-20 sm:py-24">
