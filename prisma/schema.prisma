@@ -14,6 +14,7 @@ model ContactMessage {
   company   String?
   service   String?
   message   String
+  status    String   @default("New") // New | Handled
   createdAt DateTime @default(now())
 }
 
@@ -21,4 +22,114 @@ model NewsletterSubscriber {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
+}
+
+// ---------- Admin dashboard (HR suite) ----------
+
+model Employee {
+  id         String    @id @default(cuid())
+  empCode    String    @unique
+  name       String
+  department String
+  position   String
+  status     String // Active | Probation | Suspended | Terminated
+  hireDate   DateTime
+  manager    String?
+  idNumber   String? // ID / Iqama number
+  idExpiry   DateTime? // ID / Iqama expiry
+  email      String?
+  phone      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model LeaveRequest {
+  id           String   @id @default(cuid())
+  employeeName String
+  empCode      String
+  department   String
+  type         String // Annual | Sick | Unpaid | Emergency
+  fromDate     DateTime
+  toDate       DateTime
+  days         Int
+  status       String // Pending | Approved | Rejected
+  reason       String?
+  createdAt    DateTime @default(now())
+}
+
+model PayrollRun {
+  id         String   @id @default(cuid())
+  reference  String   @unique
+  period     String // e.g. 2026-01
+  employees  Int
+  gross      Float
+  deductions Float
+  net        Float
+  status     String // Draft | Processed | Paid
+  createdAt  DateTime @default(now())
+}
+
+model NumberingSeries {
+  id        String   @id @default(cuid())
+  document  String // e.g. HR_PAYROLL_RUN - Payroll run
+  prefix    String // e.g. PR-
+  padding   Int      @default(5)
+  dateToken String?
+  scope     String?
+  createdAt DateTime @default(now())
+}
+
+// ---------- Website content (managed from the admin dashboard) ----------
+
+model Product {
+  id               String   @id @default(cuid())
+  slug             String   @unique // URL segment, e.g. agma-erp
+  name             String   // e.g. AGMA ERP
+  fullName         String   // e.g. Enterprise Resource Planning
+  scope            String   // e.g. Finance · HR · Inventory · Procurement
+  description      String
+  capabilitiesJson String   @default("[]") // [{icon,label,text}]
+  outcomesJson     String   @default("[]") // string[]
+  icon             String   @default("Boxes") // lucide icon name via icon-map
+  accent           String   @default("from-brand-600") // gradient accent class
+  image            String   @default("") // /products/*.png
+  sortOrder        Int      @default(0)
+  published        Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Service {
+  id        String   @id @default(cuid())
+  title     String
+  text      String
+  tagsJson  String   @default("[]") // string[]
+  icon      String   @default("Code2") // lucide icon name via icon-map
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClientLogo {
+  id        String   @id @default(cuid())
+  name      String   // for alt text
+  kind      String   @default("client") // client | partner
+  imageUrl  String   // /clients/<file> — file must exist in /public
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  name      String   // role/title shown to visitors
+  org       String   // sector description, e.g. Regional retail group
+  initials  String   @default("")
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

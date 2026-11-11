@@ -1,17 +1,28 @@
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { SectionHeading, BeadDots } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
-import { AgmaMark } from "./logo";
-import { getSiblingProducts, type Product } from "@/lib/products";
+import type { Product } from "@/lib/products";
 
 /**
- * Shared body for the three product detail pages:
+ * Shared body for the product detail pages:
  * overview (outcomes + visual panel), capabilities grid,
  * ownership band and the rest of the suite.
  */
-export function ProductDetail({ product }: { product: Product }) {
-  const siblings = getSiblingProducts(product.slug);
+export function ProductDetail({
+  product,
+  siblings,
+}: {
+  product: Product;
+  siblings: Product[];
+}) {
+  /**
+   * Expressive overview visual — the product's card concept image,
+   * with a safe fallback to its wide-scene hero file when unset.
+   */
+  const visual =
+    product.image || `/products/${product.slug}-hero.png`;
 
   return (
     <>
@@ -47,37 +58,55 @@ export function ProductDetail({ product }: { product: Product }) {
             </Reveal>
           </div>
 
-          {/* Visual panel — brand iconography, no invented UI */}
+          {/* Expressive visual panel */}
           <RevealScale>
             <div
-              className={`relative overflow-hidden rounded-3xl border border-border bg-ink-850/85 p-10 sm:p-14`}
+              className={`group relative overflow-hidden rounded-3xl border border-border bg-ink-850/85`}
             >
-              <div className="absolute inset-0 bg-dots opacity-30" />
               <span
-                className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${product.accent} to-transparent`}
+                className={`absolute inset-x-0 top-0 z-20 h-1 bg-gradient-to-r ${product.accent} to-transparent`}
                 aria-hidden
               />
-              <AgmaMark className="absolute -bottom-8 -right-8 h-40 w-auto opacity-[0.06]" />
-              <div className="relative flex flex-col items-start gap-7">
-                <span className="flex size-20 items-center justify-center rounded-2xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
-                  <product.icon className="size-10" />
-                </span>
-                <div>
-                  <p className="font-display text-3xl font-bold tracking-wide text-foreground">
-                    {product.name}
-                  </p>
-                  <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-accent">
-                    {product.full}
-                  </p>
-                  <p className="mt-4 text-[13px] font-medium text-muted-foreground">
-                    {product.scope}
-                  </p>
+              <div className="relative aspect-[6/5]">
+                <Image
+                  src={visual}
+                  alt={`${product.name} — ${product.full} concept visual`}
+                  fill
+                  sizes="(min-width: 1024px) 45vw, 100vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                />
+                {/* per-product accent wash */}
+                <span
+                  className={`absolute inset-0 bg-gradient-to-tr ${product.accent} via-transparent to-transparent opacity-25`}
+                  aria-hidden
+                />
+                {/* blend the visual into the panel base (adapts to theme) */}
+                <span
+                  className="absolute inset-0 bg-gradient-to-t from-ink-850 via-ink-850/25 to-transparent"
+                  aria-hidden
+                />
+
+                <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-5 p-7 sm:p-10">
+                  <span className="flex size-16 items-center justify-center rounded-2xl border border-brand-500/40 bg-ink-850/85 text-brand-accent backdrop-blur-md">
+                    <product.icon className="size-8" />
+                  </span>
+                  <div>
+                    <p className="font-display text-3xl font-bold tracking-wide text-foreground">
+                      {product.name}
+                    </p>
+                    <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-accent">
+                      {product.full}
+                    </p>
+                    <p className="mt-3 text-[13px] font-medium text-muted-foreground">
+                      {product.scope}
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5" aria-hidden>
+                    <span className="h-1.5 w-1.5 rounded-full bg-brand-700" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-brand-300" />
+                  </span>
                 </div>
-                <span className="inline-flex items-center gap-1.5" aria-hidden>
-                  <span className="h-1.5 w-1.5 rounded-full bg-brand-700" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-brand-300" />
-                </span>
               </div>
             </div>
           </RevealScale>

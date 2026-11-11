@@ -2,11 +2,23 @@
 
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes";
 import { Toaster } from "sonner";
+import { useSyncExternalStore } from "react";
+
+const emptySubscribe = () => () => {};
 
 /** Toaster that follows the active color theme (dark styles unchanged). */
 function ThemedToaster() {
   const { resolvedTheme } = useTheme();
-  const light = resolvedTheme === "light";
+
+  // Hydration-safe: the stored theme is only known client-side, so the first
+  // render must be deterministic ("dark") and the real theme applied after
+  // mount — otherwise light-theme users get a server/client attribute mismatch.
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+  const light = mounted && resolvedTheme === "light";
   return (
     <Toaster
       theme={light ? "light" : "dark"}

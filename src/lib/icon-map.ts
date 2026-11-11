@@ -1,0 +1,96 @@
+import type { LucideIcon } from "lucide-react";
+import {
+  BarChart3,
+  Boxes,
+  BrainCircuit,
+  Building,
+  Building2,
+  CalendarCheck,
+  Calculator,
+  ChefHat,
+  ClipboardList,
+  CloudLightning,
+  Code2,
+  Cog,
+  Compass,
+  CookingPot,
+  Database,
+  FileText,
+  Gauge,
+  Globe,
+  Handshake,
+  Headphones,
+  Layers,
+  LifeBuoy,
+  LineChart,
+  Lock,
+  MessageSquare,
+  MonitorSmartphone,
+  PenTool,
+  Rocket,
+  Server,
+  Shield,
+  ShoppingBag,
+  ShoppingCart,
+  Smartphone,
+  Target,
+  Users,
+  Workflow,
+  Wrench,
+  UtensilsCrossed,
+  Zap,
+} from "lucide-react";
+
+/**
+ * DB-stored website content references icons by name (Prisma can't hold
+ * components). This is the curated allowlist the admin editor offers and
+ * the renderer resolves against — unknown names fall back to Boxes.
+ */
+export const ICON_MAP: Record<string, LucideIcon> = {
+  BarChart3,
+  Boxes,
+  BrainCircuit,
+  Building,
+  Building2,
+  Calculator,
+  CalendarCheck,
+  ChefHat,
+  ClipboardList,
+  CloudLightning,
+  Code2,
+  Cog,
+  Compass,
+  CookingPot,
+  Database,
+  FileText,
+  Gauge,
+  Globe,
+  Handshake,
+  Headphones,
+  Layers,
+  LifeBuoy,
+  LineChart,
+  Lock,
+  MessageSquare,
+  MonitorSmartphone,
+  PenTool,
+  Rocket,
+  Server,
+  Shield,
+  ShoppingBag,
+  ShoppingCart,
+  Smartphone,
+  Target,
+  Users,
+  UtensilsCrossed,
+  Workflow,
+  Wrench,
+  Zap,
+};
+
+export function iconFromName(name: string): LucideIcon {
+  return ICON_MAP[name] ?? Boxes;
+}
+
+/** Sorted names for the admin icon picker. */
+export const ICON_NAMES = Object.keys(ICON_MAP).sort();

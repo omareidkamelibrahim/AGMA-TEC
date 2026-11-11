@@ -1,44 +1,19 @@
-import { Quote } from "lucide-react";
+import { Quote as QuoteIcon } from "lucide-react";
 import { SectionHeading } from "./section-heading";
-import { Reveal, RevealScale } from "./reveal";
+import { RevealScale } from "./reveal";
+import { TestimonialsCarousel } from "./testimonial-carousel";
+import { getTestimonials } from "@/lib/site-content";
+import type { Quote } from "./testimonials-data";
 
-/**
- * Existing project testimonials — anonymized by design (role + sector,
- * no invented names, companies or logos). Add named, verified quotes
- * here only when client approval exists.
- */
-const QUOTES = [
-  {
-    quote:
-      "AGMA TEC didn't just deliver a platform — they restructured how our teams work. The roadmap was honest, the demos were on time, and the results showed up in our P&L within two quarters.",
-    name: "Managing Director",
-    org: "Regional retail group",
-    initials: "MD",
-  },
-  {
-    quote:
-      "We had five disconnected systems and zero visibility. Six months later we run our entire operation from one dashboard. Their engineers felt like part of our own team.",
-    name: "Chief Operating Officer",
-    org: "Logistics provider",
-    initials: "CO",
-  },
-  {
-    quote:
-      "The migration was flawless — zero unplanned downtime across all facilities. What impressed us most was the knowledge transfer; our staff now own the system completely.",
-    name: "Head of IT",
-    org: "Manufacturing group",
-    initials: "HI",
-  },
-];
-
-/** Reusable card grid — homepage and /clients page. */
-export function TestimonialsGrid() {
+/** Reusable card grid — homepage and /clients page. DB-backed. */
+export async function TestimonialsGrid() {
+  const quotes = await getTestimonials();
   return (
     <div className="grid gap-6 lg:grid-cols-3">
-      {QUOTES.map((q, i) => (
+      {quotes.map((q, i) => (
         <RevealScale key={q.name + i} delay={i * 0.1} className="h-full">
           <figure className="card-lift relative flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-8">
-            <Quote className="size-7 text-brand-500/60" />
+            <QuoteIcon className="size-7 text-brand-500/60" />
             <blockquote className="mt-5 flex-1 text-[15px] leading-relaxed text-foreground/85">
               “{q.quote}”
             </blockquote>
@@ -62,7 +37,8 @@ export function TestimonialsGrid() {
   );
 }
 
-export function Testimonials() {
+export async function Testimonials() {
+  const quotes: Quote[] = await getTestimonials();
   return (
     <section
       id="testimonials"
@@ -83,7 +59,7 @@ export function Testimonials() {
         />
 
         <div className="mt-14">
-          <TestimonialsGrid />
+          <TestimonialsCarousel quotes={quotes} />
         </div>
       </div>
     </section>

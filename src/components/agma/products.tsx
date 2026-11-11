@@ -1,14 +1,16 @@
 import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
-import { PRODUCTS } from "@/lib/products";
+import { getProducts } from "@/lib/site-content";
 
 /**
- * Homepage showcase for the three core AGMA products.
+ * Homepage showcase for the AGMA products (DB-managed from the dashboard).
  * Cards link to their dedicated product pages.
  */
-export function Products() {
+export async function Products() {
+  const products = await getProducts();
   return (
     <section
       id="products"
@@ -28,7 +30,7 @@ export function Products() {
         />
 
         <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {PRODUCTS.map((p, i) => (
+          {products.map((p, i) => (
             <RevealScale key={p.slug} delay={i * 0.1} className="h-full">
               <article className="card-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-ink-850/85">
                 {/* per-product brand accent line */}
@@ -37,19 +39,38 @@ export function Products() {
                   aria-hidden
                 />
 
+                {/* expressive concept visual */}
+                <div className="relative h-44 shrink-0 overflow-hidden sm:h-48">
+                  <Image
+                    src={p.image}
+                    alt={`${p.name} — ${p.full} concept visual`}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                  {/* per-product accent wash */}
+                  <span
+                    className={`absolute inset-0 bg-gradient-to-tr ${p.accent} via-transparent to-transparent opacity-25`}
+                    aria-hidden
+                  />
+                  {/* blend the visual into the card body (adapts to theme via ink-850) */}
+                  <span
+                    className="absolute inset-0 bg-gradient-to-t from-ink-850 via-ink-850/20 to-transparent"
+                    aria-hidden
+                  />
+                  <span
+                    className="absolute right-5 top-4 select-none font-display text-4xl font-bold leading-none text-white/30 drop-shadow-md"
+                    aria-hidden
+                  >
+                    {p.index}
+                  </span>
+                </div>
+
                 <div className="flex flex-1 flex-col p-7 sm:p-8">
-                  {/* icon + index */}
-                  <div className="flex items-start justify-between">
-                    <span className="flex size-13 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent transition-colors duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500 light:hover:bg-brand-700/20 group-hover:text-brand-accent-bright">
-                      <p.icon className="size-6.5" />
-                    </span>
-                    <span
-                      className="select-none font-display text-5xl font-bold leading-none text-brand-500/10 transition-colors duration-500 group-hover:text-brand-500/20"
-                      aria-hidden
-                    >
-                      {p.index}
-                    </span>
-                  </div>
+                  {/* icon straddling the visual seam */}
+                  <span className="relative z-10 -mt-14 flex size-13 items-center justify-center rounded-xl border border-brand-500/40 bg-ink-850/90 backdrop-blur-md text-brand-accent transition-colors duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500 light:hover:bg-brand-700/20 group-hover:text-brand-accent-bright">
+                    <p.icon className="size-6.5" />
+                  </span>
 
                   <h3 className="mt-6 font-display text-2xl font-bold tracking-wide text-foreground">
                     {p.name}
