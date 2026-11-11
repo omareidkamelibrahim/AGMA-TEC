@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -77,9 +77,22 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+const emptySubscribe = () => () => {};
+
 function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
-  const light = resolvedTheme === "light";
+
+  // Hydration-safe: `false` on the server snapshot and during hydration,
+  // `true` after mount. The stored theme is only known client-side, so the
+  // first render must be deterministic (sun icon, "switch to light") and
+  // the real state applied in a post-hydration re-render — no mismatch.
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+  const light = mounted && resolvedTheme === "light";
+
   return (
     <button
       type="button"
