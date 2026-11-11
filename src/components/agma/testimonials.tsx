@@ -1,13 +1,14 @@
 import { Quote } from "lucide-react";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
+import { TestimonialsCarousel } from "./testimonial-carousel";
 
 /**
  * Existing project testimonials — anonymized by design (role + sector,
  * no invented names, companies or logos). Add named, verified quotes
  * here only when client approval exists.
  */
-const QUOTES = [
+export const QUOTES = [
   {
     quote:
       "AGMA TEC didn't just deliver a platform — they restructured how our teams work. The roadmap was honest, the demos were on time, and the results showed up in our P&L within two quarters.",
@@ -83,7 +84,7 @@ export function Testimonials() {
         />
 
         <div className="mt-14">
-          <TestimonialsGrid />
+          <TestimonialsCarousel quotes={QUOTES} />
         </div>
       </div>
     </section>
