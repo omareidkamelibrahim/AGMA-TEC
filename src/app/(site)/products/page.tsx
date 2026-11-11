@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { ArrowUpRight } from "lucide-react";
 import { PageHero } from "@/components/agma/page-hero";
 import { Reveal, RevealScale } from "@/components/agma/reveal";
@@ -8,6 +11,20 @@ import { getProducts } from "@/lib/site-content";
 
 // Products are DB-managed from the admin dashboard.
 export const dynamic = "force-dynamic";
+
+/**
+ * Wide-scene hero visual per product (public/products/{slug}-hero.png).
+ * Falls back to the product's card visual when no hero file exists,
+ * so products added later from the dashboard still render correctly.
+ */
+function heroFor(slug: string, fallback: string): string {
+  try {
+    const file = path.join(process.cwd(), "public", "products", `${slug}-hero.png`);
+    return existsSync(file) ? `/products/${slug}-hero.png` : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export const metadata: Metadata = {
   title: "Our Products & Solutions",
@@ -38,34 +55,55 @@ export default async function ProductsPage() {
               key={p.slug}
               className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16"
             >
-              {/* Visual panel */}
+              {/* Expressive visual panel */}
               <RevealScale className={i % 2 === 1 ? "lg:order-2" : ""}>
-                <div className="relative overflow-hidden rounded-3xl border border-border bg-ink-850/85 p-10 sm:p-14">
-                  <div className="absolute inset-0 bg-dots opacity-30" />
+                <div className="group relative overflow-hidden rounded-3xl border border-border bg-ink-850/85">
                   <span
-                    className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${p.accent} to-transparent`}
+                    className={`absolute inset-x-0 top-0 z-20 h-1 bg-gradient-to-r ${p.accent} to-transparent`}
                     aria-hidden
                   />
-                  <span
-                    className="absolute -bottom-10 -right-6 select-none font-display text-[10rem] font-bold leading-none text-brand-500/[0.07]"
-                    aria-hidden
-                  >
-                    {p.index}
-                  </span>
-                  <div className="relative flex flex-col items-start gap-7">
-                    <span className="flex size-20 items-center justify-center rounded-2xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
-                      <p.icon className="size-10" />
+                  <div className="relative aspect-[4/3] sm:aspect-[16/10]">
+                    <Image
+                      src={heroFor(p.slug, p.image)}
+                      alt={`${p.name} — ${p.full} concept visual`}
+                      fill
+                      priority={i === 0}
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    />
+                    {/* per-product accent wash */}
+                    <span
+                      className={`absolute inset-0 bg-gradient-to-tr ${p.accent} via-transparent to-transparent opacity-25`}
+                      aria-hidden
+                    />
+                    {/* blend the visual into the panel base (adapts to theme) */}
+                    <span
+                      className="absolute inset-0 bg-gradient-to-t from-ink-850 via-ink-850/25 to-transparent"
+                      aria-hidden
+                    />
+                    <span
+                      className="absolute right-6 top-5 select-none font-display text-6xl font-bold leading-none text-white/30 drop-shadow-md"
+                      aria-hidden
+                    >
+                      {p.index}
                     </span>
-                    <div>
-                      <p className="font-display text-3xl font-bold tracking-wide text-foreground">
-                        {p.name}
-                      </p>
-                      <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-accent">
-                        {p.full}
-                      </p>
-                      <p className="mt-4 text-[13px] font-medium text-muted-foreground">
-                        {p.scope}
-                      </p>
+
+                    {/* product identity anchored on the visual */}
+                    <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-5 p-7 sm:p-10">
+                      <span className="flex size-16 items-center justify-center rounded-2xl border border-brand-500/40 bg-ink-850/85 text-brand-accent backdrop-blur-md">
+                        <p.icon className="size-8" />
+                      </span>
+                      <div>
+                        <p className="font-display text-3xl font-bold tracking-wide text-foreground">
+                          {p.name}
+                        </p>
+                        <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-accent">
+                          {p.full}
+                        </p>
+                        <p className="mt-3 text-[13px] font-medium text-muted-foreground">
+                          {p.scope}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
