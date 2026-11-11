@@ -177,7 +177,7 @@ export function PayrollBars({
   return (
     <div className="h-[172px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 8, right: 0, bottom: 0, left: -14 }}>
+        <BarChart data={data} margin={{ top: 8, right: 0, bottom: 0, left: 0 }}>
           <defs>
             <linearGradient id="payFill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#5fa9f2" />
@@ -190,7 +190,7 @@ export function PayrollBars({
             tickLine={false}
             axisLine={false}
             tick={AXIS_TICK}
-            width={44}
+            width={52}
             tickFormatter={(v: number) => (v >= 1_000_000 ? `${(v / 1_000_000).toFixed(1)}M` : v >= 1_000 ? `${Math.round(v / 1_000)}K` : String(v))}
           />
           <Tooltip

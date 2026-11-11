@@ -137,6 +137,11 @@ function UserChip() {
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   return (
     <div className="flex min-h-screen bg-ink-900/40">
@@ -170,28 +175,39 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         {/* topbar */}
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-md sm:px-6">
           <div className="flex items-center gap-3">
-            {/* mobile nav */}
-            <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger
-                aria-label="Open navigation"
-                className="flex size-9 items-center justify-center rounded-lg border border-border bg-ink-850/70 text-muted-foreground transition-colors hover:text-foreground lg:hidden"
-              >
-                <Menu className="size-4.5" />
-              </SheetTrigger>
-              <SheetContent side="left" className="w-72 border-border bg-ink-950 p-5 [&>button]:text-muted-foreground">
-                <SheetTitle className="sr-only">Admin navigation</SheetTitle>
-                <Brand />
-                <div className="mt-8">
-                  <NavLinks onNavigate={() => setOpen(false)} />
-                </div>
-                <Link
-                  href="/"
-                  className="mt-8 inline-flex text-[12.5px] font-medium text-brand-accent hover:text-brand-accent-bright"
+            {/* mobile nav — mount-gated: Radix derives aria-controls ids from
+                useId, whose tree position differs between the SSR pass and
+                client hydration (Next 16 dev), producing a hydration mismatch.
+                Rendering the Sheet client-side only, behind a same-size
+                placeholder, removes the mismatch with zero layout shift. */}
+            {mounted ? (
+              <Sheet open={open} onOpenChange={setOpen}>
+                <SheetTrigger
+                  aria-label="Open navigation"
+                  className="flex size-9 items-center justify-center rounded-lg border border-border bg-ink-850/70 text-muted-foreground transition-colors hover:text-foreground lg:hidden"
                 >
-                  Back to website →
-                </Link>
-              </SheetContent>
-            </Sheet>
+                  <Menu className="size-4.5" />
+                </SheetTrigger>
+                <SheetContent side="left" className="w-72 border-border bg-ink-950 p-5 [&>button]:text-muted-foreground">
+                  <SheetTitle className="sr-only">Admin navigation</SheetTitle>
+                  <Brand />
+                  <div className="mt-8">
+                    <NavLinks onNavigate={() => setOpen(false)} />
+                  </div>
+                  <Link
+                    href="/"
+                    className="mt-8 inline-flex text-[12.5px] font-medium text-brand-accent hover:text-brand-accent-bright"
+                  >
+                    Back to website →
+                  </Link>
+                </SheetContent>
+              </Sheet>
+            ) : (
+              <div
+                aria-hidden
+                className="size-9 shrink-0 rounded-lg border border-border bg-ink-850/70 lg:hidden"
+              />
+            )}
             <Badge
               variant="outline"
               className="hidden border-brand-500/30 bg-brand-500/10 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-brand-accent sm:inline-flex"
