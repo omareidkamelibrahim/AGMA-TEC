@@ -289,3 +289,120 @@ html.light {
     animation-play-state: paused;
   }
 }
+
+/* ─── Hero "Digital Ecosystem" visual — theme-adaptive tokens ────────────
+   Dark values preserve the existing deep-navy identity exactly;
+   light values resolve to the logo beads for the Cloud Blue theme. */
+:root {
+  --eco-line: rgba(95, 169, 242, 0.3);
+  --eco-line-soft: rgba(122, 164, 224, 0.2);
+  --eco-node: #5fa9f2;
+  --eco-node-fill: #0d1b30;
+  --eco-glass-border: rgba(122, 164, 224, 0.22);
+  --eco-core-face: rgba(23, 45, 78, 0.74);
+  --eco-core-face-2: rgba(13, 27, 48, 0.42);
+  --eco-orb: #3b8be8;
+  --eco-orb-inner: #bfd7f2;
+  --eco-particle: #8fbaef;
+  --eco-bead-1: #5fa9f2;
+  --eco-bead-2: #2e6bc4;
+  --eco-bead-3: #234a85;
+}
+
+html.light {
+  --eco-line: rgba(12, 76, 151, 0.32);
+  --eco-line-soft: rgba(12, 76, 151, 0.2);
+  --eco-node: #1a51a0;
+  --eco-node-fill: #ffffff;
+  --eco-glass-border: rgba(12, 76, 151, 0.18);
+  --eco-core-face: rgba(255, 255, 255, 0.8);
+  --eco-core-face-2: rgba(219, 233, 248, 0.45);
+  --eco-orb: #1a51a0;
+  --eco-orb-inner: #9cc4f1;
+  --eco-particle: #0c4c97;
+  --eco-bead-1: #1a51a0;
+  --eco-bead-2: #0c4c97;
+  --eco-bead-3: #16407b;
+}
+
+.eco-stroke-line { stroke: var(--eco-line); }
+.eco-stroke-soft { stroke: var(--eco-line-soft); }
+.eco-fill-node { fill: var(--eco-node); }
+.eco-fill-particle { fill: var(--eco-particle); }
+.eco-fill-face { fill: var(--eco-core-face); }
+.eco-fill-face-2 { fill: var(--eco-core-face-2); }
+.eco-fill-orb { fill: var(--eco-orb); }
+.eco-fill-orb-inner { fill: var(--eco-orb-inner); }
+.eco-stop-orb { stop-color: var(--eco-orb); }
+.eco-stop-orb-inner { stop-color: var(--eco-orb-inner); }
+.eco-chip { border: 1px solid var(--eco-glass-border); }
+
+/* Conic light-sweep riding the core's outer ring */
+.eco-conic {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 295deg,
+    var(--eco-line) 330deg,
+    transparent 360deg
+  );
+  -webkit-mask-image: radial-gradient(closest-side, transparent 36.5%, black 38.5%, black 44.5%, transparent 46.5%);
+  mask-image: radial-gradient(closest-side, transparent 36.5%, black 38.5%, black 44.5%, transparent 46.5%);
+  animation: eco-conic-rot 16s linear infinite;
+}
+@keyframes eco-conic-rot {
+  to { transform: rotate(1turn); }
+}
+
+/* Network node glow pulses */
+@keyframes eco-pulse {
+  0%, 100% { opacity: 0.22; transform: scale(1); }
+  50% { opacity: 0.62; transform: scale(1.32); }
+}
+.eco-pulse {
+  animation: eco-pulse 3.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Hex faces breathe with a barely-there sway */
+@keyframes eco-sway {
+  from { transform: rotate(-3deg); }
+  to { transform: rotate(3deg); }
+}
+.eco-sway {
+  animation: eco-sway 12s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Logo beads bob gently above the core */
+@keyframes eco-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4.5px); }
+}
+.eco-bob { animation: eco-bob 5.5s ease-in-out infinite; }
+
+/* Analytics bars in the floating chip */
+@keyframes eco-bars {
+  0%, 100% { transform: scaleY(0.38); }
+  50% { transform: scaleY(1); }
+}
+.eco-bar {
+  animation: eco-bars 2.8s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+/* Pause everything when the visual leaves the viewport */
+[data-eco-paused="true"] .eco-anim,
+[data-eco-paused="true"] .eco-anim * {
+  animation-play-state: paused !important;
+}
+
+/* Respect reduced-motion: full static composition, nothing loops */
+@media (prefers-reduced-motion: reduce) {
+  .eco-anim,
+  .eco-anim * {
+    animation: none !important;
+  }
+}

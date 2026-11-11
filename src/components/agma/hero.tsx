@@ -1,122 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Blocks,
-  Sparkles,
-  Wrench,
-} from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AgmaMark } from "./logo";
 import { Reveal } from "./reveal";
+import { EcosystemVisual } from "./ecosystem-visual";
 import { PRODUCTS } from "@/lib/products";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-function ProductSuite() {
-  return (
-    <div className="relative" aria-label="AGMA product suite">
-      {/* glow */}
-      <div className="absolute -inset-8 -z-10 rounded-[2.5rem] bg-[radial-gradient(60%_60%_at_60%_35%,rgba(46,123,214,0.28),transparent_70%)] blur-2xl" />
-
-      <motion.div
-        initial={{ opacity: 0, y: 34, rotateX: 10 }}
-        animate={{ opacity: 1, y: 0, rotateX: 0 }}
-        transition={{ duration: 1.1, delay: 0.35, ease: EASE }}
-        className="overflow-hidden rounded-2xl border border-brand-500/20 bg-ink-850/90 shadow-[0_40px_120px_-30px_rgba(2,8,20,0.9),0_0_0_1px_rgba(95,169,242,0.06)] light:shadow-[0_40px_120px_-30px_rgba(12,76,151,0.18),0_0_0_1px_rgba(12,76,151,0.08)] backdrop-blur-xl"
-      >
-        {/* header */}
-        <div className="flex items-center justify-between border-b border-border/70 bg-ink-800/60 px-5 py-3.5 sm:px-6">
-          <div className="flex items-center gap-2.5">
-            <AgmaMark className="h-5 w-auto" />
-            <span className="font-display text-[13px] font-semibold tracking-wide text-foreground/90">
-              AGMA Product Suite
-            </span>
-          </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-accent">
-            <span className="size-1.5 animate-pulse-soft rounded-full bg-brand-400" />
-            Own Technology
-          </span>
-        </div>
-
-        {/* products */}
-        <div className="space-y-3 px-5 pt-5 pb-16 sm:px-6">
-          {PRODUCTS.map((p, i) => (
-            <motion.div
-              key={p.slug}
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 + i * 0.16, duration: 0.6, ease: EASE }}
-            >
-              <Link
-                href={`/products/${p.slug}`}
-                className="group flex items-center gap-4 rounded-xl border border-border/60 bg-ink-800/50 px-4 py-3.5 transition-colors duration-300 hover:border-brand-500/35 hover:bg-ink-700/60"
-              >
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-brand-500/25 bg-brand-500/12 text-brand-accent transition-colors duration-300 group-hover:border-brand-400/50 group-hover:bg-brand-500 light:hover:bg-brand-700/20">
-                  <p.icon className="size-5.5" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-display text-[15px] font-bold tracking-wide text-foreground">
-                    {p.name}
-                  </span>
-                  <span className="block truncate text-[12px] text-muted-foreground">
-                    {p.full}
-                  </span>
-                  <span className="mt-0.5 block text-[11px] font-medium text-brand-accent/80">
-                    {p.scope}
-                  </span>
-                </span>
-                <ArrowUpRight className="size-4 shrink-0 text-brand-400/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-accent" />
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* floating chips */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5, duration: 0.7, ease: EASE }}
-        className="absolute -bottom-7 -left-6 hidden animate-float-y items-center gap-2.5 rounded-xl border border-border/80 bg-ink-800/90 px-4 py-3 shadow-xl backdrop-blur-md sm:flex lg:-left-8"
-      >
-        <span className="flex size-9 items-center justify-center rounded-lg bg-brand-500/15 text-brand-accent">
-          <Blocks className="size-5" />
-        </span>
-        <span>
-          <span className="block text-[13px] font-semibold text-foreground">
-            Integrated by design
-          </span>
-          <span className="block text-[11px] text-muted-foreground">
-            solutions that work as one
-          </span>
-        </span>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.7, duration: 0.7, ease: EASE }}
-        className="absolute -bottom-6 right-2 hidden animate-float-y-slow items-center gap-2.5 rounded-xl border border-border/80 bg-ink-800/90 px-4 py-3 shadow-xl backdrop-blur-md sm:flex lg:-right-6"
-      >
-        <span className="flex size-9 items-center justify-center rounded-lg bg-brand-500/15 text-brand-accent">
-          <Wrench className="size-5" />
-        </span>
-        <span>
-          <span className="block text-[13px] font-semibold text-foreground">
-            End-to-end delivery
-          </span>
-          <span className="block text-[11px] text-muted-foreground">
-            implementation &amp; support
-          </span>
-        </span>
-      </motion.div>
-    </div>
-  );
-}
 
 export function Hero() {
   return (
@@ -195,7 +85,7 @@ export function Hero() {
           </Reveal>
         </div>
 
-        <ProductSuite />
+        <EcosystemVisual />
       </div>
     </section>
   );
