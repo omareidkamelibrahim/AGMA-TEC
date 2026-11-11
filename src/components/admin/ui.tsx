@@ -4,6 +4,9 @@ import { cn } from "@/lib/utils";
 import {
   ChevronLeft,
   ChevronRight,
+  Minus,
+  TrendingDown,
+  TrendingUp,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,18 +40,65 @@ export function PageHeader({
 
 /* ---------- Stat card ---------- */
 
+const TONE_STROKE: Record<string, string> = {
+  brand: "#5fa9f2",
+  success: "#10b981",
+  warning: "#f59e0b",
+  danger: "#ef4444",
+  neutral: "#64748b",
+};
+
+/** Compact inline sparkline (pure SVG — no chart lib overhead). */
+function Sparkline({ points, tone }: { points: number[]; tone: string }) {
+  if (points.length < 2) return null;
+  const W = 72;
+  const H = 26;
+  const min = Math.min(...points);
+  const max = Math.max(...points);
+  const span = max - min || 1;
+  const step = W / (points.length - 1);
+  const coords = points.map((v, i) => {
+    const x = i * step;
+    const y = H - 3 - ((v - min) / span) * (H - 6);
+    return [x, y] as const;
+  });
+  const line = coords.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+  const area = `${line} L${W},${H} L0,${H} Z`;
+  const stroke = TONE_STROKE[tone] ?? TONE_STROKE.brand;
+  const id = `spark-${tone}-${points.length}-${Math.round(max)}`;
+  return (
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} aria-hidden className="shrink-0 overflow-visible">
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={stroke} stopOpacity="0.28" />
+          <stop offset="100%" stopColor={stroke} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill={`url(#${id})`} />
+      <path d={line} fill="none" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={coords[coords.length - 1][0]} cy={coords[coords.length - 1][1]} r="2.2" fill={stroke} />
+    </svg>
+  );
+}
+
 export function StatCard({
   label,
   value,
   icon: Icon,
   tone = "brand",
   hint,
+  delta,
+  spark,
 }: {
   label: string;
   value: number | string;
   icon: LucideIcon;
   tone?: "brand" | "success" | "warning" | "danger" | "neutral";
   hint?: string;
+  /** Trend chip, e.g. hires momentum vs the previous period. */
+  delta?: { text: string; dir: "up" | "down" | "flat" };
+  /** Optional sparkline series (oldest → newest). */
+  spark?: number[];
 }) {
   const tones: Record<string, string> = {
     brand: "border-brand-500/25 bg-brand-500/10 text-brand-accent-bright",
@@ -57,6 +107,12 @@ export function StatCard({
     danger: "border-red-500/25 bg-red-500/10 text-red-500",
     neutral: "border-border bg-ink-800/60 text-muted-foreground",
   };
+  const deltaStyles: Record<string, string> = {
+    up: "border-emerald-500/30 bg-emerald-500/10 text-emerald-500",
+    down: "border-red-500/30 bg-red-500/10 text-red-500",
+    flat: "border-border bg-ink-800/60 text-muted-foreground",
+  };
+  const DeltaIcon = delta?.dir === "up" ? TrendingUp : delta?.dir === "down" ? TrendingDown : Minus;
   return (
     <div className="card-lift rounded-2xl border border-border bg-ink-850/85 p-5">
       <div className="flex items-center justify-between gap-3">
@@ -67,10 +123,28 @@ export function StatCard({
           <Icon className="size-4.5" />
         </span>
       </div>
-      <p className="mt-3 font-display text-3xl font-bold leading-none text-foreground">
-        {value}
-      </p>
-      {hint && <p className="mt-2 text-[12px] text-muted-foreground">{hint}</p>}
+      <div className="mt-3 flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="font-display text-3xl font-bold leading-none text-foreground">
+              {value}
+            </p>
+            {delta && (
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10.5px] font-bold",
+                  deltaStyles[delta.dir],
+                )}
+              >
+                <DeltaIcon className="size-3" />
+                {delta.text}
+              </span>
+            )}
+          </div>
+          {hint && <p className="mt-2 text-[12px] text-muted-foreground">{hint}</p>}
+        </div>
+        {spark && <Sparkline points={spark} tone={tone} />}
+      </div>
     </div>
   );
 }
