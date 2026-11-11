@@ -2,18 +2,19 @@ import { Blocks, Building2, Handshake } from "lucide-react";
 import Link from "next/link";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
+import { getClientLogos } from "@/lib/site-content";
 
 /**
- * Verified logo lists. Only add logos that exist in /public and are
- * confirmed by the company — never placeholder or fictional brands.
+ * Logo lists are DB-managed from the admin dashboard (Clients & Testimonials).
+ * Only publish logos whose files exist in /public and are confirmed by the
+ * company — never placeholder or fictional brands.
  *
  * To publish real logos:
  *   1. Drop files into /public/clients/ or /public/partners/
- *   2. Add an entry: { src: "/clients/<file>.png", alt: "<Client name>" }
+ *   2. Add the entry in Admin → Clients & Testimonials:
+ *      { name: "<Client name>", imageUrl: "/clients/<file>.png" }
  * The layout renders automatically once an entry exists.
  */
-const CLIENT_LOGOS: { src: string; alt: string }[] = [];
-const PARTNER_LOGOS: { src: string; alt: string }[] = [];
 
 function LogoGrid({ logos }: { logos: { src: string; alt: string }[] }) {
   return (
@@ -40,7 +41,8 @@ function LogoGrid({ logos }: { logos: { src: string; alt: string }[] }) {
  * The two distinct groups — Clients and Technology Partners.
  * Rendered on the homepage (teaser) and on the /clients page.
  */
-export function ClientPartnerGroups() {
+export async function ClientPartnerGroups() {
+  const { clients: CLIENT_LOGOS, partners: PARTNER_LOGOS } = await getClientLogos();
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       {/* ── A. Our Clients ─────────────────────────────────────────── */}
@@ -129,7 +131,7 @@ export function ClientPartnerGroups() {
   );
 }
 
-export function Clients() {
+export async function Clients() {
   return (
     <section
       id="clients"

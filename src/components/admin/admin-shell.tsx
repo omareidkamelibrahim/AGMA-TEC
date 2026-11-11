@@ -7,12 +7,17 @@ import { usePathname } from "next/navigation";
 import {
   Banknote,
   CalendarDays,
+  Handshake,
   Hash,
+  Inbox,
   LayoutDashboard,
   LogOut,
+  Megaphone,
   Menu,
   Moon,
+  Package,
   ShieldCheck,
+  Sparkles,
   Sun,
   Users,
 } from "lucide-react";
@@ -27,6 +32,13 @@ const NAV = [
     { href: "/admin/employees", label: "Employees", icon: Users },
     { href: "/admin/leave", label: "Leave Requests", icon: CalendarDays },
     { href: "/admin/payroll", label: "Payroll", icon: Banknote },
+  ]},
+  { group: "Website", items: [
+    { href: "/admin/products", label: "Products", icon: Package },
+    { href: "/admin/services", label: "Services", icon: Sparkles },
+    { href: "/admin/clients", label: "Clients & Quotes", icon: Handshake },
+    { href: "/admin/inquiries", label: "Inquiries", icon: Inbox },
+    { href: "/admin/newsletter", label: "Newsletter", icon: Megaphone },
   ]},
   { group: "Settings", items: [
     { href: "/admin/settings/numbering", label: "Numbering Series", icon: Hash },

@@ -1,53 +1,7 @@
-import {
-  BrainCircuit,
-  CloudLightning,
-  Code2,
-  Compass,
-  PenTool,
-  Smartphone,
-  ArrowUpRight,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
-
-export const SERVICES = [
-  {
-    icon: Code2,
-    title: "Custom Software Development",
-    text: "Enterprise web platforms, portals and APIs engineered for scale — built on modern stacks, integrated with the systems you already run.",
-    tags: ["Web platforms", "System integration", "APIs"],
-  },
-  {
-    icon: Smartphone,
-    title: "Mobile Applications",
-    text: "Native-quality iOS and Android apps with a single, efficient codebase — from customer-facing products to field-operations tools.",
-    tags: ["iOS & Android", "Flutter", "App-store delivery"],
-  },
-  {
-    icon: CloudLightning,
-    title: "Cloud & DevOps",
-    text: "Migration, infrastructure-as-code and CI/CD pipelines that ship faster with less risk — monitored and optimized around the clock.",
-    tags: ["Azure & AWS", "CI/CD", "Observability"],
-  },
-  {
-    icon: BrainCircuit,
-    title: "Data & AI Solutions",
-    text: "Data pipelines, executive dashboards and applied AI — from predictive models to intelligent agents embedded in your workflows.",
-    tags: ["BI dashboards", "Machine learning", "AI agents"],
-  },
-  {
-    icon: PenTool,
-    title: "UI/UX & Product Design",
-    text: "Research-driven experience design and design systems that make complex enterprise products feel effortless — and unmistakably yours.",
-    tags: ["Research", "Design systems", "Prototyping"],
-  },
-  {
-    icon: Compass,
-    title: "Digital Consulting",
-    text: "Technology roadmaps, ERP advisory and process digitization strategy — a clear, sequenced path from where you are to where you need to be.",
-    tags: ["Roadmapping", "ERP advisory", "Process digitization"],
-  },
-];
+import { getServices } from "@/lib/site-content";
 
 export function Services() {
   return (
@@ -80,34 +34,44 @@ export function Services() {
 
         {/* Cards */}
         <div className="grid gap-5 sm:grid-cols-2">
-          {SERVICES.map((s, i) => (
-            <RevealScale key={s.title} delay={(i % 2) * 0.08} className="h-full">
-              <article className="card-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-ink-850/85 p-7">
-                <div className="pointer-events-none absolute -right-14 -top-14 size-36 rounded-full bg-brand-600/0 blur-2xl transition-colors duration-500 group-hover:bg-brand-600/15" />
-                <span className="flex size-12 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent transition-all duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500 light:hover:bg-brand-700/20 group-hover:text-brand-accent-bright">
-                  <s.icon className="size-6" />
-                </span>
-                <h3 className="mt-5 font-display text-lg font-semibold leading-snug text-foreground">
-                  {s.title}
-                </h3>
-                <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted-foreground">
-                  {s.text}
-                </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {s.tags.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-full border border-border/80 bg-ink-800/70 px-3 py-1 text-[11px] font-medium text-foreground/60"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            </RevealScale>
-          ))}
+          <ServiceCards />
         </div>
       </div>
     </section>
+  );
+}
+
+/** DB-backed card list — resolved on the server, rendered inside the grid. */
+async function ServiceCards() {
+  const services = await getServices();
+  return (
+    <>
+      {services.map((s, i) => (
+        <RevealScale key={s.title} delay={(i % 2) * 0.08} className="h-full">
+          <article className="card-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-ink-850/85 p-7">
+            <div className="pointer-events-none absolute -right-14 -top-14 size-36 rounded-full bg-brand-600/0 blur-2xl transition-colors duration-500 group-hover:bg-brand-600/15" />
+            <span className="flex size-12 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent transition-all duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500 light:hover:bg-brand-700/20 group-hover:text-brand-accent-bright">
+              <s.icon className="size-6" />
+            </span>
+            <h3 className="mt-5 font-display text-lg font-semibold leading-snug text-foreground">
+              {s.title}
+            </h3>
+            <p className="mt-2.5 flex-1 text-sm leading-relaxed text-muted-foreground">
+              {s.text}
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {s.tags.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border border-border/80 bg-ink-800/70 px-3 py-1 text-[11px] font-medium text-foreground/60"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </article>
+        </RevealScale>
+      ))}
+    </>
   );
 }

@@ -7,7 +7,10 @@ import { Reveal, RevealScale } from "@/components/agma/reveal";
 import { AgmaMark } from "@/components/agma/logo";
 import { Team } from "@/components/agma/team";
 import { CtaBand } from "@/components/agma/cta-band";
-import { PRODUCTS } from "@/lib/products";
+import { getProducts } from "@/lib/site-content";
+
+// Product strip reads DB-managed content.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -15,7 +18,8 @@ export const metadata: Metadata = {
     "AGMA TEC is an enterprise technology company specializing in integrated business management solutions. We develop our own software products — AGMA ERP, AGMA CAFM and AGMA CATERING — and help organizations streamline operations and accelerate digital transformation.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const products = await getProducts();
   return (
     <>
       <PageHero
@@ -155,7 +159,7 @@ export default function AboutPage() {
             </div>
           </Reveal>
           <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {PRODUCTS.map((p, i) => (
+            {products.map((p, i) => (
               <RevealScale key={p.slug} delay={i * 0.08} className="h-full">
                 <Link
                   href={`/products/${p.slug}`}

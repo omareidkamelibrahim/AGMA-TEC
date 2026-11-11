@@ -3,16 +3,20 @@ import Link from "next/link";
 import { SectionHeading, BeadDots } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 import { AgmaMark } from "./logo";
-import { getSiblingProducts, type Product } from "@/lib/products";
+import type { Product } from "@/lib/products";
 
 /**
- * Shared body for the three product detail pages:
+ * Shared body for the product detail pages:
  * overview (outcomes + visual panel), capabilities grid,
  * ownership band and the rest of the suite.
  */
-export function ProductDetail({ product }: { product: Product }) {
-  const siblings = getSiblingProducts(product.slug);
-
+export function ProductDetail({
+  product,
+  siblings,
+}: {
+  product: Product;
+  siblings: Product[];
+}) {
   return (
     <>
       {/* ── Overview ─────────────────────────────────────────────── */}

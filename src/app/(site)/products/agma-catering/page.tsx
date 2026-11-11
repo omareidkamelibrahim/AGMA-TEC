@@ -2,16 +2,22 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/agma/page-hero";
 import { ProductDetail } from "@/components/agma/product-detail";
 import { CtaBand } from "@/components/agma/cta-band";
-import { getProduct } from "@/lib/products";
+import { getProductBySlug, getProducts } from "@/lib/site-content";
 
-const product = getProduct("agma-catering");
+// Product content is DB-managed from the admin dashboard.
+export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "AGMA CATERING — Catering Management System",
-  description: product.description,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const product = await getProductBySlug("agma-catering");
+  return {
+    title: `${product.name} — ${product.full}`,
+    description: product.description,
+  };
+}
 
-export default function AgmaCateringPage() {
+export default async function AgmaCateringPage() {
+  const [product, all] = await Promise.all([getProductBySlug("agma-catering"), getProducts()]);
+  const siblings = all.filter((p) => p.slug !== "agma-catering");
   return (
     <>
       <PageHero
@@ -23,7 +29,7 @@ export default function AgmaCateringPage() {
         }
         description={`${product.full} — ${product.description.charAt(0).toLowerCase()}${product.description.slice(1)}`}
       />
-      <ProductDetail product={product} />
+      <ProductDetail product={product} siblings={siblings} />
       <CtaBand
         eyebrow="Request a Demo"
         title={

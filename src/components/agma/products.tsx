@@ -3,13 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
-import { PRODUCTS } from "@/lib/products";
+import { getProducts } from "@/lib/site-content";
 
 /**
- * Homepage showcase for the three core AGMA products.
+ * Homepage showcase for the AGMA products (DB-managed from the dashboard).
  * Cards link to their dedicated product pages.
  */
-export function Products() {
+export async function Products() {
+  const products = await getProducts();
   return (
     <section
       id="products"
@@ -29,7 +30,7 @@ export function Products() {
         />
 
         <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {PRODUCTS.map((p, i) => (
+          {products.map((p, i) => (
             <RevealScale key={p.slug} delay={i * 0.1} className="h-full">
               <article className="card-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-ink-850/85">
                 {/* per-product brand accent line */}

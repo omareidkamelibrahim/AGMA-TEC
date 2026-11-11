@@ -6,9 +6,13 @@ import { Button } from "@/components/ui/button";
 import { AgmaMark } from "./logo";
 import { Reveal } from "./reveal";
 import { EcosystemVisual } from "./ecosystem-visual";
-import { PRODUCTS } from "@/lib/products";
 
-export function Hero() {
+/**
+ * Hero receives only serializable product data ({slug, name}) — the DB
+ * loader resolves icons server-side, and Lucide components cannot cross
+ * the server→client component boundary.
+ */
+export function Hero({ products }: { products: { slug: string; name: string }[] }) {
   return (
     <section id="home" className="relative overflow-hidden pt-32 pb-16 sm:pt-40 lg:pb-24">
       {/* backdrop */}
@@ -70,7 +74,7 @@ export function Hero() {
 
           <Reveal delay={0.42}>
             <ul className="mt-10 flex flex-wrap gap-x-7 gap-y-3 text-[13px] text-muted-foreground">
-              {PRODUCTS.map((p) => (
+              {products.map((p) => (
                 <li key={p.slug} className="flex items-center gap-2">
                   <span className="size-1.5 rounded-full bg-brand-400" />
                   <Link

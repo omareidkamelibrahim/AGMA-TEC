@@ -2,16 +2,22 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/agma/page-hero";
 import { ProductDetail } from "@/components/agma/product-detail";
 import { CtaBand } from "@/components/agma/cta-band";
-import { getProduct } from "@/lib/products";
+import { getProductBySlug, getProducts } from "@/lib/site-content";
 
-const product = getProduct("agma-erp");
+// Product content is DB-managed from the admin dashboard.
+export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "AGMA ERP — Enterprise Resource Planning",
-  description: product.description,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const product = await getProductBySlug("agma-erp");
+  return {
+    title: `${product.name} — ${product.full}`,
+    description: product.description,
+  };
+}
 
-export default function AgmaErpPage() {
+export default async function AgmaErpPage() {
+  const [product, all] = await Promise.all([getProductBySlug("agma-erp"), getProducts()]);
+  const siblings = all.filter((p) => p.slug !== "agma-erp");
   return (
     <>
       <PageHero
@@ -23,7 +29,7 @@ export default function AgmaErpPage() {
         }
         description={`${product.full} — ${product.description.charAt(0).toLowerCase()}${product.description.slice(1)}`}
       />
-      <ProductDetail product={product} />
+      <ProductDetail product={product} siblings={siblings} />
       <CtaBand
         eyebrow="Request a Demo"
         title={

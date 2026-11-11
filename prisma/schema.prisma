@@ -14,6 +14,7 @@ model ContactMessage {
   company   String?
   service   String?
   message   String
+  status    String   @default("New") // New | Handled
   createdAt DateTime @default(now())
 }
 
@@ -76,4 +77,59 @@ model NumberingSeries {
   dateToken String?
   scope     String?
   createdAt DateTime @default(now())
+}
+
+// ---------- Website content (managed from the admin dashboard) ----------
+
+model Product {
+  id               String   @id @default(cuid())
+  slug             String   @unique // URL segment, e.g. agma-erp
+  name             String   // e.g. AGMA ERP
+  fullName         String   // e.g. Enterprise Resource Planning
+  scope            String   // e.g. Finance · HR · Inventory · Procurement
+  description      String
+  capabilitiesJson String   @default("[]") // [{icon,label,text}]
+  outcomesJson     String   @default("[]") // string[]
+  icon             String   @default("Boxes") // lucide icon name via icon-map
+  accent           String   @default("from-brand-600") // gradient accent class
+  image            String   @default("") // /products/*.png
+  sortOrder        Int      @default(0)
+  published        Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Service {
+  id        String   @id @default(cuid())
+  title     String
+  text      String
+  tagsJson  String   @default("[]") // string[]
+  icon      String   @default("Code2") // lucide icon name via icon-map
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClientLogo {
+  id        String   @id @default(cuid())
+  name      String   // for alt text
+  kind      String   @default("client") // client | partner
+  imageUrl  String   // /clients/<file> — file must exist in /public
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  name      String   // role/title shown to visitors
+  org       String   // sector description, e.g. Regional retail group
+  initials  String   @default("")
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

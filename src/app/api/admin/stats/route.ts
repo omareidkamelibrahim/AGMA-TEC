@@ -14,7 +14,7 @@ export async function GET() {
   const [
     total, active, probation, suspended, expiringDocs, recentHires, expiring,
     deptGroups, pendingLeaves, hires30, hiresPrev30, hireDates, statusGroups,
-    payrollRuns, pendingLeaveItems,
+    payrollRuns, pendingLeaveItems, inquiriesNew, inquiries30, subscribers,
   ] = await Promise.all([
     db.employee.count(),
     db.employee.count({ where: { status: "Active" } }),
@@ -63,6 +63,9 @@ export async function GET() {
         type: true, fromDate: true, toDate: true, days: true, createdAt: true,
       },
     }),
+    db.contactMessage.count({ where: { status: "New" } }),
+    db.contactMessage.count({ where: { createdAt: { gte: since30 } } }),
+    db.newsletterSubscriber.count(),
   ]);
 
   // Cumulative headcount at the end of each of the last 12 months.
@@ -114,5 +117,8 @@ export async function GET() {
     recentHires,
     expiring,
     pendingLeaveItems,
+    inquiriesNew,
+    inquiries30,
+    subscribers,
   });
 }

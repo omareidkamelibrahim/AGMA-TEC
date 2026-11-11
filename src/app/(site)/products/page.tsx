@@ -4,7 +4,10 @@ import { ArrowUpRight } from "lucide-react";
 import { PageHero } from "@/components/agma/page-hero";
 import { Reveal, RevealScale } from "@/components/agma/reveal";
 import { CtaBand } from "@/components/agma/cta-band";
-import { PRODUCTS } from "@/lib/products";
+import { getProducts } from "@/lib/site-content";
+
+// Products are DB-managed from the admin dashboard.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Our Products & Solutions",
@@ -12,7 +15,8 @@ export const metadata: Metadata = {
     "Powerful, integrated solutions designed to simplify business operations, optimize resources, and support organizational growth — AGMA ERP, AGMA CAFM and AGMA CATERING, developed, implemented and supported by AGMA TEC.",
 };
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const products = await getProducts();
   return (
     <>
       <PageHero
@@ -29,7 +33,7 @@ export default function ProductsPage() {
       {/* ── Product blocks ────────────────────────────────────────── */}
       <section className="relative pb-8 pt-4 sm:pb-10">
         <div className="mx-auto w-full max-w-7xl space-y-20 px-5 sm:space-y-28 sm:px-8">
-          {PRODUCTS.map((p, i) => (
+          {products.map((p, i) => (
             <div
               key={p.slug}
               className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16"
@@ -97,9 +101,11 @@ export default function ProductsPage() {
                         {c.label}
                       </span>
                     ))}
-                    <span className="rounded-full border border-brand-500/25 bg-brand-500/10 px-3 py-1 text-[11px] font-semibold text-brand-accent">
-                      +{p.capabilities.length - 3} more
-                    </span>
+                    {p.capabilities.length > 3 && (
+                      <span className="rounded-full border border-brand-500/25 bg-brand-500/10 px-3 py-1 text-[11px] font-semibold text-brand-accent">
+                        +{p.capabilities.length - 3} more
+                      </span>
+                    )}
                   </div>
                 </Reveal>
                 <Reveal delay={0.3}>

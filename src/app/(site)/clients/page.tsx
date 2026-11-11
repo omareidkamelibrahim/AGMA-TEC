@@ -5,6 +5,9 @@ import { TestimonialsGrid } from "@/components/agma/testimonials";
 import { Reveal } from "@/components/agma/reveal";
 import { CtaBand } from "@/components/agma/cta-band";
 
+// Client logos & testimonials are DB-managed from the admin dashboard.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Our Clients & Partners",
   description:

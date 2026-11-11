@@ -6,7 +6,10 @@ import { Reveal, RevealScale } from "@/components/agma/reveal";
 import { SectionHeading } from "@/components/agma/section-heading";
 import { Process } from "@/components/agma/process";
 import { CtaBand } from "@/components/agma/cta-band";
-import { SERVICES } from "@/components/agma/services";
+import { getServices } from "@/lib/site-content";
+
+// Service disciplines are DB-managed from the admin dashboard.
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Our Services",
@@ -86,7 +89,8 @@ const ENGAGEMENTS = [
   },
 ];
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getServices();
   return (
     <>
       <PageHero
@@ -104,7 +108,7 @@ export default function ServicesPage() {
       <section className="relative pb-8 pt-4 sm:pb-10" aria-label="Service disciplines">
         <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {SERVICES.map((s, i) => (
+            {services.map((s, i) => (
               <RevealScale key={s.title} delay={(i % 3) * 0.08} className="h-full">
                 <article className="card-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-ink-850/85 p-7">
                   <div className="pointer-events-none absolute -right-14 -top-14 size-36 rounded-full bg-brand-600/0 blur-2xl transition-colors duration-500 group-hover:bg-brand-600/15" />

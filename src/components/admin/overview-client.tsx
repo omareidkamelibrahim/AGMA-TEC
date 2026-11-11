@@ -13,6 +13,9 @@ import {
   CirclePause,
   Clock3,
   Download,
+  Globe,
+  Inbox,
+  Megaphone,
   UserPlus,
   Users,
   X,
@@ -29,6 +32,9 @@ type Stats = {
   suspended: number;
   expiringDocs: number;
   pendingLeaves: number;
+  inquiriesNew: number;
+  inquiries30: number;
+  subscribers: number;
   hires30: number;
   hiresPrev30: number;
   departments: { department: string; count: number }[];
@@ -222,6 +228,49 @@ export function OverviewClient() {
           </Section>
         ))}
       </div>
+
+      {/* website pulse — DB-managed site content + funnel */}
+      <Section delay={0.22}>
+        <div className="flex flex-wrap items-center gap-x-10 gap-y-4 rounded-2xl border border-border bg-ink-850/85 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <span className="flex size-10 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent-bright">
+              <Globe className="size-5" />
+            </span>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Website</p>
+              <p className="text-[13px] text-muted-foreground">Content managed from this panel</p>
+            </div>
+          </div>
+          <dl className="flex flex-1 flex-wrap gap-x-10 gap-y-3">
+            <div>
+              <dt className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">New inquiries</dt>
+              <dd className="text-xl font-bold text-foreground">{data.inquiriesNew}</dd>
+            </div>
+            <div>
+              <dt className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Inquiries · 30d</dt>
+              <dd className="text-xl font-bold text-foreground">{data.inquiries30}</dd>
+            </div>
+            <div>
+              <dt className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Newsletter subscribers</dt>
+              <dd className="text-xl font-bold text-foreground">{data.subscribers}</dd>
+            </div>
+          </dl>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm" className="gap-2">
+              <Link href="/admin/inquiries">
+                <Inbox className="size-4" />
+                Inquiries
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm" className="gap-2">
+              <Link href="/admin/products">
+                <Globe className="size-4" />
+                Manage site
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </Section>
 
       {/* headcount growth + composition */}
       <div className="mt-6 grid gap-6 xl:grid-cols-3">
@@ -496,6 +545,8 @@ export function OverviewClient() {
                 { href: "/admin/employees", icon: UserPlus, title: "Manage Employees", sub: "Add, edit, filter and export" },
                 { href: "/admin/leave", icon: CalendarClock, title: "Leave Requests", sub: "Approve or reject requests", badge: data.pendingLeaves },
                 { href: "/admin/payroll", icon: Banknote, title: "Payroll Runs", sub: "Monthly run history" },
+                { href: "/admin/inquiries", icon: Inbox, title: "Contact Inquiries", sub: "Website contact form inbox", badge: data.inquiriesNew },
+                { href: "/admin/newsletter", icon: Megaphone, title: "Newsletter", sub: "Footer subscriber list" },
               ].map((a) => (
                 <Link
                   key={a.href}
