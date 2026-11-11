@@ -44,6 +44,8 @@ export type Product = {
   outcomes: string[];
   /** Per-product accent line (existing brand shades only) */
   accent: string;
+  /** Expressive concept visual shown on the homepage card */
+  image: string;
 };
 
 export const PRODUCTS: Product[] = [
@@ -94,6 +96,7 @@ export const PRODUCTS: Product[] = [
       "Better control over organizational resources",
     ],
     accent: "from-brand-600",
+    image: "/products/agma-erp.png",
   },
   {
     slug: "agma-cafm",
@@ -142,6 +145,7 @@ export const PRODUCTS: Product[] = [
       "Full visibility of facility operations",
     ],
     accent: "from-brand-400",
+    image: "/products/agma-cafm.png",
   },
   {
     slug: "agma-catering",
@@ -190,6 +194,7 @@ export const PRODUCTS: Product[] = [
       "Smoother end-to-end catering workflows",
     ],
     accent: "from-brand-300",
+    image: "/products/agma-catering.png",
   },
 ];
 
