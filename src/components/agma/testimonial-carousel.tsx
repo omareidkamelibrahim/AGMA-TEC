@@ -31,7 +31,7 @@ export type Testimonial = {
 };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const AUTOPLAY_MS = 6000;
+const AUTOPLAY_MS = 4000;
 const SWIPE_THRESHOLD = 70;
 
 export function TestimonialsCarousel({ quotes }: { quotes: Testimonial[] }) {
@@ -39,6 +39,14 @@ export function TestimonialsCarousel({ quotes }: { quotes: Testimonial[] }) {
   const reduced = useReducedMotion();
   const [paused, setPaused] = useState(false);
   const [tabHidden, setTabHidden] = useState(false);
+  /* Hover-pause only on devices that truly support hover — touch taps fire
+     synthetic mouseenter events that never pair with mouseleave, which
+     would pause autoplay forever on mobile. */
+  const [canHover] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: hover)").matches,
+  );
   const count = quotes.length;
 
   const paginate = useCallback(
@@ -52,13 +60,15 @@ export function TestimonialsCarousel({ quotes }: { quotes: Testimonial[] }) {
     setPage(([i]) => (target === i ? [i, 0] : [target, target > i ? 1 : -1]));
   }, []);
 
-  /* Autoplay — the timer resets whenever the slide changes, so manual
-     navigation always gets a full interval before the next auto-advance. */
+  /* Autoplay — starts on mount and always runs (reduced-motion users get
+     opacity-only fades instead of slides, but the carousel still advances).
+     The timer resets whenever the slide changes, so manual navigation gets
+     a full interval. Cleanup guarantees exactly one live interval. */
   useEffect(() => {
-    if (paused || tabHidden || reduced) return;
+    if (paused || tabHidden) return;
     const id = window.setInterval(() => paginate(1), AUTOPLAY_MS);
     return () => window.clearInterval(id);
-  }, [paused, tabHidden, reduced, index, paginate]);
+  }, [paused, tabHidden, index, paginate]);
 
   /* Pause while the tab is in the background. */
   useEffect(() => {
@@ -100,10 +110,8 @@ export function TestimonialsCarousel({ quotes }: { quotes: Testimonial[] }) {
       aria-roledescription="carousel"
       aria-label="Client testimonials"
       className="relative"
-      onMouseEnter={() => setPaused(true)}
+      onMouseEnter={() => canHover && setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
       onKeyDown={(e) => {
         if (e.key === "ArrowLeft") {
           e.preventDefault();
@@ -149,7 +157,7 @@ export function TestimonialsCarousel({ quotes }: { quotes: Testimonial[] }) {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: reduced ? 0.25 : 0.6, ease: EASE }}
+              transition={{ duration: reduced ? 0.3 : 0.7, ease: EASE }}
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.16}
