@@ -29,7 +29,7 @@ export function TechMarquee() {
               key={`${t}-${i}`}
               className="flex items-center gap-12 whitespace-nowrap"
             >
-              <span className="font-display text-[15px] font-medium tracking-wide text-foreground/45 transition-colors hover:text-brand-300">
+              <span className="font-display text-[15px] font-medium tracking-wide text-foreground/45 transition-colors hover:text-brand-accent">
                 {t}
               </span>
               <span className="size-1.5 rounded-full bg-brand-700/70" aria-hidden />

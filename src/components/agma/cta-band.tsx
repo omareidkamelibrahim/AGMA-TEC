@@ -41,7 +41,7 @@ export function CtaBand({
           <AgmaMark className="absolute bottom-8 left-8 hidden h-16 w-auto opacity-10 md:block" />
 
           <div className="relative">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-300">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-accent">
               {eyebrow}
             </p>
             <h2 className="mx-auto mt-5 max-w-2xl font-display text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-[2.6rem]">
@@ -54,7 +54,7 @@ export function CtaBand({
               <Button
                 asChild
                 size="lg"
-                className="group h-13 rounded-full bg-brand-600 px-8 text-[15px] font-semibold text-white shadow-[0_14px_44px_-10px_rgba(46,123,214,0.8)] hover:bg-brand-500"
+                className="group h-13 rounded-full bg-brand-600 px-8 text-[15px] font-semibold text-white shadow-[0_14px_44px_-10px_rgba(46,123,214,0.8)] hover:bg-brand-500 light:hover:bg-brand-700"
               >
                 <Link href={primaryHref}>
                   {primaryLabel}

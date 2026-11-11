@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
-import { Toaster } from "sonner";
 import { Navbar } from "@/components/agma/navbar";
 import { Footer } from "@/components/agma/footer";
+import { Providers } from "@/components/agma/providers";
 import "./globals.css";
 
 const display = Space_Grotesk({
@@ -63,22 +63,13 @@ export default function RootLayout({
       <body
         className={`${display.variable} ${sans.variable} antialiased bg-background text-foreground font-sans`}
       >
-        <div className="flex min-h-screen flex-col bg-ink-950">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
-        <Toaster
-          theme="dark"
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: "#0D1B30",
-              border: "1px solid rgba(122,164,224,0.2)",
-              color: "#E9F0FA",
-            },
-          }}
-        />
+        <Providers>
+          <div className="flex min-h-screen flex-col bg-background">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   );

@@ -40,7 +40,7 @@ export function Products() {
                 <div className="flex flex-1 flex-col p-7 sm:p-8">
                   {/* icon + index */}
                   <div className="flex items-start justify-between">
-                    <span className="flex size-13 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300 transition-colors duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500/20 group-hover:text-brand-200">
+                    <span className="flex size-13 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent transition-colors duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500 light:hover:bg-brand-700/20 group-hover:text-brand-accent-bright">
                       <p.icon className="size-6.5" />
                     </span>
                     <span
@@ -54,7 +54,7 @@ export function Products() {
                   <h3 className="mt-6 font-display text-2xl font-bold tracking-wide text-foreground">
                     {p.name}
                   </h3>
-                  <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-300">
+                  <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-accent">
                     {p.full}
                   </p>
                   <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
@@ -74,7 +74,7 @@ export function Products() {
 
                   <Link
                     href={`/products/${p.slug}`}
-                    className="mt-auto inline-flex items-center gap-2 pt-8 font-display text-[15px] font-semibold text-brand-300 transition-colors hover:text-brand-200"
+                    className="mt-auto inline-flex items-center gap-2 pt-8 font-display text-[15px] font-semibold text-brand-accent transition-colors hover:text-brand-accent-bright"
                   >
                     Explore {p.name}
                     <ArrowUpRight className="size-4.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -91,7 +91,7 @@ export function Products() {
             own team —{" "}
             <Link
               href="/contact"
-              className="font-medium text-brand-300 transition-colors hover:text-brand-200"
+              className="font-medium text-brand-accent transition-colors hover:text-brand-accent-bright"
             >
               talk to us about your requirements
             </Link>

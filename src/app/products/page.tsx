@@ -49,14 +49,14 @@ export default function ProductsPage() {
                     {p.index}
                   </span>
                   <div className="relative flex flex-col items-start gap-7">
-                    <span className="flex size-20 items-center justify-center rounded-2xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+                    <span className="flex size-20 items-center justify-center rounded-2xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
                       <p.icon className="size-10" />
                     </span>
                     <div>
                       <p className="font-display text-3xl font-bold tracking-wide text-foreground">
                         {p.name}
                       </p>
-                      <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-300">
+                      <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-accent">
                         {p.full}
                       </p>
                       <p className="mt-4 text-[13px] font-medium text-muted-foreground">
@@ -70,7 +70,7 @@ export default function ProductsPage() {
               {/* Copy */}
               <div className={i % 2 === 1 ? "lg:order-1" : ""}>
                 <Reveal>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-300">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-accent">
                     Product {p.index}
                   </p>
                 </Reveal>
@@ -78,7 +78,7 @@ export default function ProductsPage() {
                   <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                     {p.name}
                   </h2>
-                  <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-brand-300">
+                  <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-brand-accent">
                     {p.full}
                   </p>
                 </Reveal>
@@ -97,7 +97,7 @@ export default function ProductsPage() {
                         {c.label}
                       </span>
                     ))}
-                    <span className="rounded-full border border-brand-500/25 bg-brand-500/10 px-3 py-1 text-[11px] font-semibold text-brand-300">
+                    <span className="rounded-full border border-brand-500/25 bg-brand-500/10 px-3 py-1 text-[11px] font-semibold text-brand-accent">
                       +{p.capabilities.length - 3} more
                     </span>
                   </div>
@@ -105,7 +105,7 @@ export default function ProductsPage() {
                 <Reveal delay={0.3}>
                   <Link
                     href={`/products/${p.slug}`}
-                    className="group mt-8 inline-flex items-center gap-2 font-display text-[16px] font-semibold text-brand-300 transition-colors hover:text-brand-200"
+                    className="group mt-8 inline-flex items-center gap-2 font-display text-[16px] font-semibold text-brand-accent transition-colors hover:text-brand-accent-bright"
                   >
                     Explore {p.name}
                     <ArrowUpRight className="size-5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

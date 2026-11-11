@@ -47,7 +47,7 @@ export function ClientPartnerGroups() {
       <RevealScale className="h-full">
         <div className="flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-8">
           <div className="flex items-center gap-4">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
               <Building2 className="size-6" />
             </span>
             <div>
@@ -84,7 +84,7 @@ export function ClientPartnerGroups() {
       <RevealScale delay={0.1} className="h-full">
         <div className="flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-8">
           <div className="flex items-center gap-4">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
               <Blocks className="size-6" />
             </span>
             <div>
@@ -110,12 +110,12 @@ export function ClientPartnerGroups() {
                 </p>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-3">
                   <p className="inline-flex items-center gap-2 text-[13px] text-muted-foreground">
-                    <Handshake className="size-4 text-brand-300" />
+                    <Handshake className="size-4 text-brand-accent" />
                     Technology partnership inquiries are welcome.
                   </p>
                   <Link
                     href="/contact"
-                    className="text-[13px] font-semibold text-brand-300 transition-colors hover:text-brand-200"
+                    className="text-[13px] font-semibold text-brand-accent transition-colors hover:text-brand-accent-bright"
                   >
                     Start a conversation
                   </Link>
@@ -135,7 +135,7 @@ export function Clients() {
       id="clients"
       className="relative scroll-mt-24 py-24 sm:py-32"
     >
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_10%_25%,rgba(22,51,91,0.35),transparent_70%)]" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_10%_25%,var(--glow-navy),transparent_70%)]" />
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <SectionHeading

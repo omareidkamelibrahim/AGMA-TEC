@@ -90,7 +90,7 @@ export function TeamGrid() {
                   className="size-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                 />
               ) : (
-                <span className="flex size-full items-center justify-center bg-brand-500/10 font-display text-5xl font-bold text-brand-300">
+                <span className="flex size-full items-center justify-center bg-brand-500/10 font-display text-5xl font-bold text-brand-accent">
                   {initialsOf(m.name)}
                 </span>
               )}
@@ -100,7 +100,7 @@ export function TeamGrid() {
               <span className="block font-display text-[16px] font-semibold text-foreground">
                 {m.name}
               </span>
-              <span className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] text-brand-300">
+              <span className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] text-brand-accent">
                 <span className="size-1.5 rounded-full bg-brand-500" aria-hidden />
                 {m.role}
               </span>
@@ -119,7 +119,7 @@ export function Team() {
       className="relative scroll-mt-24 py-24 sm:py-32"
       aria-label="Our team"
     >
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_85%_25%,rgba(22,51,91,0.35),transparent_70%)]" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_85%_25%,var(--glow-navy),transparent_70%)]" />
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <SectionHeading
@@ -140,7 +140,7 @@ export function Team() {
           {DISCIPLINES.map((d, i) => (
             <RevealScale key={d.title} delay={i * 0.08} className="h-full">
               <article className="card-lift flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-7">
-                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
                   <d.icon className="size-6" />
                 </span>
                 <h3 className="mt-5 font-display text-[17px] font-semibold text-foreground">
@@ -170,7 +170,7 @@ export function Team() {
               </div>
               <Link
                 href="/contact"
-                className="group inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-6 py-3 text-sm font-semibold text-brand-300 transition-colors hover:border-brand-400/40 hover:bg-brand-500/15 hover:text-brand-200"
+                className="group inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-6 py-3 text-sm font-semibold text-brand-accent transition-colors hover:border-brand-400/40 hover:bg-brand-500 light:hover:bg-brand-700/15 hover:text-brand-accent-bright"
               >
                 Talk to our team
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

@@ -59,7 +59,7 @@ export const VALUES = [
 export function About() {
   return (
     <section id="about" className="relative scroll-mt-24 py-24 sm:py-32">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(50%_40%_at_85%_15%,rgba(22,51,91,0.35),transparent_70%)]" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(50%_40%_at_85%_15%,var(--glow-navy),transparent_70%)]" />
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <div className="grid items-start gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
@@ -109,7 +109,7 @@ export function About() {
             {PILLARS.map((p, i) => (
               <RevealScale key={p.title} delay={i * 0.08} className="h-full">
                 <article className="card-lift flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-7 sm:p-8">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
                     <p.icon className="size-6" />
                   </span>
                   <h3 className="mt-5 font-display text-xl font-semibold text-foreground">

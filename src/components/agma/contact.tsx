@@ -226,7 +226,7 @@ export function Contact({ heading = true }: { heading?: boolean }) {
               <Button
                 type="submit"
                 disabled={submitting}
-                className="mt-7 h-12 w-full rounded-xl bg-brand-600 text-[15px] font-semibold text-white shadow-[0_12px_40px_-10px_rgba(46,123,214,0.7)] hover:bg-brand-500 sm:w-auto sm:px-9"
+                className="mt-7 h-12 w-full rounded-xl bg-brand-600 text-[15px] font-semibold text-white shadow-[0_12px_40px_-10px_rgba(46,123,214,0.7)] hover:bg-brand-500 light:hover:bg-brand-700 sm:w-auto sm:px-9"
               >
                 {submitting ? (
                   <>
@@ -252,7 +252,7 @@ export function Contact({ heading = true }: { heading?: boolean }) {
             {INFO.map((item, i) => (
               <Reveal key={item.label} delay={i * 0.07}>
                 <div className="card-lift flex items-center gap-4.5 rounded-2xl border border-border bg-ink-850/85 p-5">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
                     <item.icon className="size-5.5" />
                   </span>
                   <div>
@@ -262,7 +262,7 @@ export function Contact({ heading = true }: { heading?: boolean }) {
                     {item.href ? (
                       <a
                         href={item.href}
-                        className="mt-0.5 block font-medium text-foreground transition-colors hover:text-brand-300"
+                        className="mt-0.5 block font-medium text-foreground transition-colors hover:text-brand-accent"
                       >
                         {item.value}
                       </a>
@@ -287,7 +287,7 @@ export function Contact({ heading = true }: { heading?: boolean }) {
                 </p>
                 <a
                   href="mailto:info@agmatec.com?subject=Discovery%20session%20request"
-                  className="mt-4 inline-flex items-center gap-2 font-display text-sm font-semibold text-brand-300 transition-colors hover:text-brand-200"
+                  className="mt-4 inline-flex items-center gap-2 font-display text-sm font-semibold text-brand-accent transition-colors hover:text-brand-accent-bright"
                 >
                   Book a discovery session
                   <Send className="size-4" />

@@ -29,7 +29,7 @@ export function SectionHeading({
       <Reveal>
         <span
           className={cn(
-            "inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-300"
+            "inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-accent"
           )}
         >
           <BeadDots />

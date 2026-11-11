@@ -7,13 +7,14 @@ import { ArrowRight, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { AgmaLogo } from "./logo";
+import { ThemeToggle } from "./theme-toggle";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About Us" },
   { href: "/products", label: "Our Products" },
-  { href: "/clients", label: "Clients & Partners" },
+  { href: "/services", label: "Services" },
   { href: "/contact", label: "Contact Us" },
 ];
 
@@ -37,7 +38,7 @@ export function Navbar() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-500",
         scrolled
-          ? "glass border-b border-border/80 py-3 shadow-[0_10px_40px_-15px_rgba(2,8,20,0.8)]"
+          ? "glass border-b border-border/80 py-3 shadow-[0_10px_40px_-15px_rgba(2,8,20,0.8)] light:shadow-[0_12px_40px_-16px_rgba(12,76,151,0.16)]"
           : "bg-transparent py-5"
       )}
     >
@@ -72,9 +73,10 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <ThemeToggle />
           <Button
             asChild
-            className="group rounded-full bg-brand-600 px-5 font-medium text-white shadow-[0_8px_30px_-8px_rgba(46,123,214,0.7)] hover:bg-brand-500"
+            className="group rounded-full bg-brand-600 px-5 font-medium text-white shadow-[0_8px_30px_-8px_rgba(46,123,214,0.7)] hover:bg-brand-500 light:hover:bg-brand-700 light:shadow-[0_8px_30px_-8px_rgba(12,76,151,0.45)]"
           >
             <Link href="/contact">
               Start Your Project
@@ -83,7 +85,8 @@ export function Navbar() {
           </Button>
         </div>
 
-        <div className="lg:hidden">
+        <div className="flex items-center gap-2.5 lg:hidden">
+          <ThemeToggle />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button
@@ -114,11 +117,11 @@ export function Navbar() {
                     className={cn(
                       "rounded-xl px-4 py-3.5 font-display text-lg font-semibold transition-colors",
                       isActive(l.href)
-                        ? "bg-brand-500/12 text-brand-300"
+                        ? "bg-brand-500/12 text-brand-accent"
                         : "text-foreground/85 hover:bg-ink-700 hover:text-foreground"
                     )}
                   >
-                    <span className="mr-3 text-xs font-normal text-brand-500/70">
+                    <span className="mr-3 text-xs font-normal text-brand-500/70 light:text-brand-600/80">
                       0{i + 1}
                     </span>
                     {l.label}
@@ -127,7 +130,7 @@ export function Navbar() {
               </nav>
               <Button
                 asChild
-                className="mt-auto h-12 rounded-xl bg-brand-600 text-base font-medium text-white hover:bg-brand-500"
+                className="mt-auto h-12 rounded-xl bg-brand-600 text-base font-medium text-white hover:bg-brand-500 light:hover:bg-brand-700 light:hover:bg-brand-700"
               >
                 <Link href="/contact" onClick={() => setOpen(false)}>
                   Start Your Project

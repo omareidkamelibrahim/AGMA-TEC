@@ -36,7 +36,7 @@ const STEPS = [
 export function Process() {
   return (
     <section id="process" className="relative scroll-mt-24 py-24 sm:py-32">
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_35%_at_10%_60%,rgba(22,51,91,0.4),transparent_70%)]" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_35%_at_10%_60%,var(--glow-navy-md),transparent_70%)]" />
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <SectionHeading
@@ -67,7 +67,7 @@ export function Process() {
               <Reveal key={s.step} delay={i * 0.1}>
                 <li className="group relative flex gap-5 sm:flex-col lg:px-2">
                   <div className="relative shrink-0">
-                    <span className="relative z-10 flex size-[72px] items-center justify-center rounded-full border border-brand-500/30 bg-ink-850 text-brand-300 shadow-[0_0_36px_-8px_rgba(46,123,214,0.5)] transition-all duration-500 group-hover:border-brand-400/60 group-hover:text-brand-200">
+                    <span className="relative z-10 flex size-[72px] items-center justify-center rounded-full border border-brand-500/30 bg-ink-850 text-brand-accent shadow-[0_0_36px_-8px_rgba(46,123,214,0.5)] transition-all duration-500 group-hover:border-brand-400/60 group-hover:text-brand-accent-bright">
                       <s.icon className="size-7" />
                     </span>
                     <span className="absolute -right-1 -top-1 z-20 flex size-6 items-center justify-center rounded-full bg-brand-600 font-display text-[10px] font-bold text-white shadow-lg">
@@ -75,7 +75,7 @@ export function Process() {
                     </span>
                   </div>
                   <div className="lg:mt-6">
-                    <p className="font-display text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">
+                    <p className="font-display text-xs font-semibold uppercase tracking-[0.22em] text-brand-400 light:text-brand-accent">
                       {s.step}
                     </p>
                     <h3 className="mt-2 font-display text-xl font-semibold text-foreground">
@@ -84,7 +84,7 @@ export function Process() {
                     <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
                       {s.text}
                     </p>
-                    <p className="mt-4 inline-flex rounded-lg border border-border/70 bg-ink-850/70 px-3 py-1.5 text-[11.5px] font-medium text-brand-300/90">
+                    <p className="mt-4 inline-flex rounded-lg border border-border/70 bg-ink-850/70 px-3 py-1.5 text-[11.5px] font-medium text-brand-accent/90">
                       {s.output}
                     </p>
                   </div>

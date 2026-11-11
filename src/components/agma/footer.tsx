@@ -19,6 +19,7 @@ const COLUMNS = [
     title: "Company",
     links: [
       { label: "About us", href: "/about" },
+      { label: "Services", href: "/services" },
       { label: "Our Products", href: "/products" },
       { label: "Clients & Partners", href: "/clients" },
       { label: "Contact", href: "/contact" },
@@ -93,7 +94,7 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={s.label}
-                  className="flex size-10 items-center justify-center rounded-full border border-border bg-ink-850 text-muted-foreground transition-all hover:border-brand-500/50 hover:bg-brand-500/15 hover:text-brand-300"
+                  className="flex size-10 items-center justify-center rounded-full border border-border bg-ink-850 text-muted-foreground transition-all hover:border-brand-500/50 hover:bg-brand-500 light:hover:bg-brand-700/15 hover:text-brand-accent"
                 >
                   <s.icon className="size-4.5" />
                 </a>
@@ -113,7 +114,7 @@ export function Footer() {
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-brand-300"
+                      className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-brand-accent"
                     >
                       <span className="h-px w-0 bg-brand-400 transition-all duration-300 group-hover:w-3" />
                       {l.label}
@@ -152,7 +153,7 @@ export function Footer() {
                   type="submit"
                   disabled={busy}
                   aria-label="Subscribe to newsletter"
-                  className="flex w-13 shrink-0 items-center justify-center bg-brand-600 text-white transition-colors hover:bg-brand-500 disabled:opacity-60"
+                  className="flex w-13 shrink-0 items-center justify-center bg-brand-600 text-white transition-colors hover:bg-brand-500 light:hover:bg-brand-700 disabled:opacity-60"
                 >
                   {busy ? (
                     <Loader2 className="size-4.5 animate-spin" />
@@ -175,10 +176,10 @@ export function Footer() {
             Solutions. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
-            <Link href="/" className="transition-colors hover:text-brand-300">
+            <Link href="/" className="transition-colors hover:text-brand-accent">
               Privacy Policy
             </Link>
-            <Link href="/" className="transition-colors hover:text-brand-300">
+            <Link href="/" className="transition-colors hover:text-brand-accent">
               Terms of Service
             </Link>
           </div>

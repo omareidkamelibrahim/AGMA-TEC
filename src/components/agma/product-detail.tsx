@@ -32,7 +32,7 @@ export function ProductDetail({ product }: { product: Product }) {
                     key={o}
                     className="flex items-start gap-3.5 rounded-xl border border-border/70 bg-ink-850/85 px-5 py-4"
                   >
-                    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-brand-300" />
+                    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-brand-accent" />
                     <span className="text-[15px] leading-relaxed text-foreground/90">
                       {o}
                     </span>
@@ -59,14 +59,14 @@ export function ProductDetail({ product }: { product: Product }) {
               />
               <AgmaMark className="absolute -bottom-8 -right-8 h-40 w-auto opacity-[0.06]" />
               <div className="relative flex flex-col items-start gap-7">
-                <span className="flex size-20 items-center justify-center rounded-2xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+                <span className="flex size-20 items-center justify-center rounded-2xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
                   <product.icon className="size-10" />
                 </span>
                 <div>
                   <p className="font-display text-3xl font-bold tracking-wide text-foreground">
                     {product.name}
                   </p>
-                  <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-300">
+                  <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.2em] text-brand-accent">
                     {product.full}
                   </p>
                   <p className="mt-4 text-[13px] font-medium text-muted-foreground">
@@ -103,7 +103,7 @@ export function ProductDetail({ product }: { product: Product }) {
             {product.capabilities.map((c, i) => (
               <RevealScale key={c.label} delay={(i % 3) * 0.08} className="h-full">
                 <article className="card-lift group h-full rounded-2xl border border-border bg-ink-850/85 p-7">
-                  <span className="flex size-12 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300 transition-colors duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500/20 group-hover:text-brand-200">
+                  <span className="flex size-12 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent transition-colors duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500 light:hover:bg-brand-700/20 group-hover:text-brand-accent-bright">
                     <c.icon className="size-6" />
                   </span>
                   <h3 className="mt-5 font-display text-lg font-semibold leading-snug text-foreground">
@@ -127,7 +127,7 @@ export function ProductDetail({ product }: { product: Product }) {
               <div className="absolute inset-0 bg-grid opacity-50" />
               <div className="relative flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
                 <div className="max-w-2xl">
-                  <p className="flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-300">
+                  <p className="flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-accent">
                     <BeadDots />
                     Own Technology
                   </p>
@@ -143,7 +143,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 </div>
                 <Link
                   href="/contact"
-                  className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-brand-600 px-7 py-3.5 font-display text-[15px] font-semibold text-white shadow-[0_14px_44px_-10px_rgba(46,123,214,0.8)] transition-colors hover:bg-brand-500"
+                  className="group inline-flex shrink-0 items-center gap-2 rounded-full bg-brand-600 px-7 py-3.5 font-display text-[15px] font-semibold text-white shadow-[0_14px_44px_-10px_rgba(46,123,214,0.8)] transition-colors hover:bg-brand-500 light:hover:bg-brand-700"
                 >
                   Discuss your requirements
                   <ArrowUpRight className="size-4.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -170,21 +170,21 @@ export function ProductDetail({ product }: { product: Product }) {
                   href={`/products/${p.slug}`}
                   className="card-lift group flex h-full items-center gap-5 rounded-2xl border border-border bg-ink-850/85 p-6 sm:p-7"
                 >
-                  <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+                  <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
                     <p.icon className="size-7" />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block font-display text-lg font-bold tracking-wide text-foreground">
                       {p.name}
                     </span>
-                    <span className="mt-0.5 block text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-300">
+                    <span className="mt-0.5 block text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-accent">
                       {p.full}
                     </span>
                     <span className="mt-1.5 block text-[13px] text-muted-foreground">
                       {p.scope}
                     </span>
                   </span>
-                  <ArrowUpRight className="size-5 shrink-0 text-brand-400/60 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-300" />
+                  <ArrowUpRight className="size-5 shrink-0 text-brand-400/60 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-accent" />
                 </Link>
               </RevealScale>
             ))}

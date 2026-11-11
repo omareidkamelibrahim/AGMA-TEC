@@ -36,7 +36,7 @@ export default function AboutPage() {
             {PILLARS.map((p, i) => (
               <RevealScale key={p.title} delay={i * 0.08} className="h-full">
                 <article className="card-lift flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-7 sm:p-9">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
                     <p.icon className="size-6" />
                   </span>
                   <h2 className="mt-5 font-display text-xl font-semibold text-foreground sm:text-2xl">
@@ -73,7 +73,7 @@ export default function AboutPage() {
             </RevealScale>
             <div>
               <Reveal>
-                <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-300">
+                <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-accent">
                   Our Story
                 </span>
               </Reveal>
@@ -147,7 +147,7 @@ export default function AboutPage() {
               </h2>
               <Link
                 href="/products"
-                className="group inline-flex items-center gap-2 font-display text-[15px] font-semibold text-brand-300 transition-colors hover:text-brand-200"
+                className="group inline-flex items-center gap-2 font-display text-[15px] font-semibold text-brand-accent transition-colors hover:text-brand-accent-bright"
               >
                 View all products
                 <ArrowUpRight className="size-4.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -161,7 +161,7 @@ export default function AboutPage() {
                   href={`/products/${p.slug}`}
                   className="card-lift group flex h-full items-center gap-4 rounded-2xl border border-border bg-ink-850/85 p-6"
                 >
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
                     <p.icon className="size-6" />
                   </span>
                   <span className="min-w-0">

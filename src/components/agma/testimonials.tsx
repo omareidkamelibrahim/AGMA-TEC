@@ -43,7 +43,7 @@ export function TestimonialsGrid() {
               “{q.quote}”
             </blockquote>
             <figcaption className="mt-7 flex items-center gap-4 border-t border-border/60 pt-6">
-              <span className="flex size-11 items-center justify-center rounded-full border border-brand-500/30 bg-brand-500/12 font-display text-[13px] font-bold text-brand-300">
+              <span className="flex size-11 items-center justify-center rounded-full border border-brand-500/30 bg-brand-500/12 font-display text-[13px] font-bold text-brand-accent">
                 {q.initials}
               </span>
               <span>
@@ -69,7 +69,7 @@ export function Testimonials() {
       className="relative scroll-mt-24 border-t border-border/60 bg-ink-900/40 py-24 sm:py-32"
       aria-label="Client testimonials"
     >
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_90%_70%,rgba(22,51,91,0.35),transparent_70%)]" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_90%_70%,var(--glow-navy),transparent_70%)]" />
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <SectionHeading
           eyebrow="Client Testimonials"

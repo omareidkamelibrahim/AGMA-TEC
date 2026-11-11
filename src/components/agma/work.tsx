@@ -127,10 +127,10 @@ export function Work() {
                 <div className="relative h-44 overflow-hidden sm:h-48">
                   <ProjectArt seed={p.seed} />
                   <div className="absolute inset-0 bg-gradient-to-t from-ink-850/85 via-transparent to-transparent" />
-                  <span className="absolute left-5 top-5 rounded-full border border-brand-400/30 bg-ink-950/70 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-300 backdrop-blur-sm">
+                  <span className="absolute left-5 top-5 rounded-full border border-brand-400/30 bg-[#050b16]/70 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-200 backdrop-blur-sm">
                     {p.category}
                   </span>
-                  <div className="absolute bottom-5 right-5 flex items-center gap-2 rounded-xl border border-emerald-400/25 bg-ink-950/70 px-3.5 py-2 backdrop-blur-sm">
+                  <div className="absolute bottom-5 right-5 flex items-center gap-2 rounded-xl border border-emerald-400/25 bg-[#050b16]/70 px-3.5 py-2 backdrop-blur-sm">
                     <span className="font-display text-lg font-bold text-emerald-300">
                       {p.metric}
                     </span>
@@ -158,7 +158,7 @@ export function Work() {
             Detailed case studies available on request —{" "}
             <a
               href="#contact"
-              className="font-medium text-brand-300 underline-offset-4 hover:underline"
+              className="font-medium text-brand-accent underline-offset-4 hover:underline"
             >
               ask for the ones relevant to your industry
             </a>

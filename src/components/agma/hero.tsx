@@ -26,7 +26,7 @@ function ProductSuite() {
         initial={{ opacity: 0, y: 34, rotateX: 10 }}
         animate={{ opacity: 1, y: 0, rotateX: 0 }}
         transition={{ duration: 1.1, delay: 0.35, ease: EASE }}
-        className="overflow-hidden rounded-2xl border border-brand-500/20 bg-ink-850/90 shadow-[0_40px_120px_-30px_rgba(2,8,20,0.9),0_0_0_1px_rgba(95,169,242,0.06)] backdrop-blur-xl"
+        className="overflow-hidden rounded-2xl border border-brand-500/20 bg-ink-850/90 shadow-[0_40px_120px_-30px_rgba(2,8,20,0.9),0_0_0_1px_rgba(95,169,242,0.06)] light:shadow-[0_40px_120px_-30px_rgba(12,76,151,0.18),0_0_0_1px_rgba(12,76,151,0.08)] backdrop-blur-xl"
       >
         {/* header */}
         <div className="flex items-center justify-between border-b border-border/70 bg-ink-800/60 px-5 py-3.5 sm:px-6">
@@ -36,7 +36,7 @@ function ProductSuite() {
               AGMA Product Suite
             </span>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-300">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-accent">
             <span className="size-1.5 animate-pulse-soft rounded-full bg-brand-400" />
             Own Technology
           </span>
@@ -55,7 +55,7 @@ function ProductSuite() {
                 href={`/products/${p.slug}`}
                 className="group flex items-center gap-4 rounded-xl border border-border/60 bg-ink-800/50 px-4 py-3.5 transition-colors duration-300 hover:border-brand-500/35 hover:bg-ink-700/60"
               >
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-brand-500/25 bg-brand-500/12 text-brand-300 transition-colors duration-300 group-hover:border-brand-400/50 group-hover:bg-brand-500/20">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-brand-500/25 bg-brand-500/12 text-brand-accent transition-colors duration-300 group-hover:border-brand-400/50 group-hover:bg-brand-500 light:hover:bg-brand-700/20">
                   <p.icon className="size-5.5" />
                 </span>
                 <span className="min-w-0 flex-1">
@@ -65,11 +65,11 @@ function ProductSuite() {
                   <span className="block truncate text-[12px] text-muted-foreground">
                     {p.full}
                   </span>
-                  <span className="mt-0.5 block text-[11px] font-medium text-brand-300/80">
+                  <span className="mt-0.5 block text-[11px] font-medium text-brand-accent/80">
                     {p.scope}
                   </span>
                 </span>
-                <ArrowUpRight className="size-4 shrink-0 text-brand-400/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-300" />
+                <ArrowUpRight className="size-4 shrink-0 text-brand-400/50 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand-accent" />
               </Link>
             </motion.div>
           ))}
@@ -83,7 +83,7 @@ function ProductSuite() {
         transition={{ delay: 1.5, duration: 0.7, ease: EASE }}
         className="absolute -bottom-7 -left-6 hidden animate-float-y items-center gap-2.5 rounded-xl border border-border/80 bg-ink-800/90 px-4 py-3 shadow-xl backdrop-blur-md sm:flex lg:-left-8"
       >
-        <span className="flex size-9 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300">
+        <span className="flex size-9 items-center justify-center rounded-lg bg-brand-500/15 text-brand-accent">
           <Blocks className="size-5" />
         </span>
         <span>
@@ -102,7 +102,7 @@ function ProductSuite() {
         transition={{ delay: 1.7, duration: 0.7, ease: EASE }}
         className="absolute -bottom-6 right-2 hidden animate-float-y-slow items-center gap-2.5 rounded-xl border border-border/80 bg-ink-800/90 px-4 py-3 shadow-xl backdrop-blur-md sm:flex lg:-right-6"
       >
-        <span className="flex size-9 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300">
+        <span className="flex size-9 items-center justify-center rounded-lg bg-brand-500/15 text-brand-accent">
           <Wrench className="size-5" />
         </span>
         <span>
@@ -123,9 +123,9 @@ export function Hero() {
     <section id="home" className="relative overflow-hidden pt-32 pb-16 sm:pt-40 lg:pb-24">
       {/* backdrop */}
       <div className="absolute inset-0 -z-20 bg-grid bg-grid-fade" />
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(55%_45%_at_18%_20%,rgba(22,51,91,0.5),transparent_70%)]" />
+      <div className="absolute inset-0 -z-20 bg-[radial-gradient(55%_45%_at_18%_20%,var(--glow-navy-strong),transparent_70%)]" />
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(45%_40%_at_82%_30%,rgba(46,123,214,0.16),transparent_72%)]" />
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-ink-950 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-background to-transparent" />
 
       {/* floating ghost beads */}
       <AgmaMark className="absolute right-[6%] top-24 -z-10 hidden h-28 w-auto opacity-[0.07] lg:block" />
@@ -134,7 +134,7 @@ export function Hero() {
       <div className="mx-auto grid w-full max-w-7xl items-center gap-16 px-5 sm:px-8 lg:grid-cols-[1.02fr_0.98fr] lg:gap-12">
         <div>
           <Reveal>
-            <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-300">
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-accent">
               <Sparkles className="size-3.5" />
               Enterprise Technology Solutions
             </span>
@@ -160,7 +160,7 @@ export function Hero() {
               <Button
                 asChild
                 size="lg"
-                className="group h-13 rounded-full bg-brand-600 px-7 text-[15px] font-semibold text-white shadow-[0_14px_44px_-10px_rgba(46,123,214,0.75)] transition-all hover:bg-brand-500 hover:shadow-[0_18px_54px_-10px_rgba(59,139,232,0.85)]"
+                className="group h-13 rounded-full bg-brand-600 px-7 text-[15px] font-semibold text-white shadow-[0_14px_44px_-10px_rgba(46,123,214,0.75)] transition-all hover:bg-brand-500 light:hover:bg-brand-700 hover:shadow-[0_18px_54px_-10px_rgba(59,139,232,0.85)]"
               >
                 <Link href="/products">
                   Explore Our Solutions
@@ -185,7 +185,7 @@ export function Hero() {
                   <span className="size-1.5 rounded-full bg-brand-400" />
                   <Link
                     href={`/products/${p.slug}`}
-                    className="font-medium text-foreground/80 transition-colors hover:text-brand-300"
+                    className="font-medium text-foreground/80 transition-colors hover:text-brand-accent"
                   >
                     {p.name}
                   </Link>

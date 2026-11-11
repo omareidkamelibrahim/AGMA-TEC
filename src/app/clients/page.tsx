@@ -37,11 +37,11 @@ export default function ClientsPage() {
         className="relative border-t border-border/60 bg-ink-900/40 py-20 sm:py-24"
         aria-label="Client testimonials"
       >
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_90%_70%,rgba(22,51,91,0.35),transparent_70%)]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_90%_70%,var(--glow-navy),transparent_70%)]" />
         <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
           <Reveal>
             <div>
-              <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-300">
+              <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-accent">
                 Client Testimonials
               </span>
               <h2 className="mt-6 font-display text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl">

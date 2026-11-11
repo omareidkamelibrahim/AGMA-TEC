@@ -10,7 +10,7 @@ import {
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 
-const SERVICES = [
+export const SERVICES = [
   {
     icon: Code2,
     title: "Custom Software Development",
@@ -69,8 +69,8 @@ export function Services() {
           />
           <Reveal delay={0.24}>
             <a
-              href="#contact"
-              className="group mt-8 inline-flex items-center gap-2 font-display text-[15px] font-semibold text-brand-300 transition-colors hover:text-brand-200"
+              href="/contact"
+              className="group mt-8 inline-flex items-center gap-2 font-display text-[15px] font-semibold text-brand-accent transition-colors hover:text-brand-accent-bright"
             >
               Discuss your initiative
               <ArrowUpRight className="size-4.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -84,7 +84,7 @@ export function Services() {
             <RevealScale key={s.title} delay={(i % 2) * 0.08} className="h-full">
               <article className="card-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-ink-850/85 p-7">
                 <div className="pointer-events-none absolute -right-14 -top-14 size-36 rounded-full bg-brand-600/0 blur-2xl transition-colors duration-500 group-hover:bg-brand-600/15" />
-                <span className="flex size-12 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-300 transition-all duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500/20 group-hover:text-brand-200">
+                <span className="flex size-12 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent transition-all duration-500 group-hover:border-brand-400/50 group-hover:bg-brand-500 light:hover:bg-brand-700/20 group-hover:text-brand-accent-bright">
                   <s.icon className="size-6" />
                 </span>
                 <h3 className="mt-5 font-display text-lg font-semibold leading-snug text-foreground">

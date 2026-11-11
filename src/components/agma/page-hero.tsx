@@ -25,13 +25,13 @@ export function PageHero({
     <section className="relative overflow-hidden pt-32 pb-14 sm:pt-40 sm:pb-16">
       {/* backdrop — same treatment as homepage hero */}
       <div className="absolute inset-0 -z-20 bg-grid bg-grid-fade" />
-      <div className="absolute inset-0 -z-20 bg-[radial-gradient(55%_45%_at_18%_20%,rgba(22,51,91,0.5),transparent_70%)]" />
+      <div className="absolute inset-0 -z-20 bg-[radial-gradient(55%_45%_at_18%_20%,var(--glow-navy-strong),transparent_70%)]" />
       <div className="absolute inset-0 -z-20 bg-[radial-gradient(45%_40%_at_82%_30%,rgba(46,123,214,0.16),transparent_72%)]" />
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-ink-950 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-background to-transparent" />
 
       <div className={cn("mx-auto w-full max-w-7xl px-5 sm:px-8", className)}>
         <Reveal>
-          <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-300">
+          <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-accent">
             <BeadDots />
             {eyebrow}
           </span>
