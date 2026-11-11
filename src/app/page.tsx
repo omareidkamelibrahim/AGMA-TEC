@@ -5,7 +5,6 @@ import { Clients } from "@/components/agma/clients";
 import { Testimonials } from "@/components/agma/testimonials";
 import { Team } from "@/components/agma/team";
 import { CtaBand } from "@/components/agma/cta-band";
-import { Contact } from "@/components/agma/contact";
 
 export default function Home() {
   return (
@@ -17,7 +16,6 @@ export default function Home() {
       <Testimonials />
       <Team />
       <CtaBand />
-      <Contact />
     </>
   );
 }
