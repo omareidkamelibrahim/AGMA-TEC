@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
-import { Navbar } from "@/components/agma/navbar";
-import { Footer } from "@/components/agma/footer";
 import { Providers } from "@/components/agma/providers";
 import "./globals.css";
 
@@ -59,17 +57,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth" className="dark">
       <body
         className={`${display.variable} ${sans.variable} antialiased bg-background text-foreground font-sans`}
       >
-        <Providers>
-          <div className="flex min-h-screen flex-col bg-background">
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

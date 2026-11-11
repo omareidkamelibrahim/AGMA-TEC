@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
+import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
+
+const emptySubscribe = () => () => {};
 
 /**
  * Dark / Light mode toggle — Sun/Moon crossfade, matches the navbar's
@@ -11,10 +13,13 @@ import { cn } from "@/lib/utils";
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
-  // Avoid hydration mismatch: pre-mount markup matches the server render.
-  useEffect(() => setMounted(true), []);
+  // Avoid hydration mismatch: false on the server snapshot, true on client.
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   const isLight = mounted && resolvedTheme === "light";
 
