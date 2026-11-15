@@ -13,6 +13,7 @@ import {
   Headset,
   Inbox,
   LayoutDashboard,
+  LogOut,
   Megaphone,
   Menu,
   MessageSquareQuote,
@@ -24,8 +25,18 @@ import {
   Users,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+
+export type AdminUserInfo = { name: string; email: string; role: string };
 
 const NAV = [
   { group: "Dashboard", items: [
@@ -185,22 +196,64 @@ function BellButton() {
   );
 }
 
-function UserChip() {
+function UserChip({ user }: { user: AdminUserInfo }) {
+  const initials =
+    user.name
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase() ?? "")
+      .join("") || "A";
+
+  async function signOut() {
+    try {
+      await fetch("/api/admin/auth/logout", { method: "POST" });
+    } finally {
+      window.location.assign("/admin/login");
+    }
+  }
+
   return (
-    <div className="flex items-center gap-2.5 rounded-xl border border-border bg-ink-850/70 py-1.5 pl-1.5 pr-3">
-      <span className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-[12px] font-bold text-white">
-        A
-      </span>
-      <span className="hidden leading-tight sm:block">
-        <span className="block text-[12.5px] font-semibold text-foreground">Admin User</span>
-        <span className="block text-[10.5px] text-muted-foreground">Super Admin</span>
-      </span>
-      <ShieldCheck className="hidden size-3.5 text-brand-accent sm:block" />
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          aria-label="Account menu"
+          className="flex items-center gap-2.5 rounded-xl border border-border bg-ink-850/70 py-1.5 pl-1.5 pr-3 outline-none transition-colors hover:border-brand-500/40 focus-visible:ring-2 focus-visible:ring-brand-500/30"
+        >
+          <span className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-[12px] font-bold text-white">
+            {initials}
+          </span>
+          <span className="hidden leading-tight sm:block">
+            <span className="block text-[12.5px] font-semibold text-foreground">{user.name}</span>
+            <span className="block text-[10.5px] text-muted-foreground">{user.role}</span>
+          </span>
+          <ShieldCheck className="hidden size-3.5 text-brand-accent sm:block" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={10} className="w-60 border-border bg-ink-900/95 backdrop-blur-xl">
+        <DropdownMenuLabel className="px-3 py-2.5">
+          <span className="block text-[13px] font-semibold text-foreground">{user.name}</span>
+          <span className="block truncate text-[11px] font-normal text-muted-foreground">{user.email}</span>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator className="bg-border" />
+        <DropdownMenuItem
+          onClick={signOut}
+          className="gap-2 px-3 py-2.5 text-[12.5px] text-red-300 focus:bg-red-500/10 focus:text-red-200"
+        >
+          <LogOut className="size-3.5" />
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+export function AdminShell({
+  children,
+  user,
+}: {
+  children: React.ReactNode;
+  user: AdminUserInfo;
+}) {
   const [open, setOpen] = useState(false);
   const mounted = useSyncExternalStore(
     emptySubscribe,
@@ -290,7 +343,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2.5">
             <BellButton />
             <ThemeToggle />
-            <UserChip />
+            <UserChip user={user} />
           </div>
         </header>
 

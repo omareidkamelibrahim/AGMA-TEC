@@ -228,7 +228,7 @@ const ACTIVITY_STYLES: Record<string, { icon: LucideIcon; cls: string }> = {
   testimonial: { icon: Quote, cls: "border-amber-500/25 bg-amber-500/10 text-amber-500" },
 };
 
-export function OverviewClient() {
+export function OverviewClient({ userName }: { userName?: string }) {
   const mounted = useMounted();
   const [range, setRange] = useState("30");
 
@@ -257,6 +257,8 @@ export function OverviewClient() {
   const today = new Date().toLocaleDateString("en-GB", {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
+
+  const firstName = userName?.split(/\s+/)[0] || "Admin";
 
   if (isLoading || !data) {
     return (
@@ -300,7 +302,7 @@ export function OverviewClient() {
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
-              {mounted ? `${greeting}, Admin 👋` : "Welcome back, Admin 👋"}
+              {mounted ? `${greeting}, ${firstName} 👋` : `Welcome back, ${firstName} 👋`}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
               {mounted ? today : "Here's what's happening across your website today."}
