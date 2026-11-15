@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   Blocks,
   Building2,
+  Download,
   Eye,
   EyeOff,
   Image as ImageIcon,
@@ -13,6 +14,7 @@ import {
   Plus,
   Quote,
   Trash2,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,8 +35,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PageHeader } from "./ui";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  FiltersPill,
+  PageHeader,
+  RowActions,
+  SortHeader,
+  ToolbarPill,
+  ToolbarPrimary,
+  ToolbarSearch,
+} from "./ui";
+import { ImportDialog } from "./import-dialog";
 import { PublishedSwitch } from "./website-bits";
+
+const LOGO_IMPORT_TEMPLATE = `Name,Group,Image URL,Sort Order,Published
+Acme Industrial Group,client,/clients/acme.png,10,yes
+TechPartners Ltd,partner,/partners/techpartners.svg,20,yes`;
 
 /* ================= Logos ================= */
 
@@ -100,6 +119,21 @@ export function ClientsClient() {
   const [logoOpen, setLogoOpen] = useState(false);
   const [logoEditing, setLogoEditing] = useState<LogoRow | null>(null);
   const [logoForm, setLogoForm] = useState<LogoForm>(EMPTY_LOGO);
+  const [logoSearch, setLogoSearch] = useState("");
+  const [logoKind, setLogoKind] = useState("all");
+  const [logoImportOpen, setLogoImportOpen] = useState(false);
+  const [logoSort, setLogoSort] = useState<{ field: string; dir: "asc" | "desc" }>({
+    field: "sortOrder",
+    dir: "asc",
+  });
+
+  const onLogoSort = (field: string) => {
+    setLogoSort((s) =>
+      s.field === field
+        ? { field, dir: s.dir === "asc" ? "desc" : "asc" }
+        : { field, dir: "asc" },
+    );
+  };
 
   /* ---------- quotes state ---------- */
   const [quoteOpen, setQuoteOpen] = useState(false);
@@ -236,6 +270,21 @@ export function ClientsClient() {
   const logoRows = logos.data?.rows ?? [];
   const quoteRows = quotes.data?.rows ?? [];
 
+  const visibleLogos = useMemo(() => {
+    const q = logoSearch.trim().toLowerCase();
+    const filtered = logoRows.filter((r) => {
+      if (logoKind !== "all" && r.kind !== logoKind) return false;
+      if (!q) return true;
+      return r.name.toLowerCase().includes(q);
+    });
+    const dir = logoSort.dir === "asc" ? 1 : -1;
+    return [...filtered].sort((a, b) =>
+      String(a[logoSort.field as keyof LogoRow] ?? "").localeCompare(
+        String(b[logoSort.field as keyof LogoRow] ?? ""),
+      ) * dir,
+    );
+  }, [logoRows, logoSearch, logoKind, logoSort]);
+
   const LiveChip = ({ on }: { on: boolean }) =>
     on ? (
       <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-500">
@@ -256,46 +305,91 @@ export function ClientsClient() {
 
       {/* ── Logos ─────────────────────────────────────────────── */}
       <section aria-label="Client and partner logos">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="font-display text-lg font-semibold text-foreground">Logos</h2>
-          <Button
-            className="gap-2"
-            onClick={() => {
-              setLogoEditing(null);
-              setLogoForm({ ...EMPTY_LOGO, sortOrder: logoRows.length + 1 });
-              setLogoOpen(true);
-            }}
-          >
-            <Plus className="size-4" /> Add Logo
-          </Button>
+        <h2 className="font-display text-lg font-semibold text-foreground">Logos</h2>
+
+        {/* toolbar — search left, action pills right */}
+        <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-center">
+          <ToolbarSearch
+            value={logoSearch}
+            onChange={setLogoSearch}
+            placeholder="Search client or partner…"
+            label="Search logos"
+          />
+          <div className="flex flex-wrap items-center gap-2.5 lg:justify-end">
+            <ToolbarPill icon={Upload} onClick={() => setLogoImportOpen(true)}>
+              Import
+            </ToolbarPill>
+            <FiltersPill
+              active={logoKind !== "all" ? 1 : 0}
+              onClear={() => setLogoKind("all")}
+            >
+              <div className="space-y-1.5">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Group</p>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { v: "all", label: "All" },
+                    { v: "client", label: "Clients" },
+                    { v: "partner", label: "Partners" },
+                  ].map((o) => (
+                    <button
+                      key={o.v}
+                      type="button"
+                      onClick={() => setLogoKind(o.v)}
+                      className={
+                        logoKind === o.v
+                          ? "rounded-lg border border-brand-500 bg-brand-500/15 py-2 text-[12.5px] font-semibold text-brand-accent-bright"
+                          : "rounded-lg border border-border py-2 text-[12.5px] font-medium text-muted-foreground transition-colors hover:border-brand-500/40 hover:text-foreground"
+                      }
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </FiltersPill>
+            <ToolbarPill icon={Download} href="/api/admin/clients/export" download>
+              Export
+            </ToolbarPill>
+            <ToolbarPrimary
+              icon={Plus}
+              onClick={() => {
+                setLogoEditing(null);
+                setLogoForm({ ...EMPTY_LOGO, sortOrder: logoRows.length + 1 });
+                setLogoOpen(true);
+              }}
+            >
+              Add logo
+            </ToolbarPrimary>
+          </div>
         </div>
-        <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
+
+        <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[680px] text-sm">
               <thead>
                 <tr className="border-b border-border/60 bg-ink-900/40">
-                  {["Logo", "Group", "Order", "On site", "Actions"].map((h) => (
-                    <th key={h} className="h-11 px-4 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                      {h}
-                    </th>
-                  ))}
+                  <SortHeader label="Logo" field="name" sort={logoSort.field} dir={logoSort.dir} onSort={onLogoSort} />
+                  <SortHeader label="Group" field="kind" sort={logoSort.field} dir={logoSort.dir} onSort={onLogoSort} />
+                  <SortHeader label="Order" field="sortOrder" sort={logoSort.field} dir={logoSort.dir} onSort={onLogoSort} />
+                  <SortHeader label="On site" field="published" sort={logoSort.field} dir={logoSort.dir} onSort={onLogoSort} />
+                  <th className="h-11 w-14 px-4" aria-label="Actions" />
                 </tr>
               </thead>
               <tbody>
                 {logos.isLoading ? (
                   <tr><td colSpan={5} className="px-4 py-10 text-center text-sm text-muted-foreground">Loading…</td></tr>
-                ) : logoRows.length === 0 ? (
+                ) : visibleLogos.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-4 py-10">
                       <p className="text-center text-sm text-muted-foreground">
-                        No logos yet — the site shows the standard "references available on request" panel. Drop files into{" "}
+                        No logos match your search or filter. Drop files into{" "}
                         <code className="rounded bg-ink-900 px-1.5 py-0.5 font-mono text-[12px] text-brand-accent">/public/clients/</code>{" "}
                         or <code className="rounded bg-ink-900 px-1.5 py-0.5 font-mono text-[12px] text-brand-accent">/public/partners/</code>, then add them here.
                       </p>
                     </td>
                   </tr>
                 ) : (
-                  logoRows.map((r) => (
+                  visibleLogos.map((r) => (
                     <tr key={r.id} className="border-b border-border/40 transition-colors last:border-0 hover:bg-brand-500/[0.04]">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
@@ -319,24 +413,29 @@ export function ClientsClient() {
                         </button>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-1.5">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8"
-                            aria-label={`Edit ${r.name}`}
+                        <RowActions label={`Actions for ${r.name}`}>
+                          <DropdownMenuItem
                             onClick={() => {
                               setLogoEditing(r);
                               setLogoForm({ name: r.name, kind: r.kind, imageUrl: r.imageUrl, sortOrder: r.sortOrder, published: r.published });
                               setLogoOpen(true);
                             }}
+                            className="gap-2"
                           >
-                            <Pencil className="size-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="size-8 text-red-500 hover:text-red-400" onClick={() => removeLogo(r)} aria-label={`Remove ${r.name}`}>
-                            <Trash2 className="size-4" />
-                          </Button>
-                        </div>
+                            <Pencil className="size-4" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => toggleLogo(r)} className="gap-2">
+                            {r.published ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                            {r.published ? "Hide from site" : "Publish to site"}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator className="bg-border/60" />
+                          <DropdownMenuItem
+                            onClick={() => removeLogo(r)}
+                            className="gap-2 text-red-500 focus:text-red-500"
+                          >
+                            <Trash2 className="size-4" /> Delete
+                          </DropdownMenuItem>
+                        </RowActions>
                       </td>
                     </tr>
                   ))
@@ -394,29 +493,45 @@ export function ClientsClient() {
                     <p className="truncate text-[12px] text-muted-foreground">{r.org}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-8"
-                    aria-label={`Edit quote from ${r.name}`}
+                <RowActions label={`Actions for ${r.name}`}>
+                  <DropdownMenuItem
                     onClick={() => {
                       setQuoteEditing(r);
                       setQuoteForm({ quote: r.quote, name: r.name, org: r.org, initials: r.initials, sortOrder: r.sortOrder, published: r.published });
                       setQuoteOpen(true);
                     }}
+                    className="gap-2"
                   >
-                    <Pencil className="size-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="size-8 text-red-500 hover:text-red-400" onClick={() => removeQuote(r)} aria-label={`Remove quote from ${r.name}`}>
-                    <Trash2 className="size-4" />
-                  </Button>
-                </div>
+                    <Pencil className="size-4" /> Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => toggleQuote(r)} className="gap-2">
+                    {r.published ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                    {r.published ? "Hide from site" : "Publish to site"}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-border/60" />
+                  <DropdownMenuItem
+                    onClick={() => removeQuote(r)}
+                    className="gap-2 text-red-500 focus:text-red-500"
+                  >
+                    <Trash2 className="size-4" /> Delete
+                  </DropdownMenuItem>
+                </RowActions>
               </div>
             </article>
           ))}
         </div>
       </section>
+
+      {/* ---- Logos CSV import ---- */}
+      <ImportDialog
+        open={logoImportOpen}
+        onOpenChange={setLogoImportOpen}
+        title="Import logos"
+        description="Upload a CSV with the same columns as the Export file. Image files must already exist under /public/clients or /public/partners."
+        resource="clients"
+        template={LOGO_IMPORT_TEMPLATE}
+        onImported={() => qc.invalidateQueries({ queryKey: ["admin-clients"] })}
+      />
 
       {/* ---- Logo dialog ---- */}
       <Dialog open={logoOpen} onOpenChange={setLogoOpen}>

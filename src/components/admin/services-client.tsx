@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
+  Download,
   Eye,
   EyeOff,
   Globe,
@@ -11,6 +12,7 @@ import {
   Plus,
   Sparkles,
   Trash2,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,8 +26,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { iconFromName } from "@/lib/icon-map";
-import { PageHeader, StatCard } from "./ui";
+import {
+  FiltersPill,
+  PageHeader,
+  RowActions,
+  SortHeader,
+  StatCard,
+  ToolbarPill,
+  ToolbarPrimary,
+  ToolbarSearch,
+} from "./ui";
+import { ImportDialog } from "./import-dialog";
 import { IconSelect, PublishedSwitch } from "./website-bits";
 
 export type ServiceRow = {
@@ -56,12 +72,31 @@ const EMPTY_FORM: FormState = {
   published: true,
 };
 
+const IMPORT_TEMPLATE = `Title,Description,Icon,Tags,Sort Order,Published
+Custom Software Development,Bespoke web platforms and internal systems built to your workflows.,Code2,"Web platforms, APIs",10,yes
+Cloud & DevOps,Cloud architecture, migration and automation for reliable operations.,Cloud,"Cloud, Migration",20,yes`;
+
 export function ServicesClient() {
   const qc = useQueryClient();
   const [editing, setEditing] = useState<ServiceRow | null>(null);
   const [open, setOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [sort, setSort] = useState<{ field: string; dir: "asc" | "desc" }>({
+    field: "sortOrder",
+    dir: "asc",
+  });
+
+  const onSort = (field: string) => {
+    setSort((s) =>
+      s.field === field
+        ? { field, dir: s.dir === "asc" ? "desc" : "asc" }
+        : { field, dir: "asc" },
+    );
+  };
 
   const { data, isLoading } = useQuery<{ rows: ServiceRow[] }>({
     queryKey: ["admin-services"],
@@ -72,6 +107,22 @@ export function ServicesClient() {
     },
   });
   const rows = data?.rows ?? [];
+
+  const visible = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const filtered = rows.filter((r) => {
+      if (filter === "live" && !r.published) return false;
+      if (filter === "hidden" && r.published) return false;
+      if (!q) return true;
+      return `${r.title} ${r.text}`.toLowerCase().includes(q);
+    });
+    const dir = sort.dir === "asc" ? 1 : -1;
+    return [...filtered].sort((a, b) =>
+      String(a[sort.field as keyof ServiceRow] ?? "").localeCompare(
+        String(b[sort.field as keyof ServiceRow] ?? ""),
+      ) * dir,
+    );
+  }, [rows, search, filter, sort]);
 
   const openCreate = () => {
     setEditing(null);
@@ -166,12 +217,6 @@ export function ServicesClient() {
       <PageHeader
         title="Services"
         description="The six service disciplines shown on /services and the homepage."
-        actions={
-          <Button className="gap-2" onClick={openCreate}>
-            <Plus className="size-4" />
-            New Service
-          </Button>
-        }
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -191,25 +236,76 @@ export function ServicesClient() {
         />
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
+      {/* toolbar — search left, action pills right */}
+      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center">
+        <ToolbarSearch
+          value={search}
+          onChange={setSearch}
+          placeholder="Search service…"
+          label="Search services"
+        />
+        <div className="flex flex-wrap items-center gap-2.5 lg:justify-end">
+          <ToolbarPill icon={Upload} onClick={() => setImportOpen(true)}>
+            Import
+          </ToolbarPill>
+          <FiltersPill
+            active={filter !== "all" ? 1 : 0}
+            onClear={() => setFilter("all")}
+          >
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">On site</p>
+              <div className="grid grid-cols-3 gap-1.5">
+                {[
+                  { v: "all", label: "All" },
+                  { v: "live", label: "Live" },
+                  { v: "hidden", label: "Hidden" },
+                ].map((o) => (
+                  <button
+                    key={o.v}
+                    type="button"
+                    onClick={() => setFilter(o.v)}
+                    className={
+                      filter === o.v
+                        ? "rounded-lg border border-brand-500 bg-brand-500/15 py-2 text-[12.5px] font-semibold text-brand-accent-bright"
+                        : "rounded-lg border border-border py-2 text-[12.5px] font-medium text-muted-foreground transition-colors hover:border-brand-500/40 hover:text-foreground"
+                    }
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </FiltersPill>
+          <ToolbarPill icon={Download} href="/api/admin/services/export" download>
+            Export
+          </ToolbarPill>
+          <ToolbarPrimary icon={Plus} onClick={openCreate}>
+            New service
+          </ToolbarPrimary>
+        </div>
+      </div>
+
+      <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-border/60 bg-ink-900/40">
-                {["Service", "Tags", "Order", "On site", "Actions"].map((h) => (
-                  <th key={h} className="h-11 px-4 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                    {h}
-                  </th>
-                ))}
+                <SortHeader label="Service" field="title" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <th className="h-11 px-4 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  Tags
+                </th>
+                <SortHeader label="Order" field="sortOrder" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="On site" field="published" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <th className="h-11 w-14 px-4" aria-label="Actions" />
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={5} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading services…</td></tr>
-              ) : rows.length === 0 ? (
-                <tr><td colSpan={5} className="px-4 py-14 text-center text-sm text-muted-foreground">No services yet — the site falls back to the built-in disciplines until one is created.</td></tr>
+                <tr><td colSpan={4} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading services…</td></tr>
+              ) : visible.length === 0 ? (
+                <tr><td colSpan={4} className="px-4 py-14 text-center text-sm text-muted-foreground">No services match your search or filter.</td></tr>
               ) : (
-                rows.map((r) => {
+                visible.map((r) => {
                   const Icon = iconFromName(r.icon);
                   const tags = (() => {
                     try {
@@ -260,14 +356,22 @@ export function ServicesClient() {
                         </button>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-1.5">
-                          <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(r)} aria-label={`Edit ${r.title}`}>
-                            <Pencil className="size-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="size-8 text-red-500 hover:text-red-400" onClick={() => remove(r)} aria-label={`Delete ${r.title}`}>
-                            <Trash2 className="size-4" />
-                          </Button>
-                        </div>
+                        <RowActions label={`Actions for ${r.title}`}>
+                          <DropdownMenuItem onClick={() => openEdit(r)} className="gap-2">
+                            <Pencil className="size-4" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => togglePublished(r)} className="gap-2">
+                            {r.published ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                            {r.published ? "Hide from site" : "Publish to site"}
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator className="bg-border/60" />
+                          <DropdownMenuItem
+                            onClick={() => remove(r)}
+                            className="gap-2 text-red-500 focus:text-red-500"
+                          >
+                            <Trash2 className="size-4" /> Delete
+                          </DropdownMenuItem>
+                        </RowActions>
                       </td>
                     </tr>
                   );
@@ -277,6 +381,17 @@ export function ServicesClient() {
           </table>
         </div>
       </div>
+
+      {/* ---- CSV import ---- */}
+      <ImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        title="Import services"
+        description="Upload a CSV with the same columns as the Export file. Existing titles are skipped."
+        resource="services"
+        template={IMPORT_TEMPLATE}
+        onImported={() => qc.invalidateQueries({ queryKey: ["admin-services"] })}
+      />
 
       {/* ---- Editor dialog ---- */}
       <Dialog open={open} onOpenChange={setOpen}>

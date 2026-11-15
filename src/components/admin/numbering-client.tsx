@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CircleCheck, Hash, Plus, Trash2, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -32,7 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PageHeader, StatCard } from "./ui";
+import { PageHeader, RowActions, StatCard, ToolbarPrimary } from "./ui";
 
 type Series = {
   id: string;
@@ -130,10 +131,9 @@ export function NumberingClient() {
         title="Numbering Series"
         description="Document numbering configuration — prefixes, padding and date tokens."
         actions={
-          <Button className="gap-2" onClick={() => setOpen(true)}>
-            <Plus className="size-4" />
-            Add Series
-          </Button>
+          <ToolbarPrimary icon={Plus} onClick={() => setOpen(true)}>
+            Add series
+          </ToolbarPrimary>
         }
       />
 
@@ -180,15 +180,14 @@ export function NumberingClient() {
                       {s.prefix}{"0".repeat(s.padding)}
                     </td>
                     <td className="px-4 py-3">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-8 text-muted-foreground hover:bg-red-500/10 hover:text-red-500"
-                        onClick={() => setDeleting(s)}
-                        aria-label={`Delete ${s.prefix} series`}
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
+                      <RowActions label={`Actions for ${s.prefix} series`}>
+                        <DropdownMenuItem
+                          onClick={() => setDeleting(s)}
+                          className="gap-2 text-red-500 focus:text-red-500"
+                        >
+                          <Trash2 className="size-4" /> Delete
+                        </DropdownMenuItem>
+                      </RowActions>
                     </td>
                   </tr>
                 ))

@@ -8,12 +8,11 @@ import {
   CalendarClock,
   CirclePause,
   Download,
-  Ellipsis,
   Eye,
   Pencil,
   Plus,
-  Search,
   Trash2,
+  Upload,
   Users,
   Clock3,
 } from "lucide-react";
@@ -58,8 +57,15 @@ import {
   SortHeader,
   StatusBadge,
   TablePagination,
+  TableSummary,
+  ToolbarSearch,
+  ToolbarPill,
+  ToolbarPrimary,
+  FiltersPill,
+  RowActions,
   fmtDate,
 } from "./ui";
+import { ImportDialog } from "./import-dialog";
 
 /* ---------------- types ---------------- */
 
@@ -97,6 +103,10 @@ type Stats = {
 
 const STATUSES = ["Active", "Probation", "Suspended", "Terminated"];
 
+const IMPORT_TEMPLATE = `Name,Department,Position,Status,Hire Date,Manager,ID/Iqama,ID Expiry,Email,Phone
+Khalid Al-Harbi,Production,Production Manager,Active,2019-03-10,Adel Gamal,1099000001,2026-08-12,khalid.alharbi@agma.com,+966501234567
+Noura Al-Shehri,Human Resources,HR Manager,Active,2018-11-15,,,1099000003,2027-01-20,noura.alshehri@agma.com,+966507654321`;
+
 const EMPTY_FORM = {
   name: "",
   department: "Production",
@@ -126,6 +136,7 @@ export function EmployeesClient() {
 
   // dialogs
   const [formOpen, setFormOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
   const [editing, setEditing] = useState<Employee | null>(null);
   const [viewing, setViewing] = useState<Employee | null>(null);
   const [deleting, setDeleting] = useState<Employee | null>(null);
@@ -280,24 +291,6 @@ export function EmployeesClient() {
       <PageHeader
         title="Employees"
         description="Central workforce directory — search, filter, manage and export."
-        actions={
-          <>
-            <Button
-              variant="outline"
-              className="gap-2 border-border bg-ink-850/70 hover:bg-ink-800"
-              onClick={() =>
-                window.open(`/api/admin/employees/export?${params}`, "_blank")
-              }
-            >
-              <Download className="size-4" />
-              Export
-            </Button>
-            <Button className="gap-2" onClick={openAdd}>
-              <Plus className="size-4" />
-              New Employee
-            </Button>
-          </>
-        }
       />
 
       {/* stats row — mirrors the reference screen */}
@@ -309,52 +302,87 @@ export function EmployeesClient() {
         <StatCard label="Docs Expiring" value={stats?.expiringDocs ?? "—"} icon={CalendarClock} tone="warning" />
       </div>
 
-      {/* toolbar */}
-      <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-border bg-ink-850/85 p-4 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search name, code, position, ID or manager…"
-            className="h-10 border-border bg-ink-900/60 pl-9"
-            aria-label="Search employees"
-          />
-        </div>
-        <div className="flex gap-3">
-          <Select
-            value={status}
-            onValueChange={(v) => { setStatus(v); setPage(1); }}
+      {/* toolbar — search left, action pills right */}
+      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center">
+        <ToolbarSearch
+          value={search}
+          onChange={setSearch}
+          placeholder="Search number or name…"
+          label="Search employees"
+        />
+        <div className="flex flex-wrap items-center gap-2.5 lg:justify-end">
+          <ToolbarPill icon={Upload} onClick={() => setImportOpen(true)}>
+            Import
+          </ToolbarPill>
+          <FiltersPill
+            active={(status !== "all" ? 1 : 0) + (department !== "all" ? 1 : 0)}
+            onClear={() => {
+              setStatus("all");
+              setDepartment("all");
+              setPage(1);
+            }}
           >
-            <SelectTrigger className="h-10 w-full border-border bg-ink-900/60 sm:w-36" aria-label="Filter by status">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All statuses</SelectItem>
-              {STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Select
-            value={department}
-            onValueChange={(v) => { setDepartment(v); setPage(1); }}
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Status</p>
+              <Select
+                value={status}
+                onValueChange={(v) => { setStatus(v); setPage(1); }}
+              >
+                <SelectTrigger className="h-9 w-full border-border bg-ink-850" aria-label="Filter by status">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All statuses</SelectItem>
+                  {STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Department</p>
+              <Select
+                value={department}
+                onValueChange={(v) => { setDepartment(v); setPage(1); }}
+              >
+                <SelectTrigger className="h-9 w-full border-border bg-ink-850" aria-label="Filter by department">
+                  <SelectValue placeholder="Department" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All departments</SelectItem>
+                  {(stats?.departments ?? []).map((d) => (
+                    <SelectItem key={d.department} value={d.department}>
+                      {d.department}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </FiltersPill>
+          <ToolbarPill
+            icon={Download}
+            href={`/api/admin/employees/export?${params}`}
+            download
           >
-            <SelectTrigger className="h-10 w-full border-border bg-ink-900/60 sm:w-44" aria-label="Filter by department">
-              <SelectValue placeholder="Department" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All departments</SelectItem>
-              {(stats?.departments ?? []).map((d) => (
-                <SelectItem key={d.department} value={d.department}>
-                  {d.department}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            Export
+          </ToolbarPill>
+          <ToolbarPrimary icon={Plus} onClick={openAdd}>
+            New employee
+          </ToolbarPrimary>
         </div>
       </div>
 
+      {/* record summary + circular pager — above the table like the reference */}
+      {data && (
+        <TableSummary
+          page={data.page}
+          pageCount={data.pageCount}
+          total={data.total}
+          pageSize={data.pageSize}
+          onPage={setPage}
+        />
+      )}
+
       {/* table */}
-      <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
+      <div className="overflow-hidden rounded-2xl border border-border bg-ink-850/85">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[900px] text-sm">
             <thead>
@@ -392,33 +420,21 @@ export function EmployeesClient() {
                     <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">{fmtDate(e.hireDate)}</td>
                     <td className="px-4 py-3 text-foreground/80">{e.manager ?? "—"}</td>
                     <td className="px-4 py-3">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-8 text-muted-foreground hover:text-foreground"
-                            aria-label={`Actions for ${e.name}`}
-                          >
-                            <Ellipsis className="size-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="border-border bg-ink-900">
-                          <DropdownMenuItem onClick={() => setViewing(e)} className="gap-2">
-                            <Eye className="size-4" /> View details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => openEdit(e)} className="gap-2">
-                            <Pencil className="size-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator className="bg-border/60" />
-                          <DropdownMenuItem
-                            onClick={() => setDeleting(e)}
-                            className="gap-2 text-red-500 focus:text-red-500"
-                          >
-                            <Trash2 className="size-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <RowActions label={`Actions for ${e.name}`}>
+                        <DropdownMenuItem onClick={() => setViewing(e)} className="gap-2">
+                          <Eye className="size-4" /> View details
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEdit(e)} className="gap-2">
+                          <Pencil className="size-4" /> Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-border/60" />
+                        <DropdownMenuItem
+                          onClick={() => setDeleting(e)}
+                          className="gap-2 text-red-500 focus:text-red-500"
+                        >
+                          <Trash2 className="size-4" /> Delete
+                        </DropdownMenuItem>
+                      </RowActions>
                     </td>
                   </tr>
                 ))
@@ -436,6 +452,17 @@ export function EmployeesClient() {
           />
         )}
       </div>
+
+      {/* CSV import */}
+      <ImportDialog
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        title="Import employees"
+        description="Upload a CSV with the same columns as the Export file. Rows with an existing ID/Iqama are skipped."
+        resource="employees"
+        template={IMPORT_TEMPLATE}
+        onImported={invalidate}
+      />
 
       {/* add / edit dialog */}
       <Dialog open={formOpen} onOpenChange={setFormOpen}>

@@ -2,15 +2,27 @@
 
 import { cn } from "@/lib/utils";
 import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
   ChevronLeft,
   ChevronRight,
+  Ellipsis,
+  Funnel,
   Minus,
+  Plus,
+  Search,
   TrendingDown,
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 /* ---------- Page header ---------- */
 
@@ -216,7 +228,7 @@ export function TablePagination({
         <Button
           variant="outline"
           size="icon"
-          className="size-8.5 rounded-lg"
+          className="size-9 rounded-full"
           disabled={page <= 1}
           onClick={() => onPage(page - 1)}
           aria-label="Previous page"
@@ -233,7 +245,7 @@ export function TablePagination({
               onClick={() => onPage(p)}
               aria-current={p === page ? "page" : undefined}
               className={cn(
-                "size-8.5 rounded-lg border text-[12.5px] font-semibold transition-colors",
+                "size-9 rounded-full border text-[12.5px] font-semibold transition-colors",
                 p === page
                   ? "border-brand-500 bg-brand-500 text-white"
                   : "border-border bg-ink-850/70 text-muted-foreground hover:border-brand-500/40 hover:text-foreground",
@@ -246,7 +258,7 @@ export function TablePagination({
         <Button
           variant="outline"
           size="icon"
-          className="size-8.5 rounded-lg"
+          className="size-9 rounded-full"
           disabled={page >= pageCount}
           onClick={() => onPage(page + 1)}
           aria-label="Next page"
@@ -276,6 +288,7 @@ export function SortHeader({
   className?: string;
 }) {
   const active = sort === field;
+  const Icon = active ? (dir === "desc" ? ArrowDown : ArrowUp) : ArrowUpDown;
   return (
     <th className={cn("h-11 px-4 text-left align-middle", className)}>
       <button
@@ -288,9 +301,7 @@ export function SortHeader({
         aria-label={`Sort by ${label}`}
       >
         {label}
-        <span className={cn("text-[9px] transition-opacity", active ? "opacity-100" : "opacity-30")}>
-          {active && dir === "desc" ? "▼" : "▲"}
-        </span>
+        <Icon className={cn("size-3", active ? "opacity-100" : "opacity-40")} />
       </button>
     </th>
   );
@@ -309,4 +320,239 @@ export function fmtMoney(n: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency", currency: "SAR", maximumFractionDigits: 0,
   }).format(n);
+}
+
+/* ---------- Toolbar kit — mirrors the reference admin screens:
+   wide search on the left, pill buttons (Import · Filters · Export ·
+   primary action) on the right. AGMA brand colors only. ---------- */
+
+/** Wide rounded search field — toolbar left side. */
+export function ToolbarSearch({
+  value,
+  onChange,
+  placeholder,
+  label,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  label: string;
+}) {
+  return (
+    <div className="relative w-full flex-1 sm:max-w-md">
+      <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        aria-label={label}
+        className="h-10 w-full rounded-xl border border-border bg-ink-900/60 pl-10 pr-4 text-[13px] text-foreground placeholder:text-muted-foreground/70 outline-none transition-colors focus:border-brand-500/50 focus:ring-2 focus:ring-brand-500/15"
+      />
+    </div>
+  );
+}
+
+const pillCls =
+  "h-10 gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4.5 text-[13px] font-semibold text-brand-accent-bright hover:border-brand-500/50 hover:bg-brand-500/20";
+
+/** Tinted pill action (Import / Filters / Export style). */
+export function ToolbarPill({
+  icon: Icon,
+  children,
+  onClick,
+  href,
+  download,
+  disabled,
+  className,
+}: {
+  icon: LucideIcon;
+  children: React.ReactNode;
+  onClick?: () => void;
+  /** Renders an anchor (e.g. CSV download links) instead of a button. */
+  href?: string;
+  download?: boolean | string;
+  disabled?: boolean;
+  className?: string;
+}) {
+  if (href) {
+    return (
+      <Button asChild className={cn(pillCls, className)}>
+        <a href={href} download={download}>
+          <Icon className="size-4" />
+          {children}
+        </a>
+      </Button>
+    );
+  }
+  return (
+    <Button
+      variant="outline"
+      onClick={onClick}
+      disabled={disabled}
+      className={cn(pillCls, className)}
+    >
+      <Icon className="size-4" />
+      {children}
+    </Button>
+  );
+}
+
+/** Solid primary pill (New employee / Upload style). */
+export function ToolbarPrimary({
+  icon: Icon = Plus,
+  children,
+  onClick,
+}: {
+  icon?: LucideIcon;
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
+  return (
+    <Button
+      onClick={onClick}
+      className="h-10 gap-2 rounded-full bg-gradient-to-r from-brand-600 to-brand-500 px-5 text-[13px] font-semibold text-white shadow-lg shadow-brand-600/30 hover:from-brand-500 hover:to-brand-400"
+    >
+      <Icon className="size-4" />
+      {children}
+    </Button>
+  );
+}
+
+/**
+ * "Filters" pill with a popover holding the filter controls.
+ * Shows a count badge when filters are active; optional clear button.
+ */
+export function FiltersPill({
+  active = 0,
+  onClear,
+  children,
+}: {
+  active?: number;
+  onClear?: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className={cn(pillCls, "relative")}>
+          <Funnel className="size-4" />
+          Filters
+          {active > 0 && (
+            <span className="ml-0.5 flex size-4.5 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">
+              {active}
+            </span>
+          )}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={10}
+        className="w-72 border-border bg-ink-900/95 p-4 backdrop-blur-xl"
+      >
+        <div className="flex flex-col gap-3">{children}</div>
+        {onClear && active > 0 && (
+          <button
+            type="button"
+            onClick={onClear}
+            className="mt-1 w-full rounded-lg border border-border py-2 text-[12.5px] font-semibold text-muted-foreground transition-colors hover:border-brand-500/40 hover:text-foreground"
+          >
+            Clear all filters
+          </button>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+/** Circular tinted "…" row-action menu (per-row Actions column). */
+export function RowActions({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          aria-label={label}
+          className="flex size-9 items-center justify-center rounded-full border border-brand-500/25 bg-brand-500/10 text-brand-accent-bright outline-none transition-colors hover:bg-brand-500/25 focus-visible:ring-2 focus-visible:ring-brand-500/30"
+        >
+          <Ellipsis className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={8}
+        className="w-48 border-border bg-ink-900/95 backdrop-blur-xl"
+      >
+        {children}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+/** Circular ‹ › pager pair. */
+export function PagerArrows({
+  page,
+  pageCount,
+  onPage,
+}: {
+  page: number;
+  pageCount: number;
+  onPage: (p: number) => void;
+}) {
+  const cls =
+    "flex size-9 items-center justify-center rounded-full border border-border bg-ink-850/70 text-muted-foreground transition-colors hover:border-brand-500/40 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40";
+  return (
+    <div className="flex items-center gap-2">
+      <button
+        type="button"
+        className={cls}
+        disabled={page <= 1}
+        onClick={() => onPage(page - 1)}
+        aria-label="Previous page"
+      >
+        <ChevronLeft className="size-4" />
+      </button>
+      <button
+        type="button"
+        className={cls}
+        disabled={page >= pageCount}
+        onClick={() => onPage(page + 1)}
+        aria-label="Next page"
+      >
+        <ChevronRight className="size-4" />
+      </button>
+    </div>
+  );
+}
+
+/** Slim strip above a table: record count on the left, circular ‹ › on the right. */
+export function TableSummary({
+  page,
+  pageCount,
+  total,
+  pageSize,
+  onPage,
+}: {
+  page: number;
+  pageCount: number;
+  total: number;
+  pageSize: number;
+  onPage: (p: number) => void;
+}) {
+  const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const to = Math.min(total, page * pageSize);
+  return (
+    <div className="mb-3 mt-4 flex items-center justify-between gap-3">
+      <p className="text-[12.5px] text-muted-foreground">
+        Showing <span className="font-semibold text-foreground">{from}–{to}</span> of{" "}
+        <span className="font-semibold text-foreground">{total}</span>
+      </p>
+      <PagerArrows page={page} pageCount={pageCount} onPage={onPage} />
+    </div>
+  );
 }

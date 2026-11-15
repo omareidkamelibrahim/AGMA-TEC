@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   Check,
   Download,
+  Eye,
   Inbox,
   Mail,
   MessageSquare,
@@ -21,7 +22,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PageHeader, StatCard, fmtDate } from "./ui";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  FiltersPill,
+  PageHeader,
+  RowActions,
+  SortHeader,
+  StatCard,
+  ToolbarPill,
+  ToolbarSearch,
+  fmtDate,
+} from "./ui";
 
 type Inquiry = {
   id: string;
@@ -39,6 +53,20 @@ type Payload = { rows: Inquiry[]; stats: { total: number; newCount: number; last
 export function InquiriesClient() {
   const qc = useQueryClient();
   const [active, setActive] = useState<Inquiry | null>(null);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sort, setSort] = useState<{ field: string; dir: "asc" | "desc" }>({
+    field: "createdAt",
+    dir: "desc",
+  });
+
+  const onSort = (field: string) => {
+    setSort((s) =>
+      s.field === field
+        ? { field, dir: s.dir === "asc" ? "desc" : "asc" }
+        : { field, dir: "asc" },
+    );
+  };
 
   const { data, isLoading } = useQuery<Payload>({
     queryKey: ["admin-inquiries"],
@@ -50,6 +78,27 @@ export function InquiriesClient() {
   });
   const rows = data?.rows ?? [];
   const stats = data?.stats;
+
+  const visible = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const filtered = rows.filter((r) => {
+      if (statusFilter !== "all" && r.status !== statusFilter) return false;
+      if (!q) return true;
+      return [r.name, r.email, r.company ?? "", r.service ?? ""]
+        .join(" ")
+        .toLowerCase()
+        .includes(q);
+    });
+    const dir = sort.dir === "asc" ? 1 : -1;
+    return [...filtered].sort((a, b) => {
+      const av = a[sort.field as keyof Inquiry];
+      const bv = b[sort.field as keyof Inquiry];
+      if (sort.field === "createdAt") {
+        return (new Date(String(av)).getTime() - new Date(String(bv)).getTime()) * dir;
+      }
+      return String(av ?? "").localeCompare(String(bv ?? "")) * dir;
+    });
+  }, [rows, search, statusFilter, sort]);
 
   const setStatus = async (row: Inquiry, status: "New" | "Handled") => {
     const res = await fetch(`/api/admin/inquiries/${row.id}`, {
@@ -83,16 +132,6 @@ export function InquiriesClient() {
       <PageHeader
         title="Inquiries"
         description="Messages submitted through the website contact form, newest first."
-        actions={
-          <a
-            href="/api/admin/inquiries?format=csv"
-            download
-            className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-ink-850/70 px-4 text-[13px] font-medium text-foreground transition-colors hover:border-brand-500/40"
-          >
-            <Download className="size-4" />
-            Export CSV
-          </a>
-        }
       />
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -101,25 +140,65 @@ export function InquiriesClient() {
         <StatCard label="All time" value={stats?.total ?? "—"} icon={Mail} tone="neutral" />
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
+      {/* toolbar — search left, filters + export pills right */}
+      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center">
+        <ToolbarSearch
+          value={search}
+          onChange={setSearch}
+          placeholder="Search name, email or company…"
+          label="Search inquiries"
+        />
+        <div className="flex flex-wrap items-center gap-2.5 lg:justify-end">
+          <FiltersPill
+            active={statusFilter !== "all" ? 1 : 0}
+            onClear={() => setStatusFilter("all")}
+          >
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Status</p>
+              <div className="grid grid-cols-3 gap-1.5">
+                {["all", "New", "Handled"].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setStatusFilter(s)}
+                    className={
+                      statusFilter === s
+                        ? "rounded-lg border border-brand-500 bg-brand-500/15 py-2 text-[12.5px] font-semibold text-brand-accent-bright"
+                        : "rounded-lg border border-border py-2 text-[12.5px] font-medium text-muted-foreground transition-colors hover:border-brand-500/40 hover:text-foreground"
+                    }
+                  >
+                    {s === "all" ? "All" : s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </FiltersPill>
+          <ToolbarPill icon={Download} href="/api/admin/inquiries?format=csv" download>
+            Export
+          </ToolbarPill>
+        </div>
+      </div>
+
+      <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-border/60 bg-ink-900/40">
-                {["From", "Company", "Service interest", "Received", "Status"].map((h) => (
-                  <th key={h} className="h-11 px-4 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                    {h}
-                  </th>
-                ))}
+                <SortHeader label="From" field="name" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Company" field="company" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Service interest" field="service" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Received" field="createdAt" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Status" field="status" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <th className="h-11 w-14 px-4" aria-label="Actions" />
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={5} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading inquiries…</td></tr>
-              ) : rows.length === 0 ? (
-                <tr><td colSpan={5} className="px-4 py-14 text-center text-sm text-muted-foreground">No inquiries yet — submissions from the contact form will appear here.</td></tr>
+                <tr><td colSpan={6} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading inquiries…</td></tr>
+              ) : visible.length === 0 ? (
+                <tr><td colSpan={6} className="px-4 py-14 text-center text-sm text-muted-foreground">No inquiries match your search or filter.</td></tr>
               ) : (
-                rows.map((r) => (
+                visible.map((r) => (
                   <tr
                     key={r.id}
                     onClick={() => setActive(r)}
@@ -154,6 +233,27 @@ export function InquiriesClient() {
                           <Check className="size-3" /> Handled
                         </span>
                       )}
+                    </td>
+                    <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                      <RowActions label={`Actions for ${r.name}`}>
+                        <DropdownMenuItem onClick={() => setActive(r)} className="gap-2">
+                          <Eye className="size-4" /> View details
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setStatus(r, r.status === "New" ? "Handled" : "New")}
+                          className="gap-2"
+                        >
+                          {r.status === "New" ? <Check className="size-4" /> : <RotateCcw className="size-4" />}
+                          {r.status === "New" ? "Mark handled" : "Mark new"}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-border/60" />
+                        <DropdownMenuItem
+                          onClick={() => remove(r)}
+                          className="gap-2 text-red-500 focus:text-red-500"
+                        >
+                          <Trash2 className="size-4" /> Delete
+                        </DropdownMenuItem>
+                      </RowActions>
                     </td>
                   </tr>
                 ))

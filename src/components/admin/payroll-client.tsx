@@ -15,7 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PageHeader, StatCard, StatusBadge, fmtMoney } from "./ui";
+import { PageHeader, SortHeader, StatCard, StatusBadge, ToolbarPrimary, fmtMoney } from "./ui";
 
 type Run = {
   id: string;
@@ -39,6 +39,18 @@ export function PayrollClient() {
   const [open, setOpen] = useState(false);
   const [period, setPeriod] = useState("");
   const [saving, setSaving] = useState(false);
+  const [sort, setSort] = useState<{ field: string; dir: "asc" | "desc" }>({
+    field: "period",
+    dir: "desc",
+  });
+
+  const onSort = (field: string) => {
+    setSort((s) =>
+      s.field === field
+        ? { field, dir: s.dir === "asc" ? "desc" : "asc" }
+        : { field, dir: "asc" },
+    );
+  };
 
   const { data, isLoading } = useQuery<Response>({
     queryKey: ["payroll"],
@@ -74,19 +86,19 @@ export function PayrollClient() {
     }
   };
 
-  const rows = data?.rows ?? [];
+  const rows = [...(data?.rows ?? [])].sort((a, b) => {
+    const dir = sort.dir === "asc" ? 1 : -1;
+    const av = a[sort.field as keyof Run];
+    const bv = b[sort.field as keyof Run];
+    if (typeof av === "number" && typeof bv === "number") return (av - bv) * dir;
+    return String(av ?? "").localeCompare(String(bv ?? "")) * dir;
+  });
 
   return (
     <>
       <PageHeader
         title="Payroll"
         description="Monthly payroll runs with references generated from the HR numbering series."
-        actions={
-          <Button className="gap-2" onClick={() => setOpen(true)}>
-            <FilePlus2 className="size-4" />
-            New Run
-          </Button>
-        }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -96,16 +108,25 @@ export function PayrollClient() {
         <StatCard label="Paid / Draft Runs" value={data ? `${data.totals.paid} / ${data.totals.draft}` : "—"} icon={Landmark} tone="neutral" />
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
+      {/* toolbar — primary action pill on the right, like the reference */}
+      <div className="mt-6 flex items-center justify-end gap-2.5">
+        <ToolbarPrimary icon={FilePlus2} onClick={() => setOpen(true)}>
+          New run
+        </ToolbarPrimary>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-border bg-ink-850/85">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-border/60 bg-ink-900/40">
-                {["Reference", "Period", "Employees", "Gross", "Deductions", "Net", "Status"].map((h) => (
-                  <th key={h} className="h-11 px-4 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                    {h}
-                  </th>
-                ))}
+                <SortHeader label="Reference" field="reference" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Period" field="period" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Employees" field="employees" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Gross" field="gross" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Deductions" field="deductions" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Net" field="net" sort={sort.field} dir={sort.dir} onSort={onSort} />
+                <SortHeader label="Status" field="status" sort={sort.field} dir={sort.dir} onSort={onSort} />
               </tr>
             </thead>
             <tbody>

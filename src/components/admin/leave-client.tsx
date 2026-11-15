@@ -3,9 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { CalendarDays, Check, Search, X } from "lucide-react";
+import { CalendarDays, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,6 +17,10 @@ import {
   StatCard,
   StatusBadge,
   TablePagination,
+  TableSummary,
+  ToolbarSearch,
+  FiltersPill,
+  RowActions,
   fmtDate,
 } from "./ui";
 
@@ -113,29 +116,49 @@ export function LeaveClient() {
         <StatCard label="Total Requests" value={data?.total ?? "—"} icon={CalendarDays} tone="brand" />
       </div>
 
-      <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-border bg-ink-850/85 p-4 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search employee, code or department…"
-            className="h-10 border-border bg-ink-900/60 pl-9"
-            aria-label="Search leave requests"
-          />
+      {/* toolbar — search left, filters pill right */}
+      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center">
+        <ToolbarSearch
+          value={search}
+          onChange={setSearch}
+          placeholder="Search employee or department…"
+          label="Search leave requests"
+        />
+        <div className="flex flex-wrap items-center gap-2.5 lg:justify-end">
+          <FiltersPill
+            active={status !== "all" ? 1 : 0}
+            onClear={() => {
+              setStatus("all");
+              setPage(1);
+            }}
+          >
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Status</p>
+              <Select value={status} onValueChange={(v) => { setStatus(v); setPage(1); }}>
+                <SelectTrigger className="h-9 w-full border-border bg-ink-850" aria-label="Filter by status">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All statuses</SelectItem>
+                  {STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          </FiltersPill>
         </div>
-        <Select value={status} onValueChange={(v) => { setStatus(v); setPage(1); }}>
-          <SelectTrigger className="h-10 w-full border-border bg-ink-900/60 sm:w-40" aria-label="Filter by status">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            {STATUSES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-          </SelectContent>
-        </Select>
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
+      {data && (
+        <TableSummary
+          page={data.page}
+          pageCount={data.pageCount}
+          total={data.total}
+          pageSize={data.pageSize}
+          onPage={setPage}
+        />
+      )}
+
+      <div className="overflow-hidden rounded-2xl border border-border bg-ink-850/85">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-sm">
             <thead>
@@ -167,7 +190,7 @@ export function LeaveClient() {
                     <td className="px-4 py-3"><StatusBadge status={l.status} /></td>
                     <td className="px-4 py-3">
                       {l.status === "Pending" ? (
-                        <div className="flex gap-2">
+                        <RowActions label={`Actions for ${l.employeeName}`}>
                           <Button
                             size="sm"
                             className="h-8 gap-1.5 bg-emerald-600 px-3 text-white hover:bg-emerald-700"
@@ -185,7 +208,7 @@ export function LeaveClient() {
                           >
                             <X className="size-3.5" /> Reject
                           </Button>
-                        </div>
+                        </RowActions>
                       ) : (
                         <span className="text-[12px] text-muted-foreground">Decided</span>
                       )}
