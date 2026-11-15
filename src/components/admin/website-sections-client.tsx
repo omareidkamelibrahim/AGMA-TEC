@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowDown, ArrowUp, Eye, EyeOff } from "lucide-react";
-import { PageHeader } from "./ui";
+import { ArrowDown, ArrowUp, Eye, EyeOff, LayoutTemplate } from "lucide-react";
+import { PageHeader, StatCard } from "./ui";
 import { Field, SaveBar, isDirty, useSaveSiteConfig, useSiteConfig } from "./site-editor";
 import {
   PILLAR_ICONS,
@@ -89,7 +89,28 @@ export function WebsiteSectionsClient() {
         description="Hero, About and CTA copy, plus which sections appear on the home page and in what order."
       />
 
-      <div className="flex flex-col gap-6">
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        <StatCard
+          label="Home sections"
+          value={sections.order.length}
+          icon={LayoutTemplate}
+          tone="brand"
+        />
+        <StatCard
+          label="Visible on the site"
+          value={sections.order.filter((k) => sections.visible[k] !== false).length}
+          icon={Eye}
+          tone="success"
+        />
+        <StatCard
+          label="Hidden"
+          value={sections.order.filter((k) => sections.visible[k] === false).length}
+          icon={EyeOff}
+          tone="neutral"
+        />
+      </div>
+
+      <div className="mt-6 flex flex-col gap-6">
         {/* Hero */}
         <Card title="Hero banner">
           <Field label="Badge" value={hero.badge} onChange={(badge) => setHero({ ...hero, badge })} />

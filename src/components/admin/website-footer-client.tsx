@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
-import { PageHeader } from "./ui";
+import { LayoutGrid, Link2, Plus, Share2, Trash2 } from "lucide-react";
+import { PageHeader, StatCard } from "./ui";
 import { Field, LinkListEditor, SaveBar, isDirty, useSaveSiteConfig, useSiteConfig } from "./site-editor";
 import { SOCIAL_ICONS, type FooterConfig } from "@/lib/site-config";
 
@@ -29,7 +29,18 @@ export function WebsiteFooterClient() {
         description="Everything below the divider on the website: brand text, link columns, socials, newsletter blurb and the bottom bar."
       />
 
-      <div className="flex flex-col gap-8 rounded-2xl border border-border bg-ink-850/85 p-6 sm:p-8">
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        <StatCard label="Footer columns" value={state.columns.length} icon={LayoutGrid} tone="brand" />
+        <StatCard
+          label="Links in columns"
+          value={state.columns.reduce((acc, c) => acc + c.links.length, 0)}
+          icon={Link2}
+          tone="success"
+        />
+        <StatCard label="Social links" value={state.socials.length} icon={Share2} tone="neutral" />
+      </div>
+
+      <div className="mt-6 flex flex-col gap-8 rounded-2xl border border-border bg-ink-850/85 p-6 sm:p-8">
         <Field
           label="Brand paragraph"
           value={state.about}
