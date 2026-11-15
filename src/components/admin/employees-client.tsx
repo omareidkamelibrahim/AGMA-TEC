@@ -64,6 +64,7 @@ import {
   FiltersPill,
   RowActions,
   fmtDate,
+  Checkbox,
 } from "./ui";
 import { ImportDialog } from "./import-dialog";
 
@@ -124,6 +125,16 @@ const EMPTY_FORM = {
 
 export function EmployeesClient() {
   const qc = useQueryClient();
+
+  /* photo-style row selection */
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const toggleRow = (id: string, on: boolean) =>
+    setSelected((s) => {
+      const n = new Set(s);
+      if (on) n.add(id);
+      else n.delete(id);
+      return n;
+    });
 
   // table state
   const [search, setSearch] = useState("");
@@ -270,14 +281,14 @@ export function EmployeesClient() {
   const rows = data?.rows ?? [];
   const loadingRow = (
     <tr>
-      <td colSpan={8} className="px-4 py-14 text-center text-sm text-muted-foreground">
+      <td colSpan={9} className="px-4 py-14 text-center text-sm text-muted-foreground">
         Loading employees…
       </td>
     </tr>
   );
   const emptyRow = (
     <tr>
-      <td colSpan={8} className="px-4 py-14 text-center">
+      <td colSpan={9} className="px-4 py-14 text-center">
         <p className="text-sm font-medium text-foreground">No employees match your filters</p>
         <p className="mt-1 text-[12.5px] text-muted-foreground">
           Try a different search term, status or department.
@@ -378,6 +389,8 @@ export function EmployeesClient() {
           total={data.total}
           pageSize={data.pageSize}
           onPage={setPage}
+          selected={selected.size}
+          onClearSelection={() => setSelected(new Set())}
         />
       )}
 
@@ -387,6 +400,14 @@ export function EmployeesClient() {
           <table className="w-full min-w-[900px] text-sm">
             <thead>
               <tr className="border-b border-border/60 bg-ink-900/40">
+                                <th className="h-11 w-12 pl-5 pr-1 align-middle" aria-label="Select">
+                  <Checkbox
+                    checked={ rows.length > 0 && rows.every((x) => selected.has(x.id)) }
+                    indeterminate={ selected.size > 0 && !rows.every((x) => selected.has(x.id)) }
+                    onChange={(on) => setSelected(on ? new Set(rows.map((x) => x.id)) : new Set())}
+                    label="Select all rows"
+                  />
+                </th>
                 <SortHeader label="Code" field="empCode" sort={sort} dir={dir} onSort={onSort} />
                 <SortHeader label="Name" field="name" sort={sort} dir={dir} onSort={onSort} />
                 <SortHeader label="Department" field="department" sort={sort} dir={dir} onSort={onSort} />
@@ -407,6 +428,9 @@ export function EmployeesClient() {
               ) : (
                 rows.map((e) => (
                   <tr key={e.id} className="border-b border-border/40 transition-colors last:border-0 hover:bg-brand-500/[0.04]">
+                    <td className="pl-5 pr-1 align-middle" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox checked={ selected.has(e.id) } onChange={(on) => toggleRow(e.id, on)} label={`Select ${e.name}`} />
+                    </td>
                     <td className="whitespace-nowrap px-4 py-3 font-mono text-[12px] text-muted-foreground">
                       {e.empCode}
                     </td>

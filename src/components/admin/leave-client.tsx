@@ -22,6 +22,7 @@ import {
   FiltersPill,
   RowActions,
   fmtDate,
+  Checkbox,
 } from "./ui";
 
 type Leave = {
@@ -52,6 +53,16 @@ const STATUSES = ["Pending", "Approved", "Rejected"];
 
 export function LeaveClient() {
   const qc = useQueryClient();
+
+  /* photo-style row selection */
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const toggleRow = (id: string, on: boolean) =>
+    setSelected((s) => {
+      const n = new Set(s);
+      if (on) n.add(id);
+      else n.delete(id);
+      return n;
+    });
   const [search, setSearch] = useState("");
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
@@ -155,6 +166,8 @@ export function LeaveClient() {
           total={data.total}
           pageSize={data.pageSize}
           onPage={setPage}
+          selected={selected.size}
+          onClearSelection={() => setSelected(new Set())}
         />
       )}
 
@@ -163,6 +176,14 @@ export function LeaveClient() {
           <table className="w-full min-w-[860px] text-sm">
             <thead>
               <tr className="border-b border-border/60 bg-ink-900/40">
+                                <th className="h-11 w-12 pl-5 pr-1 align-middle" aria-label="Select">
+                  <Checkbox
+                    checked={ rows.length > 0 && rows.every((x) => selected.has(x.id)) }
+                    indeterminate={ selected.size > 0 && !rows.every((x) => selected.has(x.id)) }
+                    onChange={(on) => setSelected(on ? new Set(rows.map((x) => x.id)) : new Set())}
+                    label="Select all rows"
+                  />
+                </th>
                 {["Employee", "Type", "From", "To", "Days", "Reason", "Status", "Actions"].map((h) => (
                   <th key={h} className="h-11 px-4 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     {h}
@@ -172,12 +193,15 @@ export function LeaveClient() {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={8} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading requests…</td></tr>
+                <tr><td colSpan={9} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading requests…</td></tr>
               ) : rows.length === 0 ? (
-                <tr><td colSpan={8} className="px-4 py-14 text-center text-sm text-muted-foreground">No leave requests match your filters.</td></tr>
+                <tr><td colSpan={9} className="px-4 py-14 text-center text-sm text-muted-foreground">No leave requests match your filters.</td></tr>
               ) : (
                 rows.map((l) => (
                   <tr key={l.id} className="border-b border-border/40 transition-colors last:border-0 hover:bg-brand-500/[0.04]">
+                    <td className="pl-5 pr-1 align-middle" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox checked={ selected.has(l.id) } onChange={(on) => toggleRow(l.id, on)} label={`Select ${l.employeeName}`} />
+                    </td>
                     <td className="px-4 py-3">
                       <span className="block font-semibold text-foreground">{l.employeeName}</span>
                       <span className="block text-[11.5px] text-muted-foreground">{l.empCode} · {l.department}</span>

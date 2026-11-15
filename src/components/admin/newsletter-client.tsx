@@ -16,6 +16,8 @@ import {
   ToolbarPill,
   ToolbarSearch,
   fmtDate,
+  Checkbox,
+  SelectionChip,
 } from "./ui";
 
 type Subscriber = {
@@ -28,6 +30,16 @@ type Payload = { rows: Subscriber[]; stats: { total: number; last30: number } };
 
 export function NewsletterClient() {
   const qc = useQueryClient();
+
+  /* photo-style row selection */
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const toggleRow = (id: string, on: boolean) =>
+    setSelected((s) => {
+      const n = new Set(s);
+      if (on) n.add(id);
+      else n.delete(id);
+      return n;
+    });
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<{ field: string; dir: "asc" | "desc" }>({
     field: "createdAt",
@@ -115,11 +127,25 @@ export function NewsletterClient() {
         </div>
       </div>
 
+      {selected.size > 0 && (
+        <div className="mt-3">
+          <SelectionChip count={selected.size} onClear={() => setSelected(new Set())} />
+        </div>
+      )}
+
       <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[560px] text-sm">
             <thead>
               <tr className="border-b border-border/60 bg-ink-900/40">
+                                <th className="h-11 w-12 pl-5 pr-1 align-middle" aria-label="Select">
+                  <Checkbox
+                    checked={ visible.length > 0 && visible.every((x) => selected.has(x.id)) }
+                    indeterminate={ selected.size > 0 && !visible.every((x) => selected.has(x.id)) }
+                    onChange={(on) => setSelected(on ? new Set(visible.map((x) => x.id)) : new Set())}
+                    label="Select all rows"
+                  />
+                </th>
                 <SortHeader label="Email" field="email" sort={sort.field} dir={sort.dir} onSort={onSort} />
                 <SortHeader label="Subscribed" field="createdAt" sort={sort.field} dir={sort.dir} onSort={onSort} />
                 <th className="h-11 w-14 px-4" aria-label="Actions" />
@@ -127,12 +153,15 @@ export function NewsletterClient() {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={3} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading subscribers…</td></tr>
+                <tr><td colSpan={4} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading subscribers…</td></tr>
               ) : visible.length === 0 ? (
-                <tr><td colSpan={3} className="px-4 py-14 text-center text-sm text-muted-foreground">No subscribers match your search.</td></tr>
+                <tr><td colSpan={4} className="px-4 py-14 text-center text-sm text-muted-foreground">No subscribers match your search.</td></tr>
               ) : (
                 visible.map((r) => (
                   <tr key={r.id} className="border-b border-border/40 transition-colors last:border-0 hover:bg-brand-500/[0.04]">
+                    <td className="pl-5 pr-1 align-middle" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox checked={ selected.has(r.id) } onChange={(on) => toggleRow(r.id, on)} label={`Select ${r.email}`} />
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-brand-500/25 bg-brand-500/10 text-brand-accent">

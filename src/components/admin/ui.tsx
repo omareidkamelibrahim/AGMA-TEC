@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
+  Check,
   ChevronLeft,
   ChevronRight,
   Ellipsis,
@@ -14,6 +16,7 @@ import {
   Search,
   TrendingDown,
   TrendingUp,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -295,8 +298,10 @@ export function SortHeader({
         type="button"
         onClick={() => onSort(field)}
         className={cn(
-          "inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors",
-          active ? "text-brand-accent-bright" : "text-muted-foreground hover:text-foreground",
+          "-mx-2.5 -my-1.5 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition-colors",
+          active
+            ? "bg-brand-500/10 text-brand-accent-bright"
+            : "text-muted-foreground hover:text-foreground",
         )}
         aria-label={`Sort by ${label}`}
       >
@@ -326,7 +331,7 @@ export function fmtMoney(n: number) {
    wide search on the left, pill buttons (Import · Filters · Export ·
    primary action) on the right. AGMA brand colors only. ---------- */
 
-/** Wide rounded search field — toolbar left side. */
+/** Search field — toolbar left side, stretches to fill the row like the reference. */
 export function ToolbarSearch({
   value,
   onChange,
@@ -339,7 +344,7 @@ export function ToolbarSearch({
   label: string;
 }) {
   return (
-    <div className="relative w-full flex-1 sm:max-w-md">
+    <div className="relative w-full flex-1">
       <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
       <input
         value={value}
@@ -537,22 +542,92 @@ export function TableSummary({
   total,
   pageSize,
   onPage,
+  selected = 0,
+  onClearSelection,
 }: {
   page: number;
   pageCount: number;
   total: number;
   pageSize: number;
   onPage: (p: number) => void;
+  /** Row-selection count — shows a "N selected · clear" chip when > 0. */
+  selected?: number;
+  onClearSelection?: () => void;
 }) {
   const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const to = Math.min(total, page * pageSize);
   return (
     <div className="mb-3 mt-4 flex items-center justify-between gap-3">
-      <p className="text-[12.5px] text-muted-foreground">
-        Showing <span className="font-semibold text-foreground">{from}–{to}</span> of{" "}
-        <span className="font-semibold text-foreground">{total}</span>
-      </p>
+      <div className="flex items-center gap-3">
+        <p className="text-[12.5px] text-muted-foreground">
+          Showing <span className="font-semibold text-foreground">{from}–{to}</span> of{" "}
+          <span className="font-semibold text-foreground">{total}</span>
+        </p>
+        {selected > 0 && onClearSelection && (
+          <SelectionChip count={selected} onClear={onClearSelection} />
+        )}
+      </div>
       <PagerArrows page={page} pageCount={pageCount} onPage={onPage} />
     </div>
+  );
+}
+
+/** Rounded row-selection checkbox (squircle, supports indeterminate). */
+export function Checkbox({
+  checked,
+  indeterminate = false,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  indeterminate?: boolean;
+  onChange: (checked: boolean) => void;
+  label: string;
+}) {
+  const ref = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    ref.current?.setAttribute("aria-checked", indeterminate && !checked ? "mixed" : String(checked));
+  }, [indeterminate, checked]);
+  return (
+    <button
+      ref={ref}
+      type="button"
+      role="checkbox"
+      aria-checked={indeterminate && !checked ? "mixed" : checked}
+      aria-label={label}
+      onClick={(e) => {
+        e.stopPropagation();
+        onChange(!checked);
+      }}
+      className={cn(
+        "flex size-[18px] shrink-0 items-center justify-center rounded-[6px] border transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand-500/30",
+        checked || indeterminate
+          ? "border-brand-500 bg-brand-500 text-white"
+          : "border-border bg-transparent hover:border-brand-500/50",
+      )}
+    >
+      {indeterminate && !checked ? (
+        <Minus className="size-3" strokeWidth={3} />
+      ) : checked ? (
+        <Check className="size-3" strokeWidth={3} />
+      ) : null}
+    </button>
+  );
+}
+
+/** Small "N selected · clear" pill shown when table rows are selected. */
+export function SelectionChip({ count, onClear }: { count: number; onClear: () => void }) {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 py-1 pl-3 pr-1.5 text-[12px] font-semibold text-brand-accent-bright">
+      {count} selected
+      <button
+        type="button"
+        onClick={onClear}
+        aria-label="Clear selection"
+        className="flex size-5 items-center justify-center rounded-full bg-brand-500/20 transition-colors hover:bg-brand-500/35"
+      >
+        <X className="size-3" />
+      </button>
+    </span>
   );
 }

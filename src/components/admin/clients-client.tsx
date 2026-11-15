@@ -47,6 +47,8 @@ import {
   ToolbarPill,
   ToolbarPrimary,
   ToolbarSearch,
+  Checkbox,
+  SelectionChip,
 } from "./ui";
 import { ImportDialog } from "./import-dialog";
 import { PublishedSwitch } from "./website-bits";
@@ -114,6 +116,16 @@ const EMPTY_QUOTE: QuoteForm = {
 
 export function ClientsClient() {
   const qc = useQueryClient();
+
+  /* photo-style row selection */
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const toggleRow = (id: string, on: boolean) =>
+    setSelected((s) => {
+      const n = new Set(s);
+      if (on) n.add(id);
+      else n.delete(id);
+      return n;
+    });
 
   /* ---------- logos state ---------- */
   const [logoOpen, setLogoOpen] = useState(false);
@@ -363,11 +375,25 @@ export function ClientsClient() {
           </div>
         </div>
 
+        {selected.size > 0 && (
+          <div className="mt-3">
+            <SelectionChip count={selected.size} onClear={() => setSelected(new Set())} />
+          </div>
+        )}
+
         <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[680px] text-sm">
               <thead>
                 <tr className="border-b border-border/60 bg-ink-900/40">
+                                    <th className="h-11 w-12 pl-5 pr-1 align-middle" aria-label="Select">
+                    <Checkbox
+                      checked={ visibleLogos.length > 0 && visibleLogos.every((x) => selected.has(x.id)) }
+                      indeterminate={ selected.size > 0 && !visibleLogos.every((x) => selected.has(x.id)) }
+                      onChange={(on) => setSelected(on ? new Set(visibleLogos.map((x) => x.id)) : new Set())}
+                      label="Select all rows"
+                    />
+                  </th>
                   <SortHeader label="Logo" field="name" sort={logoSort.field} dir={logoSort.dir} onSort={onLogoSort} />
                   <SortHeader label="Group" field="kind" sort={logoSort.field} dir={logoSort.dir} onSort={onLogoSort} />
                   <SortHeader label="Order" field="sortOrder" sort={logoSort.field} dir={logoSort.dir} onSort={onLogoSort} />
@@ -377,10 +403,10 @@ export function ClientsClient() {
               </thead>
               <tbody>
                 {logos.isLoading ? (
-                  <tr><td colSpan={5} className="px-4 py-10 text-center text-sm text-muted-foreground">Loading…</td></tr>
+                  <tr><td colSpan={6} className="px-4 py-10 text-center text-sm text-muted-foreground">Loading…</td></tr>
                 ) : visibleLogos.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-10">
+                    <td colSpan={6} className="px-4 py-10">
                       <p className="text-center text-sm text-muted-foreground">
                         No logos match your search or filter. Drop files into{" "}
                         <code className="rounded bg-ink-900 px-1.5 py-0.5 font-mono text-[12px] text-brand-accent">/public/clients/</code>{" "}
@@ -391,6 +417,9 @@ export function ClientsClient() {
                 ) : (
                   visibleLogos.map((r) => (
                     <tr key={r.id} className="border-b border-border/40 transition-colors last:border-0 hover:bg-brand-500/[0.04]">
+                      <td className="pl-5 pr-1 align-middle" onClick={(e) => e.stopPropagation()}>
+                        <Checkbox checked={ selected.has(r.id) } onChange={(on) => toggleRow(r.id, on)} label={`Select ${r.name}`} />
+                      </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <img src={r.imageUrl} alt="" className="h-9 w-16 rounded-lg border border-border/70 bg-white/95 object-contain p-1" />

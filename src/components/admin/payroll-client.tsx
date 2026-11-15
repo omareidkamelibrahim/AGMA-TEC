@@ -15,7 +15,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PageHeader, SortHeader, StatCard, StatusBadge, ToolbarPrimary, fmtMoney } from "./ui";
+import {
+  Checkbox,
+  PageHeader,
+  SelectionChip,
+  SortHeader,
+  StatCard,
+  StatusBadge,
+  ToolbarPrimary,
+  fmtMoney,
+} from "./ui";
 
 type Run = {
   id: string;
@@ -36,6 +45,16 @@ type Response = {
 
 export function PayrollClient() {
   const qc = useQueryClient();
+
+  /* photo-style row selection */
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const toggleRow = (id: string, on: boolean) =>
+    setSelected((s) => {
+      const n = new Set(s);
+      if (on) n.add(id);
+      else n.delete(id);
+      return n;
+    });
   const [open, setOpen] = useState(false);
   const [period, setPeriod] = useState("");
   const [saving, setSaving] = useState(false);
@@ -115,11 +134,25 @@ export function PayrollClient() {
         </ToolbarPrimary>
       </div>
 
+      {selected.size > 0 && (
+        <div className="mt-3">
+          <SelectionChip count={selected.size} onClear={() => setSelected(new Set())} />
+        </div>
+      )}
+
       <div className="overflow-hidden rounded-2xl border border-border bg-ink-850/85">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-border/60 bg-ink-900/40">
+                                <th className="h-11 w-12 pl-5 pr-1 align-middle" aria-label="Select">
+                  <Checkbox
+                    checked={ rows.length > 0 && rows.every((x) => selected.has(x.id)) }
+                    indeterminate={ selected.size > 0 && !rows.every((x) => selected.has(x.id)) }
+                    onChange={(on) => setSelected(on ? new Set(rows.map((x) => x.id)) : new Set())}
+                    label="Select all rows"
+                  />
+                </th>
                 <SortHeader label="Reference" field="reference" sort={sort.field} dir={sort.dir} onSort={onSort} />
                 <SortHeader label="Period" field="period" sort={sort.field} dir={sort.dir} onSort={onSort} />
                 <SortHeader label="Employees" field="employees" sort={sort.field} dir={sort.dir} onSort={onSort} />
@@ -131,12 +164,15 @@ export function PayrollClient() {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={7} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading runs…</td></tr>
+                <tr><td colSpan={8} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading runs…</td></tr>
               ) : rows.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-14 text-center text-sm text-muted-foreground">No payroll runs yet — create the first one.</td></tr>
+                <tr><td colSpan={8} className="px-4 py-14 text-center text-sm text-muted-foreground">No payroll runs yet — create the first one.</td></tr>
               ) : (
                 rows.map((r) => (
                   <tr key={r.id} className="border-b border-border/40 transition-colors last:border-0 hover:bg-brand-500/[0.04]">
+                    <td className="pl-5 pr-1 align-middle" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox checked={ selected.has(r.id) } onChange={(on) => toggleRow(r.id, on)} label={`Select ${r.reference}`} />
+                    </td>
                     <td className="px-4 py-3 font-mono text-[12px] font-semibold text-brand-accent-bright">{r.reference}</td>
                     <td className="px-4 py-3 font-medium text-foreground">{r.period}</td>
                     <td className="px-4 py-3 text-foreground/80">{r.employees}</td>

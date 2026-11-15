@@ -35,6 +35,8 @@ import {
   ToolbarPill,
   ToolbarSearch,
   fmtDate,
+  Checkbox,
+  SelectionChip,
 } from "./ui";
 
 type Inquiry = {
@@ -52,6 +54,16 @@ type Payload = { rows: Inquiry[]; stats: { total: number; newCount: number; last
 
 export function InquiriesClient() {
   const qc = useQueryClient();
+
+  /* photo-style row selection */
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const toggleRow = (id: string, on: boolean) =>
+    setSelected((s) => {
+      const n = new Set(s);
+      if (on) n.add(id);
+      else n.delete(id);
+      return n;
+    });
   const [active, setActive] = useState<Inquiry | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -179,11 +191,25 @@ export function InquiriesClient() {
         </div>
       </div>
 
+      {selected.size > 0 && (
+        <div className="mt-3">
+          <SelectionChip count={selected.size} onClear={() => setSelected(new Set())} />
+        </div>
+      )}
+
       <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-ink-850/85">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[760px] text-sm">
             <thead>
               <tr className="border-b border-border/60 bg-ink-900/40">
+                                <th className="h-11 w-12 pl-5 pr-1 align-middle" aria-label="Select">
+                  <Checkbox
+                    checked={ visible.length > 0 && visible.every((x) => selected.has(x.id)) }
+                    indeterminate={ selected.size > 0 && !visible.every((x) => selected.has(x.id)) }
+                    onChange={(on) => setSelected(on ? new Set(visible.map((x) => x.id)) : new Set())}
+                    label="Select all rows"
+                  />
+                </th>
                 <SortHeader label="From" field="name" sort={sort.field} dir={sort.dir} onSort={onSort} />
                 <SortHeader label="Company" field="company" sort={sort.field} dir={sort.dir} onSort={onSort} />
                 <SortHeader label="Service interest" field="service" sort={sort.field} dir={sort.dir} onSort={onSort} />
@@ -194,9 +220,9 @@ export function InquiriesClient() {
             </thead>
             <tbody>
               {isLoading ? (
-                <tr><td colSpan={6} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading inquiries…</td></tr>
+                <tr><td colSpan={7} className="px-4 py-14 text-center text-sm text-muted-foreground">Loading inquiries…</td></tr>
               ) : visible.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-14 text-center text-sm text-muted-foreground">No inquiries match your search or filter.</td></tr>
+                <tr><td colSpan={7} className="px-4 py-14 text-center text-sm text-muted-foreground">No inquiries match your search or filter.</td></tr>
               ) : (
                 visible.map((r) => (
                   <tr
@@ -204,6 +230,9 @@ export function InquiriesClient() {
                     onClick={() => setActive(r)}
                     className="cursor-pointer border-b border-border/40 transition-colors last:border-0 hover:bg-brand-500/[0.04]"
                   >
+                    <td className="pl-5 pr-1 align-middle" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox checked={ selected.has(r.id) } onChange={(on) => toggleRow(r.id, on)} label={`Select ${r.name}`} />
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-brand-500/30 bg-brand-500/12 text-[11px] font-bold text-brand-accent">
