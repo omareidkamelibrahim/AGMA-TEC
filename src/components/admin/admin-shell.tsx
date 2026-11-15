@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
+  Bell,
   Building2,
   Handshake,
   Headset,
@@ -192,6 +193,118 @@ function BellButton() {
   );
 }
 
+type NotificationRow = {
+  id: string;
+  name: string;
+  company: string | null;
+  message: string;
+  status: string;
+  createdAt: string;
+};
+
+function timeAgo(iso: string) {
+  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60) return "just now";
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d}d ago`;
+  return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
+/** Notification icon — bell with unread badge and a feed of the latest inquiries. */
+function NotificationBell() {
+  const unread = useUnreadCount();
+  const { data } = useQuery<{ rows: NotificationRow[] }>({
+    queryKey: ["admin-notifications"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/inquiries");
+      if (!res.ok) throw new Error("Failed");
+      return res.json();
+    },
+    staleTime: 60_000,
+    retry: 1,
+  });
+  const rows = data?.rows?.slice(0, 5) ?? [];
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          aria-label={unread ? `Notifications — ${unread} new inquiries` : "Notifications"}
+          className="relative flex size-9 items-center justify-center rounded-lg border border-border bg-ink-850/70 text-muted-foreground outline-none transition-colors hover:border-brand-500/40 hover:text-foreground focus-visible:ring-2 focus-visible:ring-brand-500/30"
+        >
+          <Bell className="size-4" />
+          {unread != null && unread > 0 && (
+            <span className="absolute -right-1.5 -top-1.5 flex min-w-4.5 items-center justify-center rounded-full bg-red-500/90 px-1 py-px text-[9.5px] font-bold text-white shadow-md">
+              {unread}
+            </span>
+          )}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={10}
+        className="w-80 border-border bg-ink-900/95 p-0 backdrop-blur-xl"
+      >
+        <div className="flex items-center justify-between border-b border-border px-4 py-3">
+          <span className="text-[13px] font-semibold text-foreground">Notifications</span>
+          {unread != null && unread > 0 && (
+            <span className="rounded-full bg-red-500/90 px-2 py-0.5 text-[10px] font-bold text-white">
+              {unread} new
+            </span>
+          )}
+        </div>
+        <div className="max-h-80 overflow-y-auto">
+          {rows.length === 0 ? (
+            <p className="px-4 py-8 text-center text-[12.5px] text-muted-foreground">
+              No inquiries yet.
+            </p>
+          ) : (
+            rows.map((n) => (
+              <Link
+                key={n.id}
+                href="/admin/inquiries"
+                className="flex gap-3 border-b border-border/40 px-4 py-3 transition-colors last:border-0 hover:bg-brand-500/[0.06]"
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "mt-1.5 size-2 shrink-0 rounded-full",
+                    n.status === "New" ? "bg-brand-400" : "bg-border",
+                  )}
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-baseline justify-between gap-2">
+                    <span className="truncate text-[12.5px] font-semibold text-foreground">
+                      {n.name}
+                      {n.company ? ` · ${n.company}` : ""}
+                    </span>
+                    <span className="shrink-0 text-[10.5px] text-muted-foreground">
+                      {timeAgo(n.createdAt)}
+                    </span>
+                  </span>
+                  <span className="mt-0.5 line-clamp-2 block text-[11.5px] leading-relaxed text-muted-foreground">
+                    {n.message}
+                  </span>
+                </span>
+              </Link>
+            ))
+          )}
+        </div>
+        <Link
+          href="/admin/inquiries"
+          className="block border-t border-border px-4 py-2.5 text-center text-[12px] font-semibold text-brand-accent transition-colors hover:text-brand-accent-bright"
+        >
+          View all inquiries
+        </Link>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 function UserChip({ user }: { user: AdminUserInfo }) {
   const initials =
     user.name
@@ -337,6 +450,7 @@ export function AdminShell({
             )}
           </div>
           <div className="flex items-center gap-2.5">
+            <NotificationBell />
             <BellButton />
             <ThemeToggle />
             <UserChip user={user} />
