@@ -136,6 +136,37 @@ export function EmployeesClient() {
       return n;
     });
 
+  const bulkIds = () => [...selected].join(",");
+
+  const bulkUpdate = async (payload: Record<string, unknown>, okLabel: string) => {
+    const res = await fetch("/api/admin/employees", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: [...selected], ...payload }),
+    });
+    if (!res.ok) {
+      toast.error("Bulk update failed.");
+      return;
+    }
+    toast.success(okLabel);
+    qc.invalidateQueries({ queryKey: ["employees"] });
+    qc.invalidateQueries({ queryKey: ["admin-stats"] });
+    setSelected(new Set());
+  };
+
+  const bulkDelete = async () => {
+    if (!window.confirm(`Delete ${selected.size} selected employees? This cannot be undone.`)) return;
+    const res = await fetch(`/api/admin/employees?ids=${bulkIds()}`, { method: "DELETE" });
+    if (!res.ok) {
+      toast.error("Bulk delete failed.");
+      return;
+    }
+    toast.success(`${selected.size} employees deleted.`);
+    qc.invalidateQueries({ queryKey: ["employees"] });
+    qc.invalidateQueries({ queryKey: ["admin-stats"] });
+    setSelected(new Set());
+  };
+
   // table state
   const [search, setSearch] = useState("");
   const [q, setQ] = useState("");
@@ -391,6 +422,11 @@ export function EmployeesClient() {
           onPage={setPage}
           selected={selected.size}
           onClearSelection={() => setSelected(new Set())}
+          actions={[
+          { label: "Activate", onClick: () => bulkUpdate({ status: "Active" }, "Employees activated.") },
+          { label: "Suspend", onClick: () => bulkUpdate({ status: "Suspended" }, "Employees suspended.") },
+          { label: "Delete", danger: true, onClick: bulkDelete },
+        ]}
         />
       )}
 

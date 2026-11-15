@@ -544,6 +544,7 @@ export function TableSummary({
   onPage,
   selected = 0,
   onClearSelection,
+  actions = [],
 }: {
   page: number;
   pageCount: number;
@@ -553,6 +554,8 @@ export function TableSummary({
   /** Row-selection count — shows a "N selected · clear" chip when > 0. */
   selected?: number;
   onClearSelection?: () => void;
+  /** Bulk operations rendered inside the selection chip. */
+  actions?: SelectionAction[];
 }) {
   const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const to = Math.min(total, page * pageSize);
@@ -564,7 +567,7 @@ export function TableSummary({
           <span className="font-semibold text-foreground">{total}</span>
         </p>
         {selected > 0 && onClearSelection && (
-          <SelectionChip count={selected} onClear={onClearSelection} />
+          <SelectionChip count={selected} onClear={onClearSelection} actions={actions} />
         )}
       </div>
       <PagerArrows page={page} pageCount={pageCount} onPage={onPage} />
@@ -615,11 +618,42 @@ export function Checkbox({
   );
 }
 
-/** Small "N selected · clear" pill shown when table rows are selected. */
-export function SelectionChip({ count, onClear }: { count: number; onClear: () => void }) {
+/** A bulk operation pill inside the selection bar. */
+export type SelectionAction = {
+  label: string;
+  onClick: () => void;
+  /** Renders in red (delete-style) instead of brand blue. */
+  danger?: boolean;
+};
+
+/** "N selected" bar with bulk-action pills and a clear button. */
+export function SelectionChip({
+  count,
+  onClear,
+  actions = [],
+}: {
+  count: number;
+  onClear: () => void;
+  actions?: SelectionAction[];
+}) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 py-1 pl-3 pr-1.5 text-[12px] font-semibold text-brand-accent-bright">
+    <span className="inline-flex flex-wrap items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 py-1 pl-3 pr-1.5 text-[12px] font-semibold text-brand-accent-bright">
       {count} selected
+      {actions.map((a) => (
+        <button
+          key={a.label}
+          type="button"
+          onClick={a.onClick}
+          className={cn(
+            "flex h-6 items-center rounded-full border px-2.5 text-[11.5px] font-semibold transition-colors",
+            a.danger
+              ? "border-red-500/40 bg-red-500/10 text-red-300 hover:bg-red-500/25"
+              : "border-brand-500/40 bg-brand-500/15 text-brand-accent-bright hover:bg-brand-500/30",
+          )}
+        >
+          {a.label}
+        </button>
+      ))}
       <button
         type="button"
         onClick={onClear}

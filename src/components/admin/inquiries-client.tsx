@@ -64,6 +64,37 @@ export function InquiriesClient() {
       else n.delete(id);
       return n;
     });
+
+  const bulkIds = () => [...selected].join(",");
+
+  const bulkUpdate = async (payload: Record<string, unknown>, okLabel: string) => {
+    const res = await fetch("/api/admin/inquiries", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: [...selected], ...payload }),
+    });
+    if (!res.ok) {
+      toast.error("Bulk update failed.");
+      return;
+    }
+    toast.success(okLabel);
+    qc.invalidateQueries({ queryKey: ["admin-inquiries"] });
+    
+    setSelected(new Set());
+  };
+
+  const bulkDelete = async () => {
+    if (!window.confirm(`Delete ${selected.size} selected inquiries? This cannot be undone.`)) return;
+    const res = await fetch(`/api/admin/inquiries?ids=${bulkIds()}`, { method: "DELETE" });
+    if (!res.ok) {
+      toast.error("Bulk delete failed.");
+      return;
+    }
+    toast.success(`${selected.size} inquiries deleted.`);
+    qc.invalidateQueries({ queryKey: ["admin-inquiries"] });
+    
+    setSelected(new Set());
+  };
   const [active, setActive] = useState<Inquiry | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -193,7 +224,15 @@ export function InquiriesClient() {
 
       {selected.size > 0 && (
         <div className="mt-3">
-          <SelectionChip count={selected.size} onClear={() => setSelected(new Set())} />
+          <SelectionChip
+          count={selected.size}
+          onClear={() => setSelected(new Set())}
+          actions={[
+            { label: "Mark handled", onClick: () => bulkUpdate({ status: "Handled" }, "Marked as handled.") },
+            { label: "Mark new", onClick: () => bulkUpdate({ status: "New" }, "Marked as new.") },
+            { label: "Delete", danger: true, onClick: bulkDelete },
+          ]}
+        />
         </div>
       )}
 

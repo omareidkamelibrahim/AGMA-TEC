@@ -29,3 +29,26 @@ export async function GET(req: NextRequest) {
   };
   return NextResponse.json({ rows, stats });
 }
+
+
+/** DELETE /api/admin/newsletter?ids=a,b,c — bulk-delete selected rows. */
+export async function DELETE(req: NextRequest) {
+  const ids = (req.nextUrl.searchParams.get("ids") ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (ids.length === 0) {
+    return NextResponse.json({ error: "Provide ?ids=a,b,c" }, { status: 400 });
+  }
+  let deleted = 0;
+  const failed: string[] = [];
+  for (const id of ids) {
+    try {
+      await db.newsletterSubscriber.delete({ where: { id } });
+      deleted += 1;
+    } catch {
+      failed.push(id);
+    }
+  }
+  return NextResponse.json({ ok: true, deleted, failed });
+}

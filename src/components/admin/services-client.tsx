@@ -90,6 +90,37 @@ export function ServicesClient() {
       else n.delete(id);
       return n;
     });
+
+  const bulkIds = () => [...selected].join(",");
+
+  const bulkUpdate = async (payload: Record<string, unknown>, okLabel: string) => {
+    const res = await fetch("/api/admin/services", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: [...selected], ...payload }),
+    });
+    if (!res.ok) {
+      toast.error("Bulk update failed.");
+      return;
+    }
+    toast.success(okLabel);
+    qc.invalidateQueries({ queryKey: ["admin-services"] });
+    
+    setSelected(new Set());
+  };
+
+  const bulkDelete = async () => {
+    if (!window.confirm(`Delete ${selected.size} selected services? This cannot be undone.`)) return;
+    const res = await fetch(`/api/admin/services?ids=${bulkIds()}`, { method: "DELETE" });
+    if (!res.ok) {
+      toast.error("Bulk delete failed.");
+      return;
+    }
+    toast.success(`${selected.size} services deleted.`);
+    qc.invalidateQueries({ queryKey: ["admin-services"] });
+    
+    setSelected(new Set());
+  };
   const [editing, setEditing] = useState<ServiceRow | null>(null);
   const [open, setOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
@@ -299,7 +330,15 @@ export function ServicesClient() {
 
       {selected.size > 0 && (
         <div className="mt-3">
-          <SelectionChip count={selected.size} onClear={() => setSelected(new Set())} />
+          <SelectionChip
+          count={selected.size}
+          onClear={() => setSelected(new Set())}
+          actions={[
+            { label: "Publish", onClick: () => bulkUpdate({ published: true }, "Services published.") },
+            { label: "Unpublish", onClick: () => bulkUpdate({ published: false }, "Services unpublished.") },
+            { label: "Delete", danger: true, onClick: bulkDelete },
+          ]}
+        />
         </div>
       )}
 

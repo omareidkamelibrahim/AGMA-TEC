@@ -63,6 +63,37 @@ export function LeaveClient() {
       else n.delete(id);
       return n;
     });
+
+  const bulkIds = () => [...selected].join(",");
+
+  const bulkUpdate = async (payload: Record<string, unknown>, okLabel: string) => {
+    const res = await fetch("/api/admin/leave", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: [...selected], ...payload }),
+    });
+    if (!res.ok) {
+      toast.error("Bulk update failed.");
+      return;
+    }
+    toast.success(okLabel);
+    qc.invalidateQueries({ queryKey: ["leave"] });
+    
+    setSelected(new Set());
+  };
+
+  const bulkDelete = async () => {
+    if (!window.confirm(`Delete ${selected.size} selected leave requests? This cannot be undone.`)) return;
+    const res = await fetch(`/api/admin/leave?ids=${bulkIds()}`, { method: "DELETE" });
+    if (!res.ok) {
+      toast.error("Bulk delete failed.");
+      return;
+    }
+    toast.success(`${selected.size} leave requests deleted.`);
+    qc.invalidateQueries({ queryKey: ["leave"] });
+    
+    setSelected(new Set());
+  };
   const [search, setSearch] = useState("");
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
@@ -168,6 +199,11 @@ export function LeaveClient() {
           onPage={setPage}
           selected={selected.size}
           onClearSelection={() => setSelected(new Set())}
+          actions={[
+          { label: "Approve", onClick: () => bulkUpdate({ status: "Approved" }, "Leave requests approved.") },
+          { label: "Reject", onClick: () => bulkUpdate({ status: "Rejected" }, "Leave requests rejected.") },
+          { label: "Delete", danger: true, onClick: bulkDelete },
+        ]}
         />
       )}
 

@@ -50,3 +50,50 @@ export async function GET(req: NextRequest) {
   };
   return NextResponse.json({ rows, stats });
 }
+
+
+/** PATCH /api/admin/inquiries — bulk-update the status of selected rows. */
+export async function PATCH(req: NextRequest) {
+  const body = await req.json().catch(() => null);
+  const ids: unknown = body?.ids;
+  if (!Array.isArray(ids) || ids.length === 0 || !ids.every((i) => typeof i === "string")) {
+    return NextResponse.json({ error: "ids must be a non-empty array of strings" }, { status: 400 });
+  }
+  const status = body?.status;
+  if (!['New', 'Handled'].includes(status)) {
+    return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  }
+  let updated = 0;
+  const failed: string[] = [];
+  for (const id of ids) {
+    try {
+      await db.contactMessage.update({ where: { id }, data: { status } });
+      updated += 1;
+    } catch {
+      failed.push(id);
+    }
+  }
+  return NextResponse.json({ ok: true, updated, failed });
+}
+
+/** DELETE /api/admin/inquiries?ids=a,b,c — bulk-delete selected rows. */
+export async function DELETE(req: NextRequest) {
+  const ids = (req.nextUrl.searchParams.get("ids") ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (ids.length === 0) {
+    return NextResponse.json({ error: "Provide ?ids=a,b,c" }, { status: 400 });
+  }
+  let deleted = 0;
+  const failed: string[] = [];
+  for (const id of ids) {
+    try {
+      await db.contactMessage.delete({ where: { id } });
+      deleted += 1;
+    } catch {
+      failed.push(id);
+    }
+  }
+  return NextResponse.json({ ok: true, deleted, failed });
+}

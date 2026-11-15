@@ -127,6 +127,37 @@ export function ClientsClient() {
       return n;
     });
 
+  const bulkIds = () => [...selected].join(",");
+
+  const bulkUpdate = async (payload: Record<string, unknown>, okLabel: string) => {
+    const res = await fetch("/api/admin/clients", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: [...selected], ...payload }),
+    });
+    if (!res.ok) {
+      toast.error("Bulk update failed.");
+      return;
+    }
+    toast.success(okLabel);
+    qc.invalidateQueries({ queryKey: ["admin-clients"] });
+    
+    setSelected(new Set());
+  };
+
+  const bulkDelete = async () => {
+    if (!window.confirm(`Delete ${selected.size} selected logos? This cannot be undone.`)) return;
+    const res = await fetch(`/api/admin/clients?ids=${bulkIds()}`, { method: "DELETE" });
+    if (!res.ok) {
+      toast.error("Bulk delete failed.");
+      return;
+    }
+    toast.success(`${selected.size} logos deleted.`);
+    qc.invalidateQueries({ queryKey: ["admin-clients"] });
+    
+    setSelected(new Set());
+  };
+
   /* ---------- logos state ---------- */
   const [logoOpen, setLogoOpen] = useState(false);
   const [logoEditing, setLogoEditing] = useState<LogoRow | null>(null);
@@ -377,7 +408,15 @@ export function ClientsClient() {
 
         {selected.size > 0 && (
           <div className="mt-3">
-            <SelectionChip count={selected.size} onClear={() => setSelected(new Set())} />
+            <SelectionChip
+          count={selected.size}
+          onClear={() => setSelected(new Set())}
+          actions={[
+            { label: "Publish", onClick: () => bulkUpdate({ published: true }, "Logos published.") },
+            { label: "Unpublish", onClick: () => bulkUpdate({ published: false }, "Logos unpublished.") },
+            { label: "Delete", danger: true, onClick: bulkDelete },
+          ]}
+        />
           </div>
         )}
 
