@@ -1,5 +1,5 @@
-import { ClientsClient } from "@/components/admin/clients-client";
+import { LogosClient } from "@/components/admin/logos-client";
 
 export default function AdminClientsPage() {
-  return <ClientsClient />;
+  return <LogosClient kind="client" />;
 }

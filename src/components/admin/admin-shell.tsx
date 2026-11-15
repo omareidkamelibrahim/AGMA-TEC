@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
+  Building2,
   Handshake,
   Headset,
   Inbox,
@@ -47,7 +48,8 @@ const NAV = [
     { href: "/admin/website/footer", label: "Footer", icon: PanelBottom },
     { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/services", label: "Services", icon: Sparkles },
-    { href: "/admin/clients", label: "Clients & Partners", icon: Handshake },
+    { href: "/admin/clients", label: "Clients", icon: Building2 },
+    { href: "/admin/partners", label: "Partners", icon: Handshake },
     { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
     { href: "/admin/inquiries", label: "Inquiries", icon: Inbox },
     { href: "/admin/newsletter", label: "Newsletter", icon: Megaphone },

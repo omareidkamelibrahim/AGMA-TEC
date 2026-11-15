@@ -30,11 +30,17 @@ export async function POST(req: NextRequest) {
   let created = 0;
   let skipped = 0;
 
+  // Page-locked import: /admin/clients and /admin/partners pass ?kind= so
+  // everything imported lands in that page's group regardless of the CSV.
+  const forcedKind = new URL(req.url).searchParams.get("kind");
+  const kindOverride =
+    forcedKind === "client" || forcedKind === "partner" ? forcedKind : null;
+
   for (const [i, o] of objects.entries()) {
     const label = `Row ${i + 2}`;
     const name = o["Name"];
     const imageUrl = o["Image URL"];
-    const kind = (o["Group"] || "client").toLowerCase();
+    const kind = kindOverride ?? (o["Group"] || "client").toLowerCase();
     if (!name || !imageUrl) {
       errors.push(`${label}: Name and Image URL are required.`);
       continue;

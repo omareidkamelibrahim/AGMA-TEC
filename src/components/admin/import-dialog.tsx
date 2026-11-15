@@ -24,6 +24,7 @@ export function ImportDialog({
   title,
   description,
   resource,
+  query,
   template,
   onImported,
 }: {
@@ -33,6 +34,8 @@ export function ImportDialog({
   description: string;
   /** API resource segment, e.g. "employees" → /api/admin/employees/import */
   resource: string;
+  /** Optional query string appended to the import URL, e.g. "?kind=partner". */
+  query?: string;
   /** Sample CSV (with header row) offered as a template download. */
   template: string;
   onImported: () => void;
@@ -56,7 +59,7 @@ export function ImportDialog({
     setResult(null);
     try {
       const csv = await file.text();
-      const res = await fetch(`/api/admin/${resource}/import`, {
+      const res = await fetch(`/api/admin/${resource}/import${query ?? ""}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ csv }),
