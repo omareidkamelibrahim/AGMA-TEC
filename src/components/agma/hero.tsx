@@ -6,13 +6,20 @@ import { Button } from "@/components/ui/button";
 import { AgmaMark } from "./logo";
 import { Reveal } from "./reveal";
 import { EcosystemVisual } from "./ecosystem-visual";
+import type { HeroConfig } from "@/lib/site-config";
 
 /**
- * Hero receives only serializable product data ({slug, name}) — the DB
- * loader resolves icons server-side, and Lucide components cannot cross
- * the server→client component boundary.
+ * Hero receives only serializable data — the DB loaders resolve icons
+ * server-side, and Lucide components cannot cross the server→client
+ * component boundary. Copy comes from the dashboard-managed SiteConfig.
  */
-export function Hero({ products }: { products: { slug: string; name: string }[] }) {
+export function Hero({
+  products,
+  config,
+}: {
+  products: { slug: string; name: string }[];
+  config: HeroConfig;
+}) {
   return (
     <section id="home" className="relative overflow-hidden pt-32 pb-16 sm:pt-40 lg:pb-24">
       {/* backdrop */}
@@ -30,22 +37,20 @@ export function Hero({ products }: { products: { slug: string; name: string }[] 
           <Reveal>
             <span className="inline-flex items-center gap-2.5 rounded-full border border-brand-500/25 bg-brand-500/10 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-accent">
               <Sparkles className="size-3.5" />
-              Enterprise Technology Solutions
+              {config.badge}
             </span>
           </Reveal>
 
           <Reveal delay={0.1}>
             <h1 className="mt-7 font-display text-[2.6rem] font-bold leading-[1.06] tracking-tight text-foreground sm:text-6xl lg:text-[4.1rem]">
-              Connecting Businesses Through{" "}
-              <span className="text-gradient">Intelligent Technology.</span>
+              {config.title}{" "}
+              <span className="text-gradient">{config.titleAccent}</span>
             </h1>
           </Reveal>
 
           <Reveal delay={0.2}>
             <p className="mt-7 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              AGMA TEC delivers integrated enterprise technology solutions that
-              empower organizations to streamline operations, improve
-              efficiency, and accelerate digital transformation.
+              {config.subtitle}
             </p>
           </Reveal>
 
@@ -56,8 +61,8 @@ export function Hero({ products }: { products: { slug: string; name: string }[] 
                 size="lg"
                 className="group h-13 rounded-full bg-brand-600 px-7 text-[15px] font-semibold text-white shadow-[0_14px_44px_-10px_rgba(46,123,214,0.75)] transition-all hover:bg-brand-500 light:hover:bg-brand-700 hover:shadow-[0_18px_54px_-10px_rgba(59,139,232,0.85)]"
               >
-                <Link href="/products">
-                  Explore Our Solutions
+                <Link href={config.primary.href}>
+                  {config.primary.label}
                   <ArrowRight className="size-4.5 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </Button>
@@ -67,7 +72,7 @@ export function Hero({ products }: { products: { slug: string; name: string }[] 
                 variant="outline"
                 className="h-13 rounded-full border-border bg-ink-800/40 px-7 text-[15px] font-medium text-foreground/90 hover:border-brand-500/40 hover:bg-ink-700/60 hover:text-foreground"
               >
-                <Link href="/contact">Contact Us</Link>
+                <Link href={config.secondary.href}>{config.secondary.label}</Link>
               </Button>
             </div>
           </Reveal>

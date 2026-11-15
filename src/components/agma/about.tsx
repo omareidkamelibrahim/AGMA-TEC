@@ -1,37 +1,56 @@
 import {
+  BadgeCheck,
   Eye,
   Goal,
-  Users,
-  BadgeCheck,
   Layers,
   LineChart,
+  Rocket,
+  Shield,
+  Users,
 } from "lucide-react";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 import { AgmaMark } from "./logo";
+import type { AboutConfig, Pillar } from "@/lib/site-config";
+
+/** Icons selectable in the dashboard for the four About cards. */
+export const PILLAR_ICON_MAP: Record<string, typeof Users> = {
+  users: Users,
+  goal: Goal,
+  eye: Eye,
+  "badge-check": BadgeCheck,
+  layers: Layers,
+  "line-chart": LineChart,
+  shield: Shield,
+  rocket: Rocket,
+};
+
+export function pillarIcon(name: string) {
+  return PILLAR_ICON_MAP[name] ?? Users;
+}
 
 /**
  * The four About content elements (shared by the homepage teaser and
  * the /about page). Concise corporate copy — no excessive paragraphs.
  */
-export const PILLARS = [
+export const PILLARS: Pillar[] = [
   {
-    icon: Users,
+    icon: "users",
     title: "Who We Are",
     text: "AGMA TEC is an enterprise technology company specializing in integrated business management solutions. We develop our own line of software products and combine them with hands-on implementation expertise.",
   },
   {
-    icon: Goal,
+    icon: "goal",
     title: "Our Mission",
     text: "To simplify how organizations operate. We turn fragmented, manual processes into streamlined digital workflows that save time, reduce cost and give leadership full visibility over the business.",
   },
   {
-    icon: Eye,
+    icon: "eye",
     title: "Our Vision",
     text: "To be the long-term technology partner organizations rely on — where every business runs on intelligent, connected systems and technology becomes a driver of continuous growth.",
   },
   {
-    icon: BadgeCheck,
+    icon: "badge-check",
     title: "Why AGMA TEC",
     text: "Because we own what we build. Proven products, expert implementation and continuous support come from one accountable team — not a chain of vendors.",
   },
@@ -56,7 +75,8 @@ export const VALUES = [
   },
 ];
 
-export function About() {
+export function About({ config }: { config: AboutConfig }) {
+  const pillars = config.pillars ?? PILLARS;
   return (
     <section id="about" className="relative scroll-mt-24 py-24 sm:py-32">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(50%_40%_at_85%_15%,var(--glow-navy),transparent_70%)]" />
@@ -67,21 +87,17 @@ export function About() {
           <div className="lg:sticky lg:top-32">
             <SectionHeading
               align="left"
-              eyebrow="About AGMA TEC"
+              eyebrow={config.eyebrow}
               title={
                 <>
-                  Technology That{" "}
-                  <span className="text-gradient">Moves Businesses Forward.</span>
+                  {config.title}{" "}
+                  <span className="text-gradient">{config.titleAccent}</span>
                 </>
               }
             />
             <Reveal delay={0.2}>
               <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Like the six beads of our logo — separate nodes fused into one
-                stronger shape — AGMA TEC connects the disconnected parts of an
-                organization: people, processes, data and technology. Our
-                integrated solutions support the full operational core of a
-                business, from finance and HR to facilities and food services.
+                {config.intro}
               </p>
             </Reveal>
             <Reveal delay={0.28}>
@@ -106,21 +122,24 @@ export function About() {
 
           {/* Right — the four content elements */}
           <div className="grid gap-5 sm:grid-cols-2">
-            {PILLARS.map((p, i) => (
-              <RevealScale key={p.title} delay={i * 0.08} className="h-full">
-                <article className="card-lift flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-7 sm:p-8">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
-                    <p.icon className="size-6" />
-                  </span>
-                  <h3 className="mt-5 font-display text-xl font-semibold text-foreground">
-                    {p.title}
-                  </h3>
-                  <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
-                    {p.text}
-                  </p>
-                </article>
-              </RevealScale>
-            ))}
+            {pillars.map((p, i) => {
+              const Icon = pillarIcon(p.icon);
+              return (
+                <RevealScale key={p.title} delay={i * 0.08} className="h-full">
+                  <article className="card-lift flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-7 sm:p-8">
+                    <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
+                      <Icon className="size-6" />
+                    </span>
+                    <h3 className="mt-5 font-display text-xl font-semibold text-foreground">
+                      {p.title}
+                    </h3>
+                    <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
+                      {p.text}
+                    </p>
+                  </article>
+                </RevealScale>
+              );
+            })}
           </div>
         </div>
       </div>

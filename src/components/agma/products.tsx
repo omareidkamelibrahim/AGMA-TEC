@@ -4,13 +4,15 @@ import Link from "next/link";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 import { getProducts } from "@/lib/site-content";
+import { DEFAULT_SITE_CONFIG, type SectionHeadingCfg } from "@/lib/site-config";
 
 /**
  * Homepage showcase for the AGMA products (DB-managed from the dashboard).
  * Cards link to their dedicated product pages.
  */
-export async function Products() {
+export async function Products({ heading }: { heading?: SectionHeadingCfg }) {
   const products = await getProducts();
+  const h = heading ?? DEFAULT_SITE_CONFIG.sections.headings.products!;
   return (
     <section
       id="products"
@@ -20,13 +22,13 @@ export async function Products() {
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <SectionHeading
-          eyebrow="Product Suite"
+          eyebrow={h.eyebrow}
           title={
             <>
-              Our Products <span className="text-gradient">&amp; Solutions</span>
+              {h.title} <span className="text-gradient">{h.titleAccent}</span>
             </>
           }
-          description="Powerful, integrated solutions designed to simplify business operations, optimize resources, and support organizational growth."
+          description={h.description}
         />
 
         <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -9,19 +9,13 @@ import { Button } from "@/components/ui/button";
 import { AgmaLogo } from "./logo";
 import { ThemeToggle } from "./theme-toggle";
 import { cn } from "@/lib/utils";
+import type { HeaderConfig } from "@/lib/site-config";
 
-const LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
-  { href: "/products", label: "Our Products" },
-  { href: "/services", label: "Services" },
-  { href: "/contact", label: "Contact Us" },
-];
-
-export function Navbar() {
+export function Navbar({ header }: { header: HeaderConfig }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const LINKS = header.links;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -78,8 +72,8 @@ export function Navbar() {
             asChild
             className="group rounded-full bg-brand-600 px-5 font-medium text-white shadow-[0_8px_30px_-8px_rgba(46,123,214,0.7)] hover:bg-brand-500 light:hover:bg-brand-700 light:shadow-[0_8px_30px_-8px_rgba(12,76,151,0.45)]"
           >
-            <Link href="/contact">
-              Start Your Project
+            <Link href={header.cta.href}>
+              {header.cta.label}
               <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </Button>
@@ -132,8 +126,8 @@ export function Navbar() {
                 asChild
                 className="mt-auto h-12 rounded-xl bg-brand-600 text-base font-medium text-white hover:bg-brand-500 light:hover:bg-brand-700 light:hover:bg-brand-700"
               >
-                <Link href="/contact" onClick={() => setOpen(false)}>
-                  Start Your Project
+                <Link href={header.cta.href} onClick={() => setOpen(false)}>
+                  {header.cta.label}
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>

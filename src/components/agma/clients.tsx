@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
 import { getClientLogos } from "@/lib/site-content";
+import { DEFAULT_SITE_CONFIG, type SectionHeadingCfg } from "@/lib/site-config";
 
 /**
  * Logo lists are DB-managed from the admin dashboard (Clients & Testimonials).
@@ -131,7 +132,8 @@ export async function ClientPartnerGroups() {
   );
 }
 
-export async function Clients() {
+export async function Clients({ heading }: { heading?: SectionHeadingCfg }) {
+  const h = heading ?? DEFAULT_SITE_CONFIG.sections.headings.clients!;
   return (
     <section
       id="clients"
@@ -141,13 +143,13 @@ export async function Clients() {
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <SectionHeading
-          eyebrow="Clients & Partners"
+          eyebrow={h.eyebrow}
           title={
             <>
-              Trusted by Our <span className="text-gradient">Clients &amp; Partners</span>
+              {h.title} <span className="text-gradient">{h.titleAccent}</span>
             </>
           }
-          description="Building successful relationships through technology, collaboration, and shared growth."
+          description={h.description}
         />
 
         <div className="mt-14">

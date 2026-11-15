@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { PageHero } from "@/components/agma/page-hero";
-import { PILLARS, VALUES } from "@/components/agma/about";
+import { PILLARS, VALUES, pillarIcon } from "@/components/agma/about";
 import { Reveal, RevealScale } from "@/components/agma/reveal";
 import { AgmaMark } from "@/components/agma/logo";
 import { Team } from "@/components/agma/team";
@@ -37,11 +37,13 @@ export default async function AboutPage() {
       <section className="relative py-16 sm:py-20">
         <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
           <div className="grid gap-5 sm:grid-cols-2">
-            {PILLARS.map((p, i) => (
+            {PILLARS.map((p, i) => {
+              const PillarIcon = pillarIcon(p.icon);
+              return (
               <RevealScale key={p.title} delay={i * 0.08} className="h-full">
                 <article className="card-lift flex h-full flex-col rounded-2xl border border-border bg-ink-850/85 p-7 sm:p-9">
                   <span className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-brand-500/25 bg-brand-500/10 text-brand-accent">
-                    <p.icon className="size-6" />
+                    <PillarIcon className="size-6" />
                   </span>
                   <h2 className="mt-5 font-display text-xl font-semibold text-foreground sm:text-2xl">
                     {p.title}
@@ -51,7 +53,8 @@ export default async function AboutPage() {
                   </p>
                 </article>
               </RevealScale>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

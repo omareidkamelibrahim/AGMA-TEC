@@ -3,6 +3,7 @@ import { SectionHeading } from "./section-heading";
 import { RevealScale } from "./reveal";
 import { TestimonialsCarousel } from "./testimonial-carousel";
 import { getTestimonials } from "@/lib/site-content";
+import { DEFAULT_SITE_CONFIG, type SectionHeadingCfg } from "@/lib/site-config";
 import type { Quote } from "./testimonials-data";
 
 /** Reusable card grid — homepage and /clients page. DB-backed. */
@@ -37,8 +38,9 @@ export async function TestimonialsGrid() {
   );
 }
 
-export async function Testimonials() {
+export async function Testimonials({ heading }: { heading?: SectionHeadingCfg }) {
   const quotes: Quote[] = await getTestimonials();
+  const h = heading ?? DEFAULT_SITE_CONFIG.sections.headings.testimonials!;
   return (
     <section
       id="testimonials"
@@ -48,14 +50,14 @@ export async function Testimonials() {
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(40%_35%_at_90%_70%,var(--glow-navy),transparent_70%)]" />
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <SectionHeading
-          eyebrow="Client Testimonials"
+          eyebrow={h.eyebrow}
           title={
             <>
-              What Our Clients Say{" "}
-              <span className="text-gradient">About Us</span>
+              {h.title}{" "}
+              <span className="text-gradient">{h.titleAccent}</span>
             </>
           }
-          description="Real experiences. Meaningful partnerships. Measurable business value."
+          description={h.description}
         />
 
         <div className="mt-14">

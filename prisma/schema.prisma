@@ -143,3 +143,17 @@ model Testimonial {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+/// Singleton row (id = 1) holding the dashboard-managed website chrome:
+/// header nav, hero/about/CTA copy, footer and home-section order/visibility.
+/// Each *_Json column stores one typed area; missing row/area -> code defaults.
+model SiteConfig {
+  id           Int      @id @default(1)
+  headerJson   String
+  heroJson     String
+  aboutJson    String
+  ctaJson      String
+  footerJson   String
+  sectionsJson String
+  updatedAt    DateTime @updatedAt
+}

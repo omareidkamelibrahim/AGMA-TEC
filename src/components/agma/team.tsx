@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { SectionHeading } from "./section-heading";
 import { Reveal, RevealScale } from "./reveal";
+import { DEFAULT_SITE_CONFIG, type SectionHeadingCfg } from "@/lib/site-config";
 
 /**
  * Team profiles. The current photos in /public/team/ are AI-generated
@@ -112,7 +113,8 @@ export function TeamGrid() {
   );
 }
 
-export function Team() {
+export function Team({ heading }: { heading?: SectionHeadingCfg }) {
+  const h = heading ?? DEFAULT_SITE_CONFIG.sections.headings.team!;
   return (
     <section
       id="team"
@@ -123,14 +125,14 @@ export function Team() {
 
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         <SectionHeading
-          eyebrow="Our Team"
+          eyebrow={h.eyebrow}
           title={
             <>
-              The People Behind{" "}
-              <span className="text-gradient">the Technology.</span>
+              {h.title}{" "}
+              <span className="text-gradient">{h.titleAccent}</span>
             </>
           }
-          description="Engineers, consultants and support specialists working side by side — so every AGMA solution is delivered and cared for by the same team that built it."
+          description={h.description}
         />
 
         <TeamGrid />

@@ -6,23 +6,22 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Banknote,
-  CalendarDays,
   Handshake,
-  Hash,
   Headset,
   Inbox,
   LayoutDashboard,
+  LayoutTemplate,
   LogOut,
   Megaphone,
   Menu,
   MessageSquareQuote,
   Moon,
   Package,
+  PanelBottom,
+  PanelTop,
   ShieldCheck,
   Sparkles,
   Sun,
-  Users,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
@@ -43,20 +42,15 @@ const NAV = [
     { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   ]},
   { group: "Website", items: [
+    { href: "/admin/website/header", label: "Header & Navigation", icon: PanelTop },
+    { href: "/admin/website/sections", label: "Home Sections", icon: LayoutTemplate },
+    { href: "/admin/website/footer", label: "Footer", icon: PanelBottom },
     { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/services", label: "Services", icon: Sparkles },
     { href: "/admin/clients", label: "Clients & Partners", icon: Handshake },
     { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
     { href: "/admin/inquiries", label: "Inquiries", icon: Inbox },
     { href: "/admin/newsletter", label: "Newsletter", icon: Megaphone },
-  ]},
-  { group: "Workforce", items: [
-    { href: "/admin/employees", label: "Employees", icon: Users },
-    { href: "/admin/leave", label: "Leave Requests", icon: CalendarDays },
-    { href: "/admin/payroll", label: "Payroll", icon: Banknote },
-  ]},
-  { group: "System", items: [
-    { href: "/admin/settings/numbering", label: "Numbering Series", icon: Hash },
   ]},
 ];
 

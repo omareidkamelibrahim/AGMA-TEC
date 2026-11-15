@@ -6,44 +6,27 @@ import Link from "next/link";
 import {
   ArrowRight,
   Facebook,
+  Github,
   Instagram,
   Linkedin,
   Loader2,
   Twitter,
+  Youtube,
 } from "lucide-react";
 import { AgmaLogo } from "./logo";
 import { BeadDots } from "./section-heading";
+import type { FooterConfig } from "@/lib/site-config";
 
-const COLUMNS = [
-  {
-    title: "Company",
-    links: [
-      { label: "About us", href: "/about" },
-      { label: "Services", href: "/services" },
-      { label: "Our Products", href: "/products" },
-      { label: "Clients & Partners", href: "/clients" },
-      { label: "Contact", href: "/contact" },
-    ],
-  },
-  {
-    title: "Products",
-    links: [
-      { label: "AGMA ERP", href: "/products/agma-erp" },
-      { label: "AGMA CAFM", href: "/products/agma-cafm" },
-      { label: "AGMA CATERING", href: "/products/agma-catering" },
-      { label: "Request a Demo", href: "/contact" },
-    ],
-  },
-];
+const SOCIAL_ICONS: Record<string, typeof Linkedin> = {
+  linkedin: Linkedin,
+  twitter: Twitter,
+  facebook: Facebook,
+  instagram: Instagram,
+  youtube: Youtube,
+  github: Github,
+};
 
-const SOCIALS = [
-  { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com" },
-  { icon: Twitter, label: "X (Twitter)", href: "https://x.com" },
-  { icon: Facebook, label: "Facebook", href: "https://www.facebook.com" },
-  { icon: Instagram, label: "Instagram", href: "https://www.instagram.com" },
-];
-
-export function Footer() {
+export function Footer({ config }: { config: FooterConfig }) {
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -81,29 +64,29 @@ export function Footer() {
           <div>
             <AgmaLogo showTagline />
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              AGMA TEC is an enterprise technology solutions provider. We
-              develop our own integrated software products — AGMA ERP, AGMA
-              CAFM and AGMA CATERING — that help organizations streamline
-              operations and accelerate digital transformation.
+              {config.about}
             </p>
             <div className="mt-7 flex gap-3">
-              {SOCIALS.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  aria-label={s.label}
-                  className="flex size-10 items-center justify-center rounded-full border border-border bg-ink-850 text-muted-foreground transition-all hover:border-brand-500/50 hover:bg-brand-500 light:hover:bg-brand-700/15 hover:text-brand-accent"
-                >
-                  <s.icon className="size-4.5" />
-                </a>
-              ))}
+              {config.socials.map((s) => {
+                const Icon = SOCIAL_ICONS[s.icon] ?? Linkedin;
+                return (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label={s.label}
+                    className="flex size-10 items-center justify-center rounded-full border border-border bg-ink-850 text-muted-foreground transition-all hover:border-brand-500/50 hover:bg-brand-500 light:hover:bg-brand-700/15 hover:text-brand-accent"
+                  >
+                    <Icon className="size-4.5" />
+                  </a>
+                );
+              })}
             </div>
           </div>
 
           {/* Link columns */}
-          {COLUMNS.map((col) => (
+          {config.columns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
               <h3 className="flex items-center gap-2.5 font-display text-sm font-semibold uppercase tracking-[0.2em] text-foreground">
                 <BeadDots />
@@ -132,8 +115,7 @@ export function Footer() {
               Stay Connected
             </h3>
             <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
-              Practical insights on software, cloud and AI — one short letter,
-              once a month.
+              {config.newsletterBlurb}
             </p>
             <form onSubmit={subscribe} className="mt-5">
               <div className="flex overflow-hidden rounded-xl border border-border bg-ink-850 transition-colors focus-within:border-brand-500/50">
@@ -172,16 +154,14 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-border/60 pt-8 sm:flex-row">
           <p className="text-[13px] text-muted-foreground">
-            © {new Date().getFullYear()} AGMA TEC — Enterprise Technology
-            Solutions. All rights reserved.
+            {config.copyright.replace("{year}", String(new Date().getFullYear()))}
           </p>
           <div className="flex items-center gap-6 text-[13px] text-muted-foreground">
-            <Link href="/" className="transition-colors hover:text-brand-accent">
-              Privacy Policy
-            </Link>
-            <Link href="/" className="transition-colors hover:text-brand-accent">
-              Terms of Service
-            </Link>
+            {config.legalLinks.map((l) => (
+              <Link key={l.label} href={l.href} className="transition-colors hover:text-brand-accent">
+                {l.label}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
