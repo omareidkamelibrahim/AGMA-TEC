@@ -10,9 +10,11 @@ import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
+  Building2,
   Download,
   Eye,
   EyeOff,
+  Handshake,
   Image as ImageIcon,
   Pencil,
   Plus,
@@ -38,6 +40,7 @@ import {
   PageHeader,
   RowActions,
   SortHeader,
+  StatCard,
   ToolbarPill,
   ToolbarPrimary,
   ToolbarSearch,
@@ -211,6 +214,8 @@ export function LogosClient({ kind }: { kind: "client" | "partner" }) {
   };
 
   const logoRows = logos.data?.rows ?? [];
+  const kindRows = logoRows.filter((r) => r.kind === kind);
+  const liveCount = kindRows.filter((r) => r.published).length;
 
   const visibleLogos = useMemo(() => {
     const q = logoSearch.trim().toLowerCase();
@@ -247,8 +252,20 @@ export function LogosClient({ kind }: { kind: "client" | "partner" }) {
         description={copy.description}
       />
 
+      <div className="grid gap-4 sm:grid-cols-3">
+        <StatCard
+          label={kind === "partner" ? "Partner logos" : "Client logos"}
+          value={kindRows.length}
+          icon={kind === "partner" ? Handshake : Building2}
+          tone="brand"
+          hint="Confirmed logos for this page"
+        />
+        <StatCard label="Live on the site" value={liveCount} icon={Eye} tone="success" />
+        <StatCard label="Hidden" value={kindRows.length - liveCount} icon={EyeOff} tone="neutral" />
+      </div>
+
       {/* toolbar — search left, action pills right */}
-      <div className="mt-3 flex flex-col gap-3 lg:flex-row lg:items-center">
+      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center">
         <ToolbarSearch
           value={logoSearch}
           onChange={setLogoSearch}
