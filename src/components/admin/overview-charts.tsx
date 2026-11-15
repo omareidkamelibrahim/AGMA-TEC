@@ -237,3 +237,132 @@ export function AvatarInitials({ name, className }: { name: string; className?: 
     </span>
   );
 }
+
+/* ---------- engagement overview (multi-series area, dashboard hero) ---------- */
+
+const ENGAGEMENT_SERIES = [
+  { key: "inquiries", label: "Inquiries", color: "#5fa9f2" },
+  { key: "handled", label: "Handled", color: "#10b981" },
+  { key: "subscribers", label: "Subscribers", color: "#22d3ee" },
+] as const;
+
+export function EngagementArea({
+  data,
+}: {
+  data: { label: string; inquiries: number; handled: number; subscribers: number }[];
+}) {
+  return (
+    <div className="h-[252px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data} margin={{ top: 12, right: 8, bottom: 0, left: -14 }}>
+          {ENGAGEMENT_SERIES.map((s) => (
+            <defs key={s.key}>
+              <linearGradient id={`eng-${s.key}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={s.color} stopOpacity={0.3} />
+                <stop offset="100%" stopColor={s.color} stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+          ))}
+          <CartesianGrid vertical={false} stroke="var(--color-border)" strokeDasharray="3 3" strokeOpacity={0.7} />
+          <XAxis
+            dataKey="label"
+            tickLine={false}
+            axisLine={false}
+            tick={AXIS_TICK}
+            interval="preserveStartEnd"
+            minTickGap={22}
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tick={AXIS_TICK}
+            allowDecimals={false}
+            width={40}
+            tickFormatter={(v: number) => (v >= 1000 ? `${Math.round(v / 1000)}K` : String(v))}
+          />
+          <Tooltip
+            content={
+              <ChartTip
+                render={(v, name) => `${name ?? ""}: ${Number(v).toLocaleString("en-US")}`}
+              />
+            }
+            cursor={{ stroke: "var(--color-brand-400)", strokeOpacity: 0.4, strokeDasharray: "4 4" }}
+          />
+          {ENGAGEMENT_SERIES.map((s) => (
+            <Area
+              key={s.key}
+              type="monotone"
+              dataKey={s.key}
+              name={s.label}
+              stroke={s.color}
+              strokeWidth={2.2}
+              fill={`url(#eng-${s.key})`}
+              activeDot={{ r: 4, fill: s.color, stroke: "var(--color-background)", strokeWidth: 2 }}
+              dot={{ r: 2.4, fill: s.color, strokeWidth: 0 }}
+              isAnimationActive={false}
+            />
+          ))}
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export function ENGAGEMENT_LEGEND_ENTRIES() {
+  return ENGAGEMENT_SERIES;
+}
+
+/* ---------- generic mini donut (dashboard summaries) ---------- */
+
+export function MiniDonut({
+  data,
+  colors,
+  centerValue,
+  centerLabel,
+}: {
+  data: { label: string; count: number }[];
+  colors: string[];
+  centerValue: string | number;
+  centerLabel: string;
+}) {
+  const total = data.reduce((s, d) => s + d.count, 0);
+  return (
+    <div className="relative h-[168px] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Tooltip
+            content={
+              <ChartTip
+                render={(v, name) => {
+                  const pct = total ? Math.round((Number(v) / total) * 100) : 0;
+                  return `${name}: ${Number(v).toLocaleString("en-US")} (${pct}%)`;
+                }}
+              />
+            }
+          />
+          <Pie
+            data={data.filter((d) => d.count > 0)}
+            dataKey="count"
+            nameKey="label"
+            innerRadius="62%"
+            outerRadius="88%"
+            paddingAngle={3}
+            cornerRadius={5}
+            strokeWidth={0}
+            isAnimationActive={false}
+          >
+            {data.map((d, i) => (
+              <Cell key={d.label} fill={colors[i % colors.length]} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+        <p className="font-display text-2xl font-bold leading-none text-foreground">{centerValue}</p>
+        <p className="mt-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          {centerLabel}
+        </p>
+      </div>
+    </div>
+  );
+}

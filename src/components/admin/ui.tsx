@@ -49,7 +49,7 @@ const TONE_STROKE: Record<string, string> = {
 };
 
 /** Compact inline sparkline (pure SVG — no chart lib overhead). */
-function Sparkline({ points, tone }: { points: number[]; tone: string }) {
+export function Sparkline({ points, tone }: { points: number[]; tone: string }) {
   if (points.length < 2) return null;
   const W = 72;
   const H = 26;

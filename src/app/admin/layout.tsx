@@ -4,7 +4,7 @@ import { AdminShell } from "@/components/admin/admin-shell";
 
 export const metadata: Metadata = {
   title: "Admin",
-  description: "AGMA TEC internal administration — HR suite.",
+  description: "AGMA TEC internal administration — website content and workforce.",
   robots: { index: false, follow: false },
 };
 
